@@ -1,0 +1,180 @@
+/**
+  ******************************************************************************
+  * @file    STM32vldiscovery.h
+  * @author  MCD Application Team
+  * @version V1.0.0
+  * @date    09/13/2010
+  * @brief   Header file for STM32vldiscovery.c module.
+  ******************************************************************************
+  * @copy
+  *
+  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+  * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  *
+  * <h2><center>&copy; COPYRIGHT 2010 STMicroelectronics</center></h2>
+  */ 
+  
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __STM32F100_Dicovery_H
+#define __STM32F100_Dicovery_H
+
+#ifdef __cplusplus
+ extern "C" {
+#endif 
+
+/* Includes ------------------------------------------------------------------*/
+#include "STM32f10x.h"
+#include "stm32f10x_usart.h"
+#include "stm32f10x_bkp.h"
+#include "clock_calendar.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+// flash config
+/* ghi data vao flash theo kieu heap/stack
+	 main code ghi vao dia chi tang tu 0x8000000 len, 
+	 data ghi vao dia chi 0x8008000 xuong
+	 */
+#define FLASH_START_ADDRESS 		0x8008000
+#define FLASH_CHANGE_ADDRESS		4
+#define FLASH_OPERATION_SIZE		4
+	 
+#define EFFECT_SIZE 170
+
+#define LAST_ADD_FLASH(first_add, length)	(FLASH_START_ADDRESS - length/4+1)
+
+// command
+#define SET_TIME_CMD			0x8E
+#define SET_ALARM_CMD			0xD4
+#define SET_EFFECT_CMD		0xE8
+#define CHANGE_TIME_CMD		0xF0
+#define CHANGE_ALARM_CMD	0x0F
+#define CHANGE_EFFECT_CMD	0x71
+
+// header code
+#define READ_TIME_CMD		0x33
+#define READ_ALARM_CMD	0x96
+#define START_TRANSFER	0xC3
+#define STOP_TRANSFER		0xB2
+
+// UART init struct
+typedef struct _user_init_uart
+	{
+		USART_InitTypeDef *UART_Init_Par;
+		USART_TypeDef			*UART_Index;
+	}UART_APPLICATION_INIT, *UART_APPLICATION_INIT_PTR;
+// time configuration
+typedef struct _config_time
+	{
+		uint8_t hours;
+		uint8_t minutes;
+		uint8_t seconds;
+		uint8_t days;
+		uint8_t dates;
+		uint8_t months;
+		uint16_t years;
+	}TIME, *TIME_PTR;
+// alarm configuration (on/off time)
+typedef struct _config_alarm
+	{
+		uint8_t alarm_hour;
+		uint8_t alarm_minute;
+	}ALARM, *ALARM_PTR;
+// led effect
+typedef struct _led_effect
+	{
+		uint32_t	led_index; // 0 .. 32
+		uint16_t	led_delay; // 0 .. 65535ms 
+	}LED_EFFECT, *LED_EFFECT_PTR;
+// configuration message
+/*
+|header_code|crc_code|config_length|change_thing|                  config_time                 |     config_alarm      |effect_length|led_effect|
+|           |        |             |            |hours|minutes|seconds|days |dates|months|years|alarm_hour|alarm_minute|             |          |
+|     0-3   |   4-7  |    8-9      |    10-11   |12-12| 13-13 | 14-14 |15-15|16-16|17-17 |18-19|   20-20  |    21-21   |   22-23     |    N     |
+|     1     |    2   |               3          |             4             |          5       |                  6                  |      n   |
+
+ten truong cha:
+ten truong con:
+thu tu bytes:
+thu tu word(4bytes):
+	*/
+typedef struct _config_message_struct
+	{	// 0x4A4C4444 (JLD: Jupiter Led Driver Data)
+		// 0x4A4C444C (JLL: Jupiter Led Driver Length)
+		uint32_t		header_code; 
+		uint32_t		crc_code;
+		uint16_t		config_length; // length of led effects
+		uint16_t		change_thing;// luu nhung gi can thay doi: thoi gian on/off hay rtc hay led effect
+		TIME				config_time;// config internal rtc
+		ALARM				config_alarm;// config on/off time
+		uint16_t 		effect_length;
+		LED_EFFECT	led_effect[EFFECT_SIZE];// led effect
+	}CONFIG_MESSAGE, *CONFIG_MESSAGE_PTR;
+	
+typedef enum 
+{
+  LED1 = 0
+} Led_TypeDef;
+
+/** 
+  * @brief  STM32F100 Button Defines Legacy  
+  */ 
+#define Mode_GPIO            BUTTON_MODE_GPIO
+#define Mode_EXTI            BUTTON_MODE_EXTI
+
+/** @addtogroup STM32vldiscovery_LOW_LEVEL_LED
+  * @{
+  */
+#define LEDn                             1
+#define LED1_PIN                         GPIO_Pin_1
+#define LED1_GPIO_PORT                   GPIOA
+#define LED1_GPIO_CLK                    RCC_APB2Periph_GPIOA  
+
+/**
+  * @}
+  */ 
+
+/**
+  * @}
+  */ 
+
+/** @defgroup STM32vldiscovery_LOW_LEVEL__Exported_Functions
+  * @{
+  */ 
+void STM32vldiscovery_LEDInit(Led_TypeDef Led);
+void STM32vldiscovery_LEDOn(Led_TypeDef Led);
+void STM32vldiscovery_LEDOff(Led_TypeDef Led);
+void STM32vldiscovery_LEDToggle(Led_TypeDef Led);
+void uart_get_data(void);
+void uart_buffer_process(CONFIG_MESSAGE_PTR buffer);
+void write_to_flash(uint32_t address, CONFIG_MESSAGE_PTR data);
+
+
+/**
+  * @}
+  */ 
+    
+#ifdef __cplusplus
+}
+#endif
+
+
+#endif /* __STM32vldiscovery_H */
+
+/**
+  * @}
+  */ 
+
+/**
+  * @}
+  */  
+
+/**
+  * @}
+  */
+  
+/******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/
