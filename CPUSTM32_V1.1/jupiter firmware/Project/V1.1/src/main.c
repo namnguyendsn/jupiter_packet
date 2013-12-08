@@ -46,10 +46,15 @@ uint32_t		g_app_header_code;
 uint16_t 		g_effect_length;
 
 static __IO uint32_t TimingDelay;
+int pwm_c[8];
+int pwm_num;
+int delay_in_t1;
+volatile uint16_t DATA_OUT;
 /* Private function prototypes -----------------------------------------------*/
-void Delay(uint32_t nTime);
+void Delay_ms(uint32_t nTime);
 void TimingDelay_Decrement(void);
-
+void delay_test(uint32_t delay);
+void led_dim_ti(void);
 /* Private functions ---------------------------------------------------------*/
 
 /**
@@ -57,34 +62,47 @@ void TimingDelay_Decrement(void);
   * @param  None
   * @retval None
   */
-
+volatile uint16_t nam_count = 0;
 int main(void)
 {
   /* Enable GPIOx Clock */
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
+//  RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
   
   /* Initialise LEDs LD3&LD4, both off */
   STM32vldiscovery_LEDInit(LED1);
-  
+	STM32vldiscovery_LEDInit(LED2);
+
   STM32vldiscovery_LEDOff(LED1);
+	STM32vldiscovery_LEDOff(LED2);
   
-	// Init SPI
+	// Init hardware SPI
+	//spi_init();
+	// Init sofrware spi
+	spi_595_init();
 	// Init Timer for PWM
 	// Init UART
 	
   /* Setup SysTick Timer for 1 msec interrupts  */
-  if (SysTick_Config(SystemCoreClock / 1000))
-  { 
+  if (SysTick_Config(SystemCoreClock / 10000))
+  {
     /* Capture error */ 
     while (1);
   }
 
   /* Enable access to the backup register => LSE can be enabled */
-  PWR_BackupAccessCmd(ENABLE);
+//  PWR_BackupAccessCmd(ENABLE);
   
   /* main while */
-//  while(1)
-//  {
+  while(1)
+  {
+#if 0
+		spi_595_send(0x5555);
+		Delay_ms(500);
+		spi_595_send(0xAAAA);
+		Delay_ms(500);
+#else
+		led_dim_ti();
+#endif
 //    if(0 == STM32vldiscovery_PBGetState(BUTTON_USER))
 //      {
 //        if(KeyState == 1)
@@ -145,7 +163,7 @@ int main(void)
 //          /* BlinkSpeed: 3 */ 
 //          else if(BlinkSpeed == 3)
 //        BlinkSpeed = 0;
-//  }
+  }
 }
 
 /**
@@ -153,24 +171,64 @@ int main(void)
   * @param  nTime: specifies the delay time length, in milliseconds.
   * @retval None
   */
-void Delay(uint32_t nTime)
+void Delay_ms(uint32_t nTime)
 { 
-  TimingDelay = nTime;
+  TimingDelay = nTime*10;
 
   while(TimingDelay != 0);
 }
 
 /**
-  * @brief  Decrements the TimingDelay variable.
+  * @brief  Decrements the TimingDelay variable and blink led system status
   * @param  None
   * @retval None
   */
 void TimingDelay_Decrement(void)
 {
   if (TimingDelay != 0x00)
-  { 
+  {
     TimingDelay--;
   }
+}
+
+void LEDstatus(void)
+{
+  STM32vldiscovery_LEDToggle(LED1);
+}
+
+void SoftPWM(void)
+{
+	spi_595_send((pwm_c[0] > pwm_num) ? 0:DATA_OUT);
+	if(++pwm_num==50){			
+		pwm_num=0;
+	}
+}
+
+void led_dim_ti(void)
+{
+	char i,j,k;
+	DATA_OUT = 0x8181;
+	for(k=0;k<16;k++)
+	{
+		j=0;
+
+//		printf("\n\n\n", i);
+		for(i=50;i>0;i--){
+			pwm_c[j] = i;
+//			pwm_num = 0;
+//			printf("%d \n", i);
+			Delay_ms(50);
+		}
+//		printf("\n\n\n", i);
+		for(i=0;i<50;i++){
+			pwm_c[j] = i;
+//			pwm_num = 0;
+//			printf("%d \n", i);
+			Delay_ms(50);
+		}
+		DATA_OUT |= 1<<k;
+		
+	}
 }
 
 #ifdef  USE_FULL_ASSERT
@@ -192,7 +250,6 @@ void assert_failed(uint8_t* file, uint32_t line)
   }
 }
 #endif
-
 
 /**
   * @}

@@ -19,21 +19,21 @@
   */ 
   
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __STM32F100_Dicovery_H
-#define __STM32F100_Dicovery_H
-
 #ifdef __cplusplus
  extern "C" {
 #endif 
 
 /* Includes ------------------------------------------------------------------*/
 #include "STM32f10x.h"
+#include "common_config.h"
 #include "stm32f10x_usart.h"
 #include "stm32f10x_bkp.h"
 #include "clock_calendar.h"
+#include "jupiter_spi.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+	 
 // flash config
 /* ghi data vao flash theo kieu heap/stack
 	 main code ghi vao dia chi tang tu 0x8000000 len, 
@@ -67,6 +67,7 @@ typedef struct _user_init_uart
 		USART_InitTypeDef *UART_Init_Par;
 		USART_TypeDef			*UART_Index;
 	}UART_APPLICATION_INIT, *UART_APPLICATION_INIT_PTR;
+
 // time configuration
 typedef struct _config_time
 	{
@@ -78,6 +79,7 @@ typedef struct _config_time
 		uint8_t months;
 		uint16_t years;
 	}TIME, *TIME_PTR;
+
 // alarm configuration (on/off time)
 typedef struct _config_alarm
 	{
@@ -114,30 +116,21 @@ typedef struct _config_message_struct
 		uint16_t 		effect_length;
 		LED_EFFECT	led_effect[EFFECT_SIZE];// led effect
 	}CONFIG_MESSAGE, *CONFIG_MESSAGE_PTR;
-	
-typedef enum 
-{
-  LED1 = 0
-} Led_TypeDef;
-
-/** 
-  * @brief  STM32F100 Button Defines Legacy  
-  */ 
-#define Mode_GPIO            BUTTON_MODE_GPIO
-#define Mode_EXTI            BUTTON_MODE_EXTI
-
-/** @addtogroup STM32vldiscovery_LOW_LEVEL_LED
-  * @{
-  */
-#define LEDn                             1
-#define LED1_PIN                         GPIO_Pin_1
-#define LED1_GPIO_PORT                   GPIOA
-#define LED1_GPIO_CLK                    RCC_APB2Periph_GPIOA  
-
 /**
   * @}
   */ 
 
+typedef enum 
+{
+  LED1 = 0,
+	FREQ_TEST,
+	LED2,
+	SDI,
+	CLK,
+	STR,
+	OE
+}Led_TypeDef;
+	
 /**
   * @}
   */ 
@@ -153,7 +146,6 @@ void uart_get_data(void);
 void uart_buffer_process(CONFIG_MESSAGE_PTR buffer);
 void write_to_flash(uint32_t address, CONFIG_MESSAGE_PTR data);
 
-
 /**
   * @}
   */ 
@@ -161,9 +153,6 @@ void write_to_flash(uint32_t address, CONFIG_MESSAGE_PTR data);
 #ifdef __cplusplus
 }
 #endif
-
-
-#endif /* __STM32vldiscovery_H */
 
 /**
   * @}

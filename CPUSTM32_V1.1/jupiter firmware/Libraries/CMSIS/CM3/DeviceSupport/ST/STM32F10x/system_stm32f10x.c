@@ -162,24 +162,31 @@ static void SetSysClock(void);
 void SystemInit (void)
 {
   /* Reset the RCC clock configuration to the default reset state(for debug purpose) */
-  /* Set HSION bit */
-  RCC->CR |= (uint32_t)0x00000001;
-
-  /* Reset SW, HPRE, PPRE1, PPRE2, ADCPRE and MCO bits */
-
-  RCC->CFGR &= (uint32_t)0xF8FF0000;
-
+	// clear RCC_CR
+	RCC->CR &= 0;
+	
   /* Reset HSEON, CSSON and PLLON bits */
-  RCC->CR &= (uint32_t)0xFEF6FFFF;
+  RCC->CR &= (uint32_t)~RCC_CR_PLLON |
+	                     ~RCC_CR_CSSON |
+	                     ~RCC_CR_HSEON |
+	                     ~RCC_CR_HSEBYP|
+	                     RCC_CR_HSION;
 
-  /* Reset HSEBYP bit */
-  RCC->CR &= (uint32_t)0xFFFBFFFF;
-
-  /* Reset PLLSRC, PLLXTPRE, PLLMUL and USBPRE/OTGFSPRE bits */
-  RCC->CFGR &= (uint32_t)0xFF80FFFF;
+	// clear RCC_CR
+	RCC->CFGR &= 0;
+  /* Reset SW, HPRE, PPRE1, PPRE2, ADCPRE and MCO bits */
+  RCC->CFGR &= (uint32_t)(~RCC_CFGR_MCO) | 
+	                        RCC_CFGR_PLLMULL |
+	                        RCC_CFGR_PLLXTPRE |
+	                        RCC_CFGR_PLLSRC;
 
   /* Disable all interrupts and clear pending bits  */
-  RCC->CIR = 0x009F0000;
+  RCC->CIR = RCC_CIR_CSSC |
+	           RCC_CIR_PLLRDYC |
+						 RCC_CIR_HSERDYC |
+						 RCC_CIR_HSIRDYC|
+						 RCC_CIR_LSERDYC|
+						 RCC_CIR_LSIRDYC;
 
   /* Reset CFGR2 register */
   RCC->CFGR2 = 0x00000000;      
@@ -187,6 +194,8 @@ void SystemInit (void)
   /* Configure the System clock frequency, HCLK, PCLK2 and PCLK1 prescalers */
   /* Configure the Flash Latency cycles and enable prefetch buffer */
   SetSysClock();
+	/* MCO as HSI */
+	RCC->CFGR |= RCC_CFGR_MCO_HSI;
 }
 
 /**
@@ -323,58 +332,72 @@ void SystemInit_ExtMemCtl(void)
 #ifdef SYSCLK_FREQ_HSE
 /**
   * @brief  Selects HSE as System clock source and configure HCLK, PCLK2
-  *          and PCLK1 prescalers.
+  *          and PCLK1 prescalers. 24MHz
   * @note   This function should be used only after reset.
   * @param  None
   * @retval None
   */
 static void SetSysClockToHSE(void)
 {
-  __IO uint32_t StartUpCounter = 0, HSIStatus = 0;
+  __IO uint32_t StartUpCounter = 0, HSEStatus = 0;
   
   /* SYSCLK, HCLK, PCLK2 and PCLK1 configuration ---------------------------*/    
   /* Enable HSE */    
-  RCC->CR |= ((uint32_t)RCC_CR_HSION);
+  RCC->CR |= ((uint32_t)RCC_CR_HSEON);
  
   /* Wait till HSE is ready and if Time out is reached exit */
   do
   {
-    HSIStatus = RCC->CR & RCC_CR_HSIRDY;
+    HSEStatus = RCC->CR & RCC_CR_HSERDY;
     StartUpCounter++;  
-  } while((HSIStatus == 0) && (StartUpCounter != HSIStartUp_TimeOut));
+  } while((HSEStatus == 0) && (StartUpCounter != HSEStartUp_TimeOut));
 
-  if ((RCC->CR & RCC_CR_HSIRDY) != RESET)
+  if ((RCC->CR & RCC_CR_HSERDY) != RESET)
   {
-    HSIStatus = (uint32_t)0x01;
+		// hse ok
+    HSEStatus = (uint32_t)0x01;
   }
   else
   {
-    HSIStatus = (uint32_t)0x00;
+    HSEStatus = (uint32_t)0x00;
   }  
 
-  if (HSIStatus == (uint32_t)0x01)
+  if (HSEStatus == (uint32_t)0x01)
   {
     /* HCLK = SYSCLK */
-    RCC->CFGR |= (uint32_t)RCC_CFGR_HPRE_DIV1;
+    RCC->CFGR |= (uint32_t)RCC_CFGR_HPRE_DIV512;
       
     /* PCLK2 = HCLK */
-    RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE2_DIV1;
+    RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE2_DIV16;
     
     /* PCLK1 = HCLK */
-    RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE1_DIV1;
+    RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE1_DIV16;
     
-    /* Select HSE as system clock source */
-    RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_SW));
-    RCC->CFGR |= (uint32_t)RCC_CFGR_SW_HSE;    
+		/* select PLL MUL */
+    RCC->CFGR |= (uint32_t)RCC_CFGR_PLLMULL6;
 
-    /* Wait till HSE is used as system clock source */
-    while ((RCC->CFGR & (uint32_t)RCC_CFGR_SWS) != (uint32_t)0x04)
+    /* Enable PLL */
+    RCC->CR |= RCC_CR_PLLON;
+
+    /* Wait till PLL is ready */
+    while((RCC->CR & RCC_CR_PLLRDY) == 0)
+    {
+    }
+
+    /* Select PLL as system clock source */
+    RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_SW));
+    RCC->CFGR |= (uint32_t)RCC_CFGR_SW_PLL ;    
+		RCC->CFGR2 |= (uint32_t)RCC_CFGR2_PREDIV1_DIV2;
+
+    /* Wait till PLL is used as system clock source */
+    while ((RCC->CFGR & (uint32_t)RCC_CFGR_SWS) != (uint32_t)0x08)
     {
     }
   }
   else
   { /* If HSE fails to start-up, the application will have wrong clock 
          configuration. User can add here some code to deal with this error */
+		while(1); // loop forever
   }  
 }
 #elif defined SYSCLK_FREQ_24MHz
@@ -390,18 +413,19 @@ static void SetSysClockTo24(void)
   __IO uint32_t StartUpCounter = 0, HSIStatus = 0;
   
   /* SYSCLK, HCLK, PCLK2 and PCLK1 configuration ---------------------------*/    
-  /* Enable HSE */    
+  /* Enable HSI */    
   RCC->CR |= ((uint32_t)RCC_CR_HSION);
  
-  /* Wait till HSE is ready and if Time out is reached exit */
+  /* Wait till HSI is ready and if Time out is reached exit */
   do
   {
     HSIStatus = RCC->CR & RCC_CR_HSIRDY;
     StartUpCounter++;  
   } while((HSIStatus == 0) && (StartUpCounter != HSIStartUp_TimeOut));
 
-  if ((RCC->CR & RCC_CR_HSERDY) != RESET)
+  if ((RCC->CR & RCC_CR_HSIRDY) != RESET)
   {
+		// hsi ok
     HSIStatus = (uint32_t)0x01;
   }
   else
@@ -411,19 +435,19 @@ static void SetSysClockTo24(void)
 
   if (HSIStatus == (uint32_t)0x01)
   {
-    /* HCLK = SYSCLK */
-    RCC->CFGR |= (uint32_t)RCC_CFGR_HPRE_DIV1;
+    /* HCLK = SYSCLK (AHB div 1)*/
+    RCC->CFGR |= (uint32_t)0;
       
-    /* PCLK2 = HCLK */
+    /* PCLK2 = HCLK (APB2 div 1)*/
     RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE2_DIV1;
     
-    /* PCLK1 = HCLK */
+    /* PCLK1 = HCLK (APB1 div 1)*/
     RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE1_DIV1;
     
 #if defined (STM32F10X_LD_VL) || defined (STM32F10X_MD_VL)
     /*  PLL configuration:  = (HSI / 2) * 6 = 24 MHz */
     RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_PLLSRC | RCC_CFGR_PLLXTPRE | RCC_CFGR_PLLMULL));
-    RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLXTPRE_PREDIV1_Div2 | RCC_CFGR_PLLMULL6);
+    RCC->CFGR |= (uint32_t)RCC_CFGR_PLLMULL6;
 #endif /* STM32F10X_LD_VL */
 
     /* Enable PLL */
@@ -446,6 +470,7 @@ static void SetSysClockTo24(void)
   else
   { /* If HSE fails to start-up, the application will have wrong clock 
          configuration. User can add here some code to deal with this error */
+		while(1); // loop forever
   } 
 }
 #endif

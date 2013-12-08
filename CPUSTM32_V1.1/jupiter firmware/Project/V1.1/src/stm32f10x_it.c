@@ -24,6 +24,8 @@
 #include "stm32f10x_it.h"
 void TimingDelay_Decrement(void);
 void uart_get_data(void);
+void LEDstatus(void);
+void SoftPWM(void);
 /** @addtogroup Demo
   * @{
   */
@@ -132,8 +134,15 @@ void PendSV_Handler(void)
   * @param  None
   * @retval None
   */
+uint32_t tick = 0;
 void SysTick_Handler(void)
 {
+	if(tick++ == 10000)
+	{
+		LEDstatus();
+		tick = 0;
+	}
+	SoftPWM();
   TimingDelay_Decrement();
 }
 

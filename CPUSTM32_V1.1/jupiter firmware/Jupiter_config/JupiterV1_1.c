@@ -23,6 +23,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "JupiterV1_1.h"
 
+
 /** @defgroup STM32vldiscovery_Private_TypesDefinitions
   * @{
   */ 
@@ -46,15 +47,15 @@
   * @}
   */ 
 
-
 /** @defgroup STM32vldiscovery_Private_Variables
   * @{
   */ 
-GPIO_TypeDef* GPIO_PORT[LEDn] = {LED1_GPIO_PORT};
+GPIO_TypeDef* GPIO_PORT[LEDn] = {LED1_GPIO_PORT, FREQ_TEST_GPIO_PORT, LED2_GPIO_PORT, SDI_GPIO_PORT, CLK_GPIO_PORT, STR_GPIO_PORT, OE_GPIO_PORT};
+const uint16_t GPIO_PIN[LEDn] = {LED1_PIN, FREQ_TEST_PIN, LED2_PIN, SDI_PIN, CLK_PIN, STR_PIN, OE_PIN};
+const uint32_t GPIO_CLK[LEDn] = {LED1_GPIO_CLK, FREQ_TEST_GPIO_CLK, LED2_GPIO_CLK, SDI_GPIO_CLK, CLK_GPIO_CLK, STR_GPIO_CLK, OE_GPIO_CLK};
 
-const uint16_t GPIO_PIN[LEDn] = {LED1_PIN};
 static UART_APPLICATION_INIT_PTR uart_app_init;
-const uint32_t GPIO_CLK[LEDn] = {LED1_GPIO_CLK};
+
 static uint8_t * uart_rev_buffer;
 extern uint8_t* g_led_effect_ptr;
 
