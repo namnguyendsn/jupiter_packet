@@ -30,6 +30,7 @@
 #include "stm32f10x_bkp.h"
 #include "clock_calendar.h"
 #include "jupiter_spi.h"
+#include "jupiter_uart.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

@@ -41,7 +41,7 @@
 #define LED1_GPIO_PORT                   GPIOA
 #define LED1_GPIO_CLK                    RCC_APB2Periph_GPIOA  
 
-#define LED2_PIN                         GPIO_Pin_15
+#define LED2_PIN                         GPIO_Pin_9
 #define LED2_GPIO_PORT                   GPIOB
 #define LED2_GPIO_CLK                    RCC_APB2Periph_GPIOB  
 

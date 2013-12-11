@@ -213,7 +213,7 @@ void USART_Init(USART_TypeDef* USARTx, USART_InitTypeDef* USART_InitStruct)
   /* Set PCE and PS bits according to USART_Parity value */
   /* Set TE and RE bits according to USART_Mode value */
   tmpreg |= (uint32_t)USART_InitStruct->USART_WordLength | USART_InitStruct->USART_Parity |
-            USART_InitStruct->USART_Mode;
+            USART_InitStruct->USART_Mode | USART_CR1_UE;
   /* Write to USART CR1 */
   USARTx->CR1 = (uint16_t)tmpreg;
 
@@ -278,7 +278,7 @@ void USART_Init(USART_TypeDef* USARTx, USART_InitTypeDef* USART_InitStruct)
 void USART_StructInit(USART_InitTypeDef* USART_InitStruct)
 {
   /* USART_InitStruct members default value */
-  USART_InitStruct->USART_BaudRate = 9600;
+  USART_InitStruct->USART_BaudRate = 115200;
   USART_InitStruct->USART_WordLength = USART_WordLength_8b;
   USART_InitStruct->USART_StopBits = USART_StopBits_1;
   USART_InitStruct->USART_Parity = USART_Parity_No ;

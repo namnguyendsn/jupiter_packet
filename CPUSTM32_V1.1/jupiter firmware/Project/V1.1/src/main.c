@@ -21,7 +21,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32F10x.h"
 #include "JupiterV1_1.h"
-
+#include "lcd.h"
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 #define  LSE_FAIL_FLAG  0x80
@@ -70,24 +70,28 @@ int main(void)
   
   /* Initialise LEDs LD3&LD4, both off */
   STM32vldiscovery_LEDInit(LED1);
-	STM32vldiscovery_LEDInit(LED2);
+	//STM32vldiscovery_LEDInit(LED2);
 
   STM32vldiscovery_LEDOff(LED1);
-	STM32vldiscovery_LEDOff(LED2);
+	//STM32vldiscovery_LEDOff(LED2);
   
 	// Init hardware SPI
-	//spi_init();
+	//spi_init(); // ok
 	// Init sofrware spi
-	spi_595_init();
+	//spi_595_init();
 	// Init Timer for PWM
 	// Init UART
-	
+	uart_init();
+
   /* Setup SysTick Timer for 1 msec interrupts  */
   if (SysTick_Config(SystemCoreClock / 10000))
   {
     /* Capture error */ 
     while (1);
   }
+	
+  // init lcd
+	//lcd_Init();
 
   /* Enable access to the backup register => LSE can be enabled */
 //  PWR_BackupAccessCmd(ENABLE);
@@ -95,13 +99,23 @@ int main(void)
   /* main while */
   while(1)
   {
+		uart_send('n');
+		uart_send('g');
+		uart_send('u');
+		uart_send('y');
+		uart_send('e');
+		uart_send('n');
+		uart_send('n');
+		uart_send('a');
+		uart_send('m');
+//		LCD_putc('A');
 #if 0
 		spi_595_send(0x5555);
 		Delay_ms(500);
 		spi_595_send(0xAAAA);
 		Delay_ms(500);
 #else
-		led_dim_ti();
+//		led_dim_ti();
 #endif
 //    if(0 == STM32vldiscovery_PBGetState(BUTTON_USER))
 //      {
