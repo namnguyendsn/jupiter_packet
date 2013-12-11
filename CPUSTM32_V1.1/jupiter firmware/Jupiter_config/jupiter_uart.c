@@ -48,31 +48,28 @@ void uart_init(void)
   g_uartInit = (USART_InitTypeDef*)malloc(sizeof(USART_InitTypeDef));
 	AFIO->MAPR   &= ~(1 << 2);                              // clear USART1 remap
 	/* Enable GPIOA clock */
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);// enable clock for GPIOA
-	/* Configure TX pin */
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+	/* Configure TX */
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;// USART1 Tx (PA9)  alternate output push-pull
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
-	/* Configure RX pin */
+	/* Configure RX */
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;// USART1 Rx (PA10) input floating
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
-
-	//enable clock for alternate function
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);// enable clock for Alternate Function
 	//enable clock for uart
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);// enable clock for USART1
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
+	//enable clock for alternate function
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
 	// khoi tao tham so cho uart
 	USART_StructInit(g_uartInit);
-	
-	RCC->APB2ENR |= RCC_APB2ENR_AFIOEN;                     // enable clock for Alternate Function
 	// init uart
+	RCC->APB2ENR |= RCC_APB2ENR_AFIOEN;                     // enable clock for Alternate Function
 	USART_Init(USART1, g_uartInit);
 	// init interrupt
 	USART_ITConfig(USART1, USART_IT_TC|USART_IT_RXNE, ENABLE);
-	// free init buffer
 	free(g_uartInit);
 }
 
@@ -83,14 +80,9 @@ uint8_t uart_send(uint16_t sdata)
 {
 //	GPIO_WriteBit(GPIOA, GPIO_Pin_9|GPIO_Pin_10, 1);
 //	GPIO_WriteBit(GPIOA, GPIO_Pin_9|GPIO_Pin_10, 0);
-	if(USART_GetFlagStatus(USART1, USART_FLAG_TC))
-	{
-    USART_SendData(USART1, sdata);
-	}
-	else
-	{
-     return 0;
-  }
+	while(!USART_GetFlagStatus(USART1, USART_FLAG_TC)){}
+  USART_SendData(USART1, sdata);
+  return 0;
 }
 
 /*

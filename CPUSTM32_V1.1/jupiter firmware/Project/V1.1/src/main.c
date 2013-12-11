@@ -99,7 +99,7 @@ int main(void)
   /* main while */
   while(1)
   {
-		uart_send(0x41);
+		uart_send(0x55);
 
 //		LCD_putc('A');
 #if 0

@@ -216,7 +216,7 @@ void USART_Init(USART_TypeDef* USARTx, USART_InitTypeDef* USART_InitStruct)
             USART_InitStruct->USART_Mode | USART_CR1_UE;
   /* Write to USART CR1 */
   USARTx->CR1 = (uint16_t)tmpreg;
-
+	USARTx->CR1 &= ~USART_SR_TC;
 /*---------------------------- USART CR3 Configuration -----------------------*/  
   tmpreg = USARTx->CR3;
   /* Clear CTSE and RTSE bits */
@@ -229,6 +229,7 @@ void USART_Init(USART_TypeDef* USARTx, USART_InitTypeDef* USART_InitStruct)
 
 /*---------------------------- USART BRR Configuration -----------------------*/
   /* Configure the USART Baud Rate -------------------------------------------*/
+#if 0
   RCC_GetClocksFreq(&RCC_ClocksStatus);
   if (usartxbase == USART1_BASE)
   {
@@ -267,9 +268,9 @@ void USART_Init(USART_TypeDef* USARTx, USART_InitTypeDef* USART_InitStruct)
   
   /* Write to USART BRR */
   USARTx->BRR = (uint16_t)tmpreg;
-	
-	// clear TC flag
-	USARTx->SR &= ~USART_SR_TC;
+#endif
+	#define SYSCLK_FREQ_24MHz  24000000
+	USARTx->BRR = SYSCLK_FREQ_24MHz/2400;
 }
 
 /**
