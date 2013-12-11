@@ -72,7 +72,7 @@
     */
     
 #if defined (STM32F10X_LD_VL) || (defined STM32F10X_MD_VL) 
-//  #define SYSCLK_FREQ_HSE    HSE_Value
+  #define SYSCLK_FREQ_HSE    HSE_Value
 	#define SYSCLK_FREQ_24MHz  24000000
 #endif
 
@@ -165,20 +165,20 @@ void SystemInit (void)
 	// clear RCC_CR
 	RCC->CR &= 0;
 	
-  /* Reset HSEON, CSSON and PLLON bits */
+  /* Reset HSION, CSSON and PLLON bits */
   RCC->CR &= (uint32_t)~RCC_CR_PLLON |
 	                     ~RCC_CR_CSSON |
 	                     ~RCC_CR_HSEON |
 	                     ~RCC_CR_HSEBYP|
-	                     RCC_CR_HSION;
+	                     ~RCC_CR_HSION;
 
 	// clear RCC_CR
 	RCC->CFGR &= 0;
   /* Reset SW, HPRE, PPRE1, PPRE2, ADCPRE and MCO bits */
   RCC->CFGR &= (uint32_t)(~RCC_CFGR_MCO) | 
-	                        RCC_CFGR_PLLMULL |
-	                        RCC_CFGR_PLLXTPRE |
-	                        RCC_CFGR_PLLSRC;
+	                        ~RCC_CFGR_PLLMULL |
+	                        ~RCC_CFGR_PLLXTPRE |
+	                        ~RCC_CFGR_PLLSRC;
 
   /* Disable all interrupts and clear pending bits  */
   RCC->CIR = RCC_CIR_CSSC |

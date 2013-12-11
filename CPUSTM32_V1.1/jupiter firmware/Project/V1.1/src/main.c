@@ -99,15 +99,8 @@ int main(void)
   /* main while */
   while(1)
   {
-		uart_send('n');
-		uart_send('g');
-		uart_send('u');
-		uart_send('y');
-		uart_send('e');
-		uart_send('n');
-		uart_send('n');
-		uart_send('a');
-		uart_send('m');
+		uart_send(0x41);
+
 //		LCD_putc('A');
 #if 0
 		spi_595_send(0x5555);

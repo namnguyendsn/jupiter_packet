@@ -267,6 +267,9 @@ void USART_Init(USART_TypeDef* USARTx, USART_InitTypeDef* USART_InitStruct)
   
   /* Write to USART BRR */
   USARTx->BRR = (uint16_t)tmpreg;
+	
+	// clear TC flag
+	USARTx->SR &= ~USART_SR_TC;
 }
 
 /**
