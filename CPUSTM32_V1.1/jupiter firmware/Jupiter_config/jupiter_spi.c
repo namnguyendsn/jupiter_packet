@@ -1,5 +1,5 @@
 #include "jupiter_spi.h"
-#include "math.h"
+#include "stdlib.h"
 
 static SPI_InitTypeDef * g_pSPIinit;
 

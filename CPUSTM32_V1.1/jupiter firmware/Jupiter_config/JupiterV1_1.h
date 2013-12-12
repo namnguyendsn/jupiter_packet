@@ -40,27 +40,6 @@
 	 main code ghi vao dia chi tang tu 0x8000000 len, 
 	 data ghi vao dia chi 0x8008000 xuong
 	 */
-#define FLASH_START_ADDRESS 		0x8008000
-#define FLASH_CHANGE_ADDRESS		4
-#define FLASH_OPERATION_SIZE		4
-	 
-#define EFFECT_SIZE 170
-
-#define LAST_ADD_FLASH(first_add, length)	(FLASH_START_ADDRESS - length/4+1)
-
-// command
-#define SET_TIME_CMD			0x8E
-#define SET_ALARM_CMD			0xD4
-#define SET_EFFECT_CMD		0xE8
-#define CHANGE_TIME_CMD		0xF0
-#define CHANGE_ALARM_CMD	0x0F
-#define CHANGE_EFFECT_CMD	0x71
-
-// header code
-#define READ_TIME_CMD		0x33
-#define READ_ALARM_CMD	0x96
-#define START_TRANSFER	0xC3
-#define STOP_TRANSFER		0xB2
 
 // UART init struct
 typedef struct _user_init_uart

@@ -1,8 +1,9 @@
 #include "jupiter_uart.h"
 
 USART_InitTypeDef * g_uartInit;
+static uint8_t * g_uart_rev_buffer;
 
-void uart_init(void)
+void uart_init(UART_CALLBACK callback)
 {
   GPIO_InitTypeDef GPIO_InitStructure;
   g_uartInit = (USART_InitTypeDef*)malloc(sizeof(USART_InitTypeDef));
@@ -38,23 +39,53 @@ them phan xu ly gui nhieu data
 */ 
 uint8_t uart_send(uint16_t sdata)
 {
-//	GPIO_WriteBit(GPIOA, GPIO_Pin_9|GPIO_Pin_10, 1);
-//	GPIO_WriteBit(GPIOA, GPIO_Pin_9|GPIO_Pin_10, 0);
 	while(!USART_GetFlagStatus(USART1, USART_FLAG_TC)){}
   USART_SendData(USART1, sdata);
   return 0;
 }
 
-/*
-them phan xu ly nhan nhieu data
-*/
-uint8_t uart_recv(void)
+/**
+  * @brief  Configures UART1.
+		TX			A9
+		RX			A10
+		Baud		115200
+		Parity	no
+		Length	8bits
+		Stop		1bit
+		Follow	none
+	*/
+
+/**
+  * @brief  Getting data from uart
+		return 8bits data to application buffer
+	*/
+void uart_get_data(void)
 {
-  if(!USART_GetFlagStatus(USART1, USART_FLAG_RXNE))
+	static uint16_t char_count = 0;
+	switch((uint8_t)USART_ReceiveData(USART1))
 	{
-//    switch(uart_stt)
-//		{
-//    }
-  }
-	return 0;
+		case SET_TIME_CMD:
+			break;
+		case SET_ALARM_CMD:
+			break;
+		case SET_EFFECT_CMD:
+			break;
+		case CHANGE_TIME_CMD:
+			break;
+		case CHANGE_ALARM_CMD:
+			break;
+		case CHANGE_EFFECT_CMD:
+			break;
+		case READ_TIME_CMD:
+			break;
+		case READ_ALARM_CMD:
+			break;
+		case START_TRANSFER:
+			break;
+		case STOP_TRANSFER:
+			break;
+	}
+	g_uart_rev_buffer[char_count] = (uint8_t)USART_ReceiveData(USART1);
+//	if(char_count >= (uint16_t)sizeof(CONFIG_MESSAGE))
+//		uart_buffer_process(g_uart_buffer);// bufer process callback
 }

@@ -63,6 +63,7 @@ void led_dim_ti(void);
   * @retval None
   */
 volatile uint16_t nam_count = 0;
+
 int main(void)
 {
   /* Enable GPIOx Clock */
@@ -80,8 +81,7 @@ int main(void)
 	// Init sofrware spi
 	//spi_595_init();
 	// Init Timer for PWM
-	// Init UART
-	uart_init();
+
 
   /* Setup SysTick Timer for 1 msec interrupts  */
   if (SysTick_Config(SystemCoreClock / 10000))

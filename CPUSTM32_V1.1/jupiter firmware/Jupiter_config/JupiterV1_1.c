@@ -50,13 +50,11 @@
 /** @defgroup STM32vldiscovery_Private_Variables
   * @{
   */ 
+void uart_buffer_process(CONFIG_MESSAGE_PTR buffer);
 GPIO_TypeDef* GPIO_PORT[LEDn] = {LED1_GPIO_PORT, FREQ_TEST_GPIO_PORT, LED2_GPIO_PORT, SDI_GPIO_PORT, CLK_GPIO_PORT, STR_GPIO_PORT, OE_GPIO_PORT};
 const uint16_t GPIO_PIN[LEDn] = {LED1_PIN, FREQ_TEST_PIN, LED2_PIN, SDI_PIN, CLK_PIN, STR_PIN, OE_PIN};
 const uint32_t GPIO_CLK[LEDn] = {LED1_GPIO_CLK, FREQ_TEST_GPIO_CLK, LED2_GPIO_CLK, SDI_GPIO_CLK, CLK_GPIO_CLK, STR_GPIO_CLK, OE_GPIO_CLK};
 
-static UART_APPLICATION_INIT_PTR uart_app_init;
-
-static uint8_t * uart_rev_buffer;
 extern uint8_t* g_led_effect_ptr;
 
 extern CONFIG_MESSAGE_PTR g_uart_buffer;
@@ -68,61 +66,12 @@ extern uint16_t			g_app_length;
 extern uint32_t			g_app_header_code;
 extern uint16_t 		g_effect_length;
 
-/**
-  * @brief  Configures UART1.
-		TX			A9
-		RX			A10
-		Baud		115200
-		Parity	no
-		Length	8bits
-		Stop		1bit
-		Follow	none
-	*/
-void Jupiter_UART_Init()
-{
-	g_uart_buffer = (CONFIG_MESSAGE_PTR)malloc(sizeof(CONFIG_MESSAGE));
-	uart_rev_buffer = (uint8_t *)g_uart_buffer;
-	
-	uart_app_init = (UART_APPLICATION_INIT_PTR)malloc(sizeof(UART_APPLICATION_INIT_PTR));
-	uart_app_init->UART_Index = (USART_TypeDef*)USART1_BASE;
-	USART_StructInit(uart_app_init->UART_Init_Par);
-	USART_Init(uart_app_init->UART_Index, uart_app_init->UART_Init_Par);
-	USART_ITConfig(uart_app_init->UART_Index, USART_IT_RXNE, ENABLE);
-}
+UART_CALLBACK uart_process_callback;
 
-/**
-  * @brief  Getting data from uart
-		return 8bits data to application buffer
-	*/
-void uart_get_data(void)
+void jupiter_UART_Init()
 {
-	static uint16_t char_count = 0;
-	switch((uint8_t)USART_ReceiveData(uart_app_init->UART_Index))
-	{
-		case SET_TIME_CMD:
-			break;
-		case SET_ALARM_CMD:
-			break;
-		case SET_EFFECT_CMD:
-			break;
-		case CHANGE_TIME_CMD:
-			break;
-		case CHANGE_ALARM_CMD:
-			break;
-		case CHANGE_EFFECT_CMD:
-			break;
-		case READ_TIME_CMD:
-			break;
-		case READ_ALARM_CMD:
-			break;
-		case START_TRANSFER:
-			break;
-		case STOP_TRANSFER:
-			break;
-	}
-	uart_rev_buffer[char_count] = (uint8_t)USART_ReceiveData(uart_app_init->UART_Index);
-	if(char_count >= (uint16_t)sizeof(CONFIG_MESSAGE))
-		uart_buffer_process(g_uart_buffer);
+	// Init UART
+	uart_init(uart_buffer_process);
 }
 
 /**
