@@ -228,7 +228,7 @@ void USART_Init(USART_TypeDef* USARTx, USART_InitTypeDef* USART_InitStruct)
 /*---------------------------- USART BRR Configuration -----------------------*/
 /* Configure the USART Baud Rate ---------------------------------------------*/
 	#define SYSCLK_FREQ_24MHz  24000000
-	USARTx->BRR = SYSCLK_FREQ_24MHz/2400;
+	USARTx->BRR = SYSCLK_FREQ_24MHz/USART_InitStruct->USART_BaudRate;
 }
 
 /**

@@ -80,7 +80,7 @@
 
 // config clock source
 #define SYSCLK	24000000
-#define USE_HSE 0
+#define USE_HSE 1
 
 #define FLASH_START_ADDRESS 		0x8008000
 #define FLASH_CHANGE_ADDRESS		4

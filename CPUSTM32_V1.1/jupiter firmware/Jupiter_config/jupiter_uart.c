@@ -65,24 +65,34 @@ void uart_get_data(void)
 	switch((uint8_t)USART_ReceiveData(USART1))
 	{
 		case SET_TIME_CMD:
+			//uart_buffer_process();
 			break;
 		case SET_ALARM_CMD:
+			//uart_buffer_process();
 			break;
 		case SET_EFFECT_CMD:
+			//uart_buffer_process();
 			break;
 		case CHANGE_TIME_CMD:
+			//uart_buffer_process();
 			break;
 		case CHANGE_ALARM_CMD:
+			//uart_buffer_process();
 			break;
 		case CHANGE_EFFECT_CMD:
+			//uart_buffer_process();
 			break;
 		case READ_TIME_CMD:
+			//uart_buffer_process();
 			break;
 		case READ_ALARM_CMD:
+			//uart_buffer_process();
 			break;
 		case START_TRANSFER:
+			//uart_buffer_process();
 			break;
 		case STOP_TRANSFER:
+			//uart_buffer_process();
 			break;
 	}
 	g_uart_rev_buffer[char_count] = (uint8_t)USART_ReceiveData(USART1);

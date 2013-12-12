@@ -125,6 +125,8 @@ void STM32vldiscovery_LEDToggle(Led_TypeDef Led);
 void uart_get_data(void);
 void uart_buffer_process(CONFIG_MESSAGE_PTR buffer);
 void write_to_flash(uint32_t address, CONFIG_MESSAGE_PTR data);
+void jupiter_cpu_init(void);
+void jupiter_adj_init(void);
 
 /**
   * @}

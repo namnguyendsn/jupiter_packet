@@ -66,40 +66,14 @@ volatile uint16_t nam_count = 0;
 
 int main(void)
 {
-  /* Enable GPIOx Clock */
-//  RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
-  
-  /* Initialise LEDs LD3&LD4, both off */
-  STM32vldiscovery_LEDInit(LED1);
-	//STM32vldiscovery_LEDInit(LED2);
-
-  STM32vldiscovery_LEDOff(LED1);
-	//STM32vldiscovery_LEDOff(LED2);
-  
-	// Init hardware SPI
-	//spi_init(); // ok
-	// Init sofrware spi
-	//spi_595_init();
-	// Init Timer for PWM
-
-
-  /* Setup SysTick Timer for 1 msec interrupts  */
-  if (SysTick_Config(SystemCoreClock / 10000))
-  {
-    /* Capture error */ 
-    while (1);
-  }
-	
-  // init lcd
-	//lcd_Init();
-
-  /* Enable access to the backup register => LSE can be enabled */
-//  PWR_BackupAccessCmd(ENABLE);
-  
+  jupiter_cpu_init();
   /* main while */
   while(1)
   {
-		uart_send(0x55);
+		uart_send('n');
+		uart_send('a');
+		uart_send('m');
+		uart_send(' ');
 
 //		LCD_putc('A');
 #if 0

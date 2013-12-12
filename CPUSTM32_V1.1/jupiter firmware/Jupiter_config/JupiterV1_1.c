@@ -51,6 +51,8 @@
   * @{
   */ 
 void uart_buffer_process(CONFIG_MESSAGE_PTR buffer);
+void MCO_config(void);
+void rtc_init(void);
 GPIO_TypeDef* GPIO_PORT[LEDn] = {LED1_GPIO_PORT, FREQ_TEST_GPIO_PORT, LED2_GPIO_PORT, SDI_GPIO_PORT, CLK_GPIO_PORT, STR_GPIO_PORT, OE_GPIO_PORT};
 const uint16_t GPIO_PIN[LEDn] = {LED1_PIN, FREQ_TEST_PIN, LED2_PIN, SDI_PIN, CLK_PIN, STR_PIN, OE_PIN};
 const uint32_t GPIO_CLK[LEDn] = {LED1_GPIO_CLK, FREQ_TEST_GPIO_CLK, LED2_GPIO_CLK, SDI_GPIO_CLK, CLK_GPIO_CLK, STR_GPIO_CLK, OE_GPIO_CLK};
@@ -68,11 +70,53 @@ extern uint16_t 		g_effect_length;
 
 UART_CALLBACK uart_process_callback;
 
-void jupiter_UART_Init()
+void jupiter_cpu_init(void)
 {
+	/* Initialise LEDs LD3&LD4, both off */
+  STM32vldiscovery_LEDInit(LED1);
+	//STM32vldiscovery_LEDInit(LED2);
+
+  STM32vldiscovery_LEDOff(LED1);
+	
+	// test clock source
+	MCO_config();
+	
+	// init rtc
+	rtc_init();
+	
 	// Init UART
 	uart_init(uart_buffer_process);
+	  /* Enable GPIOx Clock */
+//  RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
+  
+	// Init hardware SPI
+	//spi_init(); // ok
+	// Init sofrware spi
+	//spi_595_init();
+	// Init Timer for PWM
+
+
+  /* Setup SysTick Timer for 1 msec interrupts  */
+	#if 1
+  if (SysTick_Config(SystemCoreClock / 10000))
+  {
+    /* Capture error */ 
+    while (1);
+  }
+	#endif
+	
+  // init lcd
+	//lcd_Init();
+
+  /* Enable access to the backup register => LSE can be enabled */
+//  PWR_BackupAccessCmd(ENABLE);
 }
+
+void jupiter_adj_init(void)
+{
+
+}
+
 
 /**
   * @brief  parse data from uart_buffer
@@ -212,6 +256,27 @@ void STM32vldiscovery_LEDOff(Led_TypeDef Led)
 void STM32vldiscovery_LEDToggle(Led_TypeDef Led)
 {
   GPIO_PORT[Led]->ODR ^= GPIO_PIN[Led];
+}
+
+// config MCO A8
+void MCO_config(void)
+{
+	GPIO_InitTypeDef GPIO_InitStructure;
+	AFIO->MAPR   &= 0;                              // clear remap
+	/* Enable GPIOA clock */
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+	/* Configure MCO output pin */
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
+	//enable clock for alternate function
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
+	// select clock source
+	RCC_MCOConfig(RCC_MCO_SYSCLK);// SYSTEMCLK selected
+//	RCC_MCOConfig(RCC_MCO_HSI);// HSI selected
+//	RCC_MCOConfig(RCC_MCO_HSE);// HSE selected
+//	RCC_MCOConfig(RCC_MCO_PLLCLK_Div2);// SYSTEMCLK selected
 }
 
 /**
