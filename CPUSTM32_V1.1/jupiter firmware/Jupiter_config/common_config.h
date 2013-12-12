@@ -78,6 +78,10 @@
 #define FREQ_TEST_GPIO_PORT                   GPIOA
 #define FREQ_TEST_GPIO_CLK                    RCC_APB2Periph_GPIOA  
 
+// config clock source
+#define SYSCLK	24000000
+#define USE_HSE 0
+
 /**
   * @}
   */ 

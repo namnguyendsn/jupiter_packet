@@ -172,9 +172,7 @@ void USART_DeInit(USART_TypeDef* USARTx)
   */
 void USART_Init(USART_TypeDef* USARTx, USART_InitTypeDef* USART_InitStruct)
 {
-  uint32_t tmpreg = 0x00, apbclock = 0x00;
-  uint32_t integerdivider = 0x00;
-  uint32_t fractionaldivider = 0x00;
+  uint32_t tmpreg = 0x00;
   uint32_t usartxbase = 0;
   RCC_ClocksTypeDef RCC_ClocksStatus;
   /* Check the parameters */
@@ -228,47 +226,7 @@ void USART_Init(USART_TypeDef* USARTx, USART_InitTypeDef* USART_InitStruct)
   USARTx->CR3 = (uint16_t)tmpreg;
 
 /*---------------------------- USART BRR Configuration -----------------------*/
-  /* Configure the USART Baud Rate -------------------------------------------*/
-#if 0
-  RCC_GetClocksFreq(&RCC_ClocksStatus);
-  if (usartxbase == USART1_BASE)
-  {
-    apbclock = RCC_ClocksStatus.PCLK2_Frequency;
-  }
-  else
-  {
-    apbclock = RCC_ClocksStatus.PCLK1_Frequency;
-  }
-  
-  /* Determine the integer part */
-  if ((USARTx->CR1 & CR1_OVER8_Set) != 0)
-  {
-    /* Integer part computing in case Oversampling mode is 8 Samples */
-    integerdivider = ((25 * apbclock) / (2 * (USART_InitStruct->USART_BaudRate)));    
-  }
-  else /* if ((USARTx->CR1 & CR1_OVER8_Set) == 0) */
-  {
-    /* Integer part computing in case Oversampling mode is 16 Samples */
-    integerdivider = ((25 * apbclock) / (4 * (USART_InitStruct->USART_BaudRate)));    
-  }
-  tmpreg = (integerdivider / 100) << 4;
-
-  /* Determine the fractional part */
-  fractionaldivider = integerdivider - (100 * (tmpreg >> 4));
-
-  /* Implement the fractional part in the register */
-  if ((USARTx->CR1 & CR1_OVER8_Set) != 0)
-  {
-    tmpreg |= ((((fractionaldivider * 8) + 50) / 100)) & ((uint8_t)0x07);
-  }
-  else /* if ((USARTx->CR1 & CR1_OVER8_Set) == 0) */
-  {
-    tmpreg |= ((((fractionaldivider * 16) + 50) / 100)) & ((uint8_t)0x0F);
-  }
-  
-  /* Write to USART BRR */
-  USARTx->BRR = (uint16_t)tmpreg;
-#endif
+/* Configure the USART Baud Rate ---------------------------------------------*/
 	#define SYSCLK_FREQ_24MHz  24000000
 	USARTx->BRR = SYSCLK_FREQ_24MHz/2400;
 }

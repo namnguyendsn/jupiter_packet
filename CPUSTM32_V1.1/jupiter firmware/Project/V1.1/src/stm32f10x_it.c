@@ -134,7 +134,7 @@ void PendSV_Handler(void)
   * @param  None
   * @retval None
   */
-uint32_t tick = 0;
+static uint32_t tick = 0;
 void SysTick_Handler(void)
 {
 	if(tick++ == 10000)

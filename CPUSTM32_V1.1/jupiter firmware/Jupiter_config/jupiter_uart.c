@@ -1,47 +1,7 @@
 #include "jupiter_uart.h"
 
 USART_InitTypeDef * g_uartInit;
-USART_TypeDef * uart_handle;
-#define __USART_SETUP             1                       //  0
-#define __USART_USED              0x01                    //  1
-#define __USART_DETAILS           0x00					  //  2
-#define __USART_INTERRUPTS        0x01					  //  3
-#define __USART1_BAUDRATE         100				  //  4
-#define __USART1_DATABITS         0x00000000
-#define __USART1_STOPBITS         0x00000000
-#define __USART1_PARITY           0x00000000
-#define __USART1_FLOWCTRL         0x00000000
-#define __USART1_REMAP            0x00000000
-#define __USART1_CR1              0x000000A0
-#define __USART1_CR2              0x00000000
-#define __USART1_CR3              0x00000000
-/*----------------------------------------------------------------------------
- Define  Baudrate setting (BRR) for USART1 
- *----------------------------------------------------------------------------*/
-#define __DIV(__PCLK, __BAUD)       ((__PCLK*25)/(4*__BAUD))
-#define __DIVMANT(__PCLK, __BAUD)   (__DIV(__PCLK, __BAUD)/100)
-#define __DIVFRAQ(__PCLK, __BAUD)   (((__DIV(__PCLK, __BAUD) - (__DIVMANT(__PCLK, __BAUD) * 100)) * 16 + 50) / 100)
-#define __USART_BRR(__PCLK, __BAUD) ((__DIVMANT(__PCLK, __BAUD) << 4)|(__DIVFRAQ(__PCLK, __BAUD) & 0x0F))
 
-#define __RCC_CFGR_VAL             0x001D8402
-#define __HSI 8000000UL
-//#define __HSE 8000000UL
-#define __PLLMULL (((__RCC_CFGR_VAL & CFGR_PLLMULL_MASK) >> 18) + 2)
-
-  #define __SYSCLK   __HSI                        // HSI is used as system clock
-
-#define __HCLKPRESC  ((__RCC_CFGR_VAL & CFGR_HPRE_MASK) >> 4)
-#if (__HCLKPRESC & 0x08)
-  #define __HCLK        (__SYSCLK >> ((__HCLKPRESC & 0x07)+1))
-#else
-  #define __HCLK        (__SYSCLK)
-#endif
-#define __PCLK2PRESC  ((__RCC_CFGR_VAL & CFGR_PRE2_MASK) >> 11)
-#if (__PCLK2PRESC & 0x04)
-  #define __PCLK2       (__HCLK >> ((__PCLK2PRESC & 0x03)+1))
-#else
-  #define __PCLK2       (__HCLK)
-#endif
 void uart_init(void)
 {
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -90,10 +50,11 @@ them phan xu ly nhan nhieu data
 */
 uint8_t uart_recv(void)
 {
-  if(!USART_GetFlagStatus(uart_handle, USART_FLAG_RXNE))
+  if(!USART_GetFlagStatus(USART1, USART_FLAG_RXNE))
 	{
 //    switch(uart_stt)
 //		{
 //    }
   }
+	return 0;
 }

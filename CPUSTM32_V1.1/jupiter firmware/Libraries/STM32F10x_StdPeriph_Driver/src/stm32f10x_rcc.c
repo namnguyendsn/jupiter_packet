@@ -122,10 +122,10 @@
 /* RCC Flag Mask */
 #define FLAG_Mask                 ((uint8_t)0x1F)
 
-#ifndef HSI_Value
 /* Typical Value of the HSI in Hz */
- #define HSI_Value                 ((uint32_t)8000000)
-#endif /* HSI_Value */
+#define HSI_Value                 ((uint32_t)8000000)
+/* Typical Value of the HSE in Hz */
+#define HSE_Value                 ((uint32_t)8000000)
 
 /* CIR register byte 2 (Bits[15:8]) base address */
 #define CIR_BYTE2_ADDRESS         ((uint32_t)0x40021009)
