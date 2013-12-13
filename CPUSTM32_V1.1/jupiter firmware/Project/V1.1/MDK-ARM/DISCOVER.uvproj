@@ -30,7 +30,6 @@
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
           <SFDFile></SFDFile>
-          <bCustSvd>0</bCustSvd>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>
           <IncludePath></IncludePath>
@@ -98,7 +97,6 @@
           <StopOnExitCode>3</StopOnExitCode>
           <CustomArgument></CustomArgument>
           <IncludeLibraryModules></IncludeLibraryModules>
-          <ComprImg>1</ComprImg>
         </CommonProperty>
         <DllOption>
           <SimDllName>SARMCM3.DLL</SimDllName>
@@ -171,10 +169,6 @@
           <Flash2>BIN\UL2CM3.DLL</Flash2>
           <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
-          <pFcarmOut></pFcarmOut>
-          <pFcarmGrp></pFcarmGrp>
-          <pFcArmRoot></pFcArmRoot>
-          <FcArmLst>0</FcArmLst>
         </Utilities>
         <TargetArmAds>
           <ArmAdsMisc>
@@ -537,16 +531,6 @@
               <FileName>JupiterV1_1.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\Jupiter_config\JupiterV1_1.c</FilePath>
-            </File>
-            <File>
-              <FileName>clock_calendar.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Jupiter_config\clock_calendar.c</FilePath>
-            </File>
-            <File>
-              <FileName>clock_calendar.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\Jupiter_config\clock_calendar.h</FilePath>
             </File>
             <File>
               <FileName>jupiter_spi.c</FileName>

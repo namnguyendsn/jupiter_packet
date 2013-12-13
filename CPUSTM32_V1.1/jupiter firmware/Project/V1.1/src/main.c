@@ -62,7 +62,7 @@ void led_dim_ti(void);
   * @param  None
   * @retval None
   */
-volatile uint16_t nam_count = 0;
+volatile uint32_t nam_count = 0;
 
 int main(void)
 {
@@ -74,7 +74,7 @@ int main(void)
 		uart_send('a');
 		uart_send('m');
 		uart_send(' ');
-
+		nam_count = RTC_GetCounter();
 //		LCD_putc('A');
 #if 0
 		spi_595_send(0x5555);

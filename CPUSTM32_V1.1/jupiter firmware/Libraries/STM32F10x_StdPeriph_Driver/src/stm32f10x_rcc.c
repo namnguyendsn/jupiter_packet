@@ -632,6 +632,7 @@ void RCC_LSEConfig(uint8_t RCC_LSE)
     default:
       break;      
   }
+	while(!RCC_GetFlagStatus(RCC_FLAG_LSERDY));
 }
 
 /**
