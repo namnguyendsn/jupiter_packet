@@ -80,7 +80,10 @@
 
 // config clock source
 #define SYSCLK	24000000
-#define USE_HSE 1
+#define USE_HSE 0
+/* Uncomment this line to activate demo 1: calibration with fixed Error */
+/* Comment this line to activate demo 2: calibration with minimum Error found */
+#define USE_HSI_Fixed_Error  0
 
 #define FLASH_START_ADDRESS 		0x8008000
 #define FLASH_CHANGE_ADDRESS		4

@@ -24,7 +24,6 @@ void spi_595_send(uint16_t __led_state)
 	   {
 		   DS_low();
 	   }
-
       SH_CP_high();
       SH_CP_low();
    }

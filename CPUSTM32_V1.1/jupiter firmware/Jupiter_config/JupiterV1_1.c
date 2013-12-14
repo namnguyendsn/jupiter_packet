@@ -72,6 +72,9 @@ UART_CALLBACK uart_process_callback;
 
 void jupiter_cpu_init(void)
 {
+	// cablirate HSI
+	//jupiterHSICab_init();
+	
 	/* Initialise LEDs LD3&LD4, both off */
   STM32vldiscovery_LEDInit(LED1);
 	//STM32vldiscovery_LEDInit(LED2);
@@ -273,8 +276,8 @@ void MCO_config(void)
 	//enable clock for alternate function
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
 	// select clock source
-	RCC_MCOConfig(RCC_MCO_SYSCLK);// SYSTEMCLK selected
-//	RCC_MCOConfig(RCC_MCO_HSI);// HSI selected
+//	RCC_MCOConfig(RCC_MCO_SYSCLK);// SYSTEMCLK selected
+	RCC_MCOConfig(RCC_MCO_HSI);// HSI selected
 //	RCC_MCOConfig(RCC_MCO_HSE);// HSE selected
 //	RCC_MCOConfig(RCC_MCO_PLLCLK_Div2);// SYSTEMCLK selected
 }

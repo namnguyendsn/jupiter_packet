@@ -26,14 +26,25 @@ void TimingDelay_Decrement(void);
 void uart_get_data(void);
 void LEDstatus(void);
 void SoftPWM(void);
+void HSI_FreqMeasure(void);
 /** @addtogroup Demo
   * @{
   */
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
+#define EXTTRIG_SWSTART      (u32)(0x00500000)
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+extern __IO int16_t IN_Buffer[2][160], OUT_Buffer[2][160];
+extern __IO uint8_t Start_Playing;
+extern __IO uint8_t Recording;
+extern __IO uint8_t Playing;
+extern __IO uint8_t Start_Encoding;
+extern __IO uint8_t Start_Decoding;
+extern uint32_t Encoded_Frames;
+extern __IO int16_t *inBuffer;
+extern __IO int16_t *outBuffer;
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
@@ -149,6 +160,18 @@ void SysTick_Handler(void)
 void USART1_IRQHandler(void)
 {
 	uart_get_data();
+}
+
+
+/**
+  * @brief  This function handles TIM3 interrupt request.
+  * @param  None
+  * @retval : None
+  */
+void TIM3_IRQHandler(void)
+{
+  /* Mesure the current HSI frequency corresponding to HSITRIM value */
+  HSI_FreqMeasure();
 }
 
 /**
