@@ -17,4 +17,4 @@ typedef enum
 function prototype
 */
 void spi_init(void);
-void spi_send(uint16_t datain);
+void hard_spi_send_595(uint16_t __led_state);

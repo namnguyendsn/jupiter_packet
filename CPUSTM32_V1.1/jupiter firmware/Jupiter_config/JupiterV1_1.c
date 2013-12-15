@@ -72,17 +72,15 @@ UART_CALLBACK uart_process_callback;
 
 void jupiter_cpu_init(void)
 {
-	// cablirate HSI
-	//jupiterHSICab_init();
-	
 	/* Initialise LEDs LD3&LD4, both off */
   STM32vldiscovery_LEDInit(LED1);
-	//STM32vldiscovery_LEDInit(LED2);
-
+	// cablirate HSI
+	jupiterHSICab_init();
+	
   STM32vldiscovery_LEDOff(LED1);
 	
 	// test clock source
-	MCO_config();
+	//MCO_config();
 	
 	// init rtc
 	rtc_init();
@@ -93,20 +91,17 @@ void jupiter_cpu_init(void)
 //  RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
   
 	// Init hardware SPI
-	//spi_init(); // ok
+	spi_init(); // ok
 	// Init sofrware spi
 	//spi_595_init();
-	// Init Timer for PWM
-
 
   /* Setup SysTick Timer for 1 msec interrupts  */
-	#if 1
+
   if (SysTick_Config(SystemCoreClock / 10000))
   {
     /* Capture error */ 
     while (1);
   }
-	#endif
 	
   // init lcd
 	//lcd_Init();

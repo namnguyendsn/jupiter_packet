@@ -29,8 +29,7 @@ void rtc_init(void)
 	/*Enable 32.768 kHz external oscillator */
 	RCC_LSEConfig(RCC_LSE_ON);
 	/* select clock source for RTC */
-//	RCC_RTCCLKConfig(RCC_RTCCLKSource_LSE);
-	RCC_RTCCLKConfig(RCC_RTCCLKSource_HSE_Div128);
+	RCC_RTCCLKConfig(RCC_RTCCLKSource_LSE);
 	/* RTC Enabled */
 	RCC_RTCCLKCmd(ENABLE);
 	/*Wait for RTC registers synchronisation */

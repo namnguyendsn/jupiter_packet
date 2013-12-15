@@ -19,6 +19,7 @@
   */ 
 
 /* Includes ------------------------------------------------------------------*/
+#if 0
 #include "stm32f10x_crc.h"
 
 /** @addtogroup STM32F10x_StdPeriph_Driver
@@ -147,7 +148,7 @@ uint8_t CRC_GetIDRegister(void)
 {
   return (CRC->IDR);
 }
-
+#endif
 /**
   * @}
   */

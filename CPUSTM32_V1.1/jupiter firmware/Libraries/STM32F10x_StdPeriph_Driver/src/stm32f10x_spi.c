@@ -380,7 +380,7 @@ void SPI_StructInit(SPI_InitTypeDef* SPI_InitStruct)
   /* Initialize the SPI_CPHA member */
   SPI_InitStruct->SPI_CPHA = SPI_CPHA_1Edge;
   /* Initialize the SPI_NSS member */
-  SPI_InitStruct->SPI_NSS = SPI_NSS_Hard;
+  SPI_InitStruct->SPI_NSS = SPI_NSS_Soft;
   /* Initialize the SPI_BaudRatePrescaler member */
   SPI_InitStruct->SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_2;
   /* Initialize the SPI_FirstBit member */

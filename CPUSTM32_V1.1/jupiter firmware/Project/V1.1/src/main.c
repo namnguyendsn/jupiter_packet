@@ -77,73 +77,13 @@ int main(void)
 		nam_count = RTC_GetCounter();
 //		LCD_putc('A');
 #if 0
-		spi_595_send(0x5555);
+		hard_spi_send_595(0xFF00);
 		Delay_ms(500);
-		spi_595_send(0xAAAA);
+		hard_spi_send_595(0x00FF);
 		Delay_ms(500);
 #else
-//		led_dim_ti();
+		led_dim_ti();
 #endif
-//    if(0 == STM32vldiscovery_PBGetState(BUTTON_USER))
-//      {
-//        if(KeyState == 1)
-//        {
-//           if(0 == STM32vldiscovery_PBGetState(BUTTON_USER))
-//          {
-//            /* USER Button released */
-//              KeyState = 0;
-//            /* Turn Off LED4 */
-//              STM32vldiscovery_LEDOff(LED4);
-//          }       
-//        }
-//      }
-//    else if(STM32vldiscovery_PBGetState(BUTTON_USER))
-//      { 
-//        if(KeyState == 0)
-//        {
-//           if(STM32vldiscovery_PBGetState(BUTTON_USER))
-//          {
-//            /* USER Button released */
-//              KeyState = 1;
-//            /* Turn ON LED4 */
-//            STM32vldiscovery_LEDOn(LED4);
-//            Delay(1000);
-//            /* Turn OFF LED4 */
-//            STM32vldiscovery_LEDOff(LED4);
-//            /* BlinkSpeed: 0 -> 1 -> 2, then re-cycle */    
-//              BlinkSpeed ++ ; 
-//          }
-//        }
-//      }
-//        count++;
-//        Delay(100);
-//      /* BlinkSpeed: 0 */ 
-//      if(BlinkSpeed == 0)
-//          {
-//            if(4 == (count % 8))
-//            STM32vldiscovery_LEDOn(LED3);
-//            if(0 == (count % 8))
-//            STM32vldiscovery_LEDOff(LED3);
-//         }
-//           /* BlinkSpeed: 1 */ 
-//           if(BlinkSpeed == 1)
-//          {
-//            if(2 == (count % 4))
-//            STM32vldiscovery_LEDOn(LED3);
-//            if(0 == (count % 4))
-//            STM32vldiscovery_LEDOff(LED3);
-//          }  
-//          /* BlinkSpeed: 2 */        
-//          if(BlinkSpeed == 2)
-//          {
-//            if(0 == (count % 2))
-//            STM32vldiscovery_LEDOn(LED3);
-//            else
-//            STM32vldiscovery_LEDOff(LED3);     
-//          }     
-//          /* BlinkSpeed: 3 */ 
-//          else if(BlinkSpeed == 3)
-//        BlinkSpeed = 0;
   }
 }
 
@@ -177,9 +117,23 @@ void LEDstatus(void)
   STM32vldiscovery_LEDToggle(LED1);
 }
 
+/*
+LED PWM over software SPI
+*/
 void SoftPWM(void)
 {
 	spi_595_send((pwm_c[0] > pwm_num) ? 0:DATA_OUT);
+	if(++pwm_num==50){			
+		pwm_num=0;
+	}
+}
+
+/*
+LED PWM over hardware SPI
+*/
+void HardLEDPWM(void)
+{
+	hard_spi_send_595((pwm_c[0] > pwm_num) ? 0:DATA_OUT);
 	if(++pwm_num==50){			
 		pwm_num=0;
 	}
@@ -192,19 +146,12 @@ void led_dim_ti(void)
 	for(k=0;k<16;k++)
 	{
 		j=0;
-
-//		printf("\n\n\n", i);
 		for(i=50;i>0;i--){
 			pwm_c[j] = i;
-//			pwm_num = 0;
-//			printf("%d \n", i);
 			Delay_ms(50);
 		}
-//		printf("\n\n\n", i);
 		for(i=0;i<50;i++){
 			pwm_c[j] = i;
-//			pwm_num = 0;
-//			printf("%d \n", i);
 			Delay_ms(50);
 		}
 		DATA_OUT |= 1<<k;

@@ -26,6 +26,7 @@ void TimingDelay_Decrement(void);
 void uart_get_data(void);
 void LEDstatus(void);
 void SoftPWM(void);
+void HardLEDPWM(void);
 void HSI_FreqMeasure(void);
 /** @addtogroup Demo
   * @{
@@ -149,11 +150,12 @@ static uint32_t tick = 0;
 void SysTick_Handler(void)
 {
 	if(tick++ == 10000)
-	{
-		LEDstatus();
+	{		
 		tick = 0;
+		LEDstatus();
 	}
-	SoftPWM();
+	//SoftPWM();
+	HardLEDPWM();
   TimingDelay_Decrement();
 }
 
@@ -172,6 +174,11 @@ void TIM3_IRQHandler(void)
 {
   /* Mesure the current HSI frequency corresponding to HSITRIM value */
   HSI_FreqMeasure();
+  if(tick++ == 10)
+	{
+		LEDstatus();
+		tick = 0;
+	}
 }
 
 /**

@@ -19,6 +19,7 @@
   */ 
 
 /* Includes ------------------------------------------------------------------*/
+#if 1
 #include "stm32f10x_exti.h"
 
 /** @addtogroup STM32F10x_StdPeriph_Driver
@@ -252,7 +253,7 @@ void EXTI_ClearITPendingBit(uint32_t EXTI_Line)
   
   EXTI->PR = EXTI_Line;
 }
-
+#endif
 /**
   * @}
   */

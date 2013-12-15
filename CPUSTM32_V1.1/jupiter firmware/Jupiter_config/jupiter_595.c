@@ -12,6 +12,7 @@ void spi_595_init(void)
 void spi_595_send(uint16_t __led_state)
 {
    int i;
+	 OE_low();
    SH_CP_low();
    ST_CP_low();
    for(i=0;i<16;i++)
