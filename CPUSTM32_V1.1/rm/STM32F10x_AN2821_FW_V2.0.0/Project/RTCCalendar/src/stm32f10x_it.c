@@ -348,7 +348,7 @@ void TIM2_IRQHandler(void)
     DutyCycle = (TIM_GetCapture1(TIM2) * 100) / IC2Value;
 
     /* Frequency computation */
-    f32_Frequency = ((float)TimerFrequency) / ((float)IC2Value);
+//    f32_Frequency = ((float)TimerFrequency) / ((float)IC2Value);
 
     /* TIM  counter disable */
     TIM_Cmd(TIM2, DISABLE);

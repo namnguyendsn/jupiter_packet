@@ -101,7 +101,7 @@ __I uint8_t AHBPrescTable[16] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 6, 7, 8, 9}
   * @{
   */
 
-static void SetSysClock(void);
+void SetSysClock(void);
 static void SetSysClockHSE24MHz(void);
 static void SetSysClockHSI24MHz(void);
 
@@ -220,8 +220,9 @@ void SystemCoreClockUpdate (void)
   * @brief  Configures the System clock frequency, HCLK, PCLK2 and PCLK1 prescalers.
   * @param  None
   * @retval None
+	work around
   */
-static void SetSysClock(void)
+void SetSysClock(void)
 {
 #if USE_HSE
   SetSysClockHSE24MHz();

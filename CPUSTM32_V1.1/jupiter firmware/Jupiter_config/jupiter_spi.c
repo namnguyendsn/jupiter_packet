@@ -63,7 +63,6 @@ static void pinout_595(void)
 
 void hard_spi_send_595(uint16_t __led_state)
 {
-  int i;
   LE_low();
 	// send data over spi
 	spi_send(__led_state);

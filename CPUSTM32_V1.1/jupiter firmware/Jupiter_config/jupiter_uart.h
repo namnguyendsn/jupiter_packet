@@ -42,5 +42,5 @@ typedef struct _uart_frame_read_alarm
 }UART_FRAME_READ_ALARM, * UART_FRAME_READ_ALARM_PTR;
 
 void uart_init(UART_CALLBACK callback);
-uint8_t uart_send(uint16_t sdata);
+uint8_t uart_send(uint8_t sdata);
 void uart_get_data(void);

@@ -70,10 +70,6 @@ int main(void)
   /* main while */
   while(1)
   {
-		uart_send('n');
-		uart_send('a');
-		uart_send('m');
-		uart_send(' ');
 		nam_count = RTC_GetCounter();
 //		LCD_putc('A');
 #if 0

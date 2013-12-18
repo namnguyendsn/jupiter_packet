@@ -25,6 +25,10 @@
 
 /* Includes ------------------------------------------------------------------*/
 
+#include "stm32f10x.h"                  // Device header
+
+#define printf printf_kinetis
+#define sprintf sprintf_kinetis
 
 
 /** 
@@ -106,6 +110,9 @@
 #define READ_ALARM_CMD	0x96
 #define START_TRANSFER	0xC3
 #define STOP_TRANSFER		0xB2
+
+// UART
+#define J_UART	USART1
 
 typedef void (* UART_CALLBACK)(void*);
 /**
