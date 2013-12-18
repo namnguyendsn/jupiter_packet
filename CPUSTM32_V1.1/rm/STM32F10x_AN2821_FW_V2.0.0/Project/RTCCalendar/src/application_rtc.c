@@ -72,10 +72,10 @@ void RCC_Configuration(void)
     RCC_PCLK2Config(RCC_HCLK_Div1);
 
     /* PCLK1 = HCLK/2 */
-    RCC_PCLK1Config(RCC_HCLK_Div2);
+    RCC_PCLK1Config(RCC_HCLK_Div1);
 
     /* PLLCLK = 8MHz * 9 = 72 MHz */
-    RCC_PLLConfig(RCC_PLLSource_HSE_Div1, RCC_PLLMul_9);
+    RCC_PLLConfig(RCC_PLLSource_HSE_Div2, RCC_PLLMul_6);
 
     /* Enable PLL */
     RCC_PLLCmd(ENABLE);
