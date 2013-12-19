@@ -19,7 +19,7 @@ void uart_init(UART_CALLBACK callback)
 	/* Configure RX */
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_OD;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 	//enable clock for uart
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
@@ -76,6 +76,21 @@ void uart_get_data(void)
 	static uint16_t char_count = 0;
 	switch((uint8_t)USART_ReceiveData(USART1))
 	{
+	case '1':
+		SetTime(1,1,1);
+		break;
+	case '2':
+		SetAlarm(1,2,2);
+		break;
+	case '3':
+		SetDate(19,12,2013);
+		break;
+	case '4':
+		DisplayTime();
+		break;
+	case '5':
+    DisplayDate();
+		break;
 	case SET_TIME_CMD:
 		//uart_buffer_process();
 		break;
@@ -94,9 +109,9 @@ void uart_get_data(void)
 	case CHANGE_EFFECT_CMD:
 		//uart_buffer_process();
 		break;
-	case READ_TIME_CMD:
+//	case READ_TIME_CMD:
 		//uart_buffer_process();
-		break;
+//		break;
 	case READ_ALARM_CMD:
 		//uart_buffer_process();
 		break;

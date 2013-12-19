@@ -65,6 +65,9 @@ extern uint16_t g_app_length;
 extern uint32_t g_app_header_code;
 extern uint16_t g_effect_length;
 
+uint8_t pwm_c[8];
+uint8_t pwm_num;
+volatile uint16_t DATA_OUT;
 UART_CALLBACK uart_process_callback;
 
 void jupiter_cpu_init(void)
@@ -75,7 +78,7 @@ void jupiter_cpu_init(void)
 	jupiterHSICab_init();
 
 	/* Initialise LEDs LD3&LD4, both off */
-	STM32vldiscovery_LEDInit(LED1);
+	//STM32vldiscovery_LEDInit(LED1);
 	STM32vldiscovery_LEDOff(LED1);
 
 	// test clock source
@@ -252,6 +255,28 @@ void STM32vldiscovery_LEDOff(Led_TypeDef Led)
 void STM32vldiscovery_LEDToggle(Led_TypeDef Led)
 {
 	GPIO_PORT[Led]->ODR ^= GPIO_PIN[Led];
+}
+
+/*
+LED PWM over software SPI
+*/
+void SoftPWM(void)
+{
+	spi_595_send((pwm_c[0] > pwm_num) ? 0:DATA_OUT);
+	if(++pwm_num==50){			
+		pwm_num=0;
+	}
+}
+
+/*
+LED PWM over hardware SPI
+*/
+void HardLEDPWM(void)
+{
+	hard_spi_send_595((pwm_c[0] > pwm_num) ? 0:DATA_OUT);
+	if(++pwm_num==50){			
+		pwm_num=0;
+	}
 }
 
 // config MCO A8

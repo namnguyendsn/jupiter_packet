@@ -25,6 +25,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
 #include "common_config.h"
+#include "jupiter_rtc.h"
+#include "stm32f10x_bkp.h"
 /* Exported types ------------------------------------------------------------*/
 extern vu32 TickValue;
 /* Exported constants --------------------------------------------------------*/

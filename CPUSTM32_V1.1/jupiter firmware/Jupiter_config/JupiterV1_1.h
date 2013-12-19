@@ -28,8 +28,8 @@
 #include "common_config.h"
 #include "stm32f10x_usart.h"
 #include "stm32f10x_bkp.h"
-#include "clock_calendar.h"
 #include "jupiter_spi.h"
+#include "jupiter_595.h"
 #include "jupiter_uart.h"
 #include "jupiterHSICab.h"
 #include <stdlib.h>

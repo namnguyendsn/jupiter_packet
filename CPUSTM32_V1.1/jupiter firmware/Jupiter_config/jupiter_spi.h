@@ -8,10 +8,6 @@
 #define SPI1_IO_PORT                    SPI1
 #define SPI1_CLK_SRC                    RCC_APB2Periph_SPI1
 //SPI_TypeDef* SPI_PORT[SPIn] = {SPI1_IO_PORT};
-typedef enum 
-{
-  USER_SPI1 = 0
-} JUPITER_SPI;
 
 /*
 function prototype

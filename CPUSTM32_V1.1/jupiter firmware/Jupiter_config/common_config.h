@@ -106,7 +106,7 @@
 #define CHANGE_EFFECT_CMD	0x71
 
 // header code
-#define READ_TIME_CMD		0x33
+//#define READ_TIME_CMD		0x33
 #define READ_ALARM_CMD	0x96
 #define START_TRANSFER	0xC3
 #define STOP_TRANSFER		0xB2

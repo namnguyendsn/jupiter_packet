@@ -46,15 +46,15 @@ uint32_t		g_app_header_code;
 uint16_t 		g_effect_length;
 
 static __IO uint32_t TimingDelay;
-int pwm_c[8];
-int pwm_num;
 int delay_in_t1;
-volatile uint16_t DATA_OUT;
+uint16_t nam_count;
 /* Private function prototypes -----------------------------------------------*/
 void Delay_ms(uint32_t nTime);
 void TimingDelay_Decrement(void);
 void delay_test(uint32_t delay);
 void led_dim_ti(void);
+extern volatile uint16_t DATA_OUT;
+extern uint8_t pwm_c[8];
 /* Private functions ---------------------------------------------------------*/
 
 /**
@@ -62,8 +62,6 @@ void led_dim_ti(void);
   * @param  None
   * @retval None
   */
-volatile uint32_t nam_count = 0;
-
 int main(void)
 {
   jupiter_cpu_init();
@@ -73,9 +71,11 @@ int main(void)
 		nam_count = RTC_GetCounter();
 //		LCD_putc('A');
 #if 0
-		hard_spi_send_595(0xFF00);
+		//hard_spi_send_595(0xFF00);
+		spi_595_send(0xFF00);
 		Delay_ms(500);
-		hard_spi_send_595(0x00FF);
+		//hard_spi_send_595(0x00FF);
+		spi_595_send(0x00FF);
 		Delay_ms(500);
 #else
 		led_dim_ti();
@@ -113,32 +113,13 @@ void LEDstatus(void)
   STM32vldiscovery_LEDToggle(LED1);
 }
 
-/*
-LED PWM over software SPI
-*/
-void SoftPWM(void)
-{
-	spi_595_send((pwm_c[0] > pwm_num) ? 0:DATA_OUT);
-	if(++pwm_num==50){			
-		pwm_num=0;
-	}
-}
 
-/*
-LED PWM over hardware SPI
-*/
-void HardLEDPWM(void)
-{
-	hard_spi_send_595((pwm_c[0] > pwm_num) ? 0:DATA_OUT);
-	if(++pwm_num==50){			
-		pwm_num=0;
-	}
-}
 
 void led_dim_ti(void)
 {
 	char i,j,k;
-	DATA_OUT = 0x8181;
+	//DATA_OUT = 0x8181;
+	DATA_OUT = 0xFFFF;
 	for(k=0;k<16;k++)
 	{
 		j=0;
@@ -150,7 +131,7 @@ void led_dim_ti(void)
 			pwm_c[j] = i;
 			Delay_ms(50);
 		}
-		DATA_OUT |= 1<<k;
+		//DATA_OUT |= 1<<k;
 		
 	}
 }

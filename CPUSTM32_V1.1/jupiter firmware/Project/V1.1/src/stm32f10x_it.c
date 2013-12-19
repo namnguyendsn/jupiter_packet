@@ -46,6 +46,12 @@ extern __IO uint8_t Start_Decoding;
 extern uint32_t Encoded_Frames;
 extern __IO int16_t *inBuffer;
 extern __IO int16_t *outBuffer;
+
+uint8_t AlarmStatus;
+uint16_t SummerTimeCorrect;
+uint8_t DisplayDateFlag;
+uint8_t AlarmDate=0;
+uint8_t TotalMenuPointer=1;
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
@@ -161,21 +167,12 @@ void SysTick_Handler(void)
 
 void USART1_IRQHandler(void)
 {
+//	printf("\nTest %d %x %f", RTC_GetCounter(), RTC_GetCounter(), 1.2);
+  if(USART_GetITStatus(J_UART, USART_IT_RXNE))
+	{
+		uart_get_data();
+	}
 	USART_ClearFlag(J_UART, USART_FLAG_RXNE);
-	printf("\nTest %d %x %f", RTC_GetCounter(), RTC_GetCounter(), 1.2);
-//	switch(J_UART->SR)
-//	{
-//	case USART_FLAG_RXNE:
-//		uart_get_data();
-//		break;
-//	case USART_FLAG_ORE:
-//		break;
-//	case USART_FLAG_TC:
-//		break;
-//	case USART_FLAG_TXE:
-//		break;
-//	}
-
 }
 
 
@@ -196,101 +193,99 @@ void TIM3_IRQHandler(void)
 }
 
 /**
-* @brief  This function handles RTC_IRQHandler .
-* @param  None
-* @retval : None
-*/
+  * @brief  This function handles RTC_IRQHandler .
+  * @param  None
+  * @retval : None
+  */
 void RTC_IRQHandler(void)
 {
-	//  uint8_t Month,Day;
-	//  uint16_t Year;
-	//  
-	//  Month = BKP_ReadBackupRegister(BKP_DR2);
-	//  Day = BKP_ReadBackupRegister(BKP_DR3);
-	//  Year = BKP_ReadBackupRegister(BKP_DR4);
-	//  NVIC_ClearPendingIRQ(RTC_IRQn);
-	//  RTC_ClearITPendingBit(RTC_IT_SEC);
-	//  
-	//  /* If counter is equal to 86399: one day was elapsed */
-	//  /* This takes care of date change and resetting of counter in case of
-	//  power on - Run mode/ Main supply switched on condition*/
-	//  if(RTC_GetCounter() == 86399)
-	//  {
-	//    /* Wait until last write operation on RTC registers has finished */
-	//    RTC_WaitForLastTask();
-	//    /* Reset counter value */
-	//    RTC_SetCounter(0x0);
-	//    /* Wait until last write operation on RTC registers has finished */
-	//    RTC_WaitForLastTask();
+  uint8_t Month,Day;
+  uint16_t Year;
+  
+  Month = BKP_ReadBackupRegister(BKP_DR2);
+  Day = BKP_ReadBackupRegister(BKP_DR3);
+  Year = BKP_ReadBackupRegister(BKP_DR4);
+  NVIC_ClearPendingIRQ(RTC_IRQn);
+  RTC_ClearITPendingBit(RTC_IT_SEC);
+  
+  /* If counter is equal to 86399: one day was elapsed */
+  /* This takes care of date change and resetting of counter in case of
+  power on - Run mode/ Main supply switched on condition*/
+  if(RTC_GetCounter() == 86399)
+  {
+    /* Wait until last write operation on RTC registers has finished */
+    RTC_WaitForLastTask();
+    /* Reset counter value */
+    RTC_SetCounter(0x0);
+    /* Wait until last write operation on RTC registers has finished */
+    RTC_WaitForLastTask();
 
-	//    /* Increment the date */
-	//    DateUpdate();
-	//  }
+    /* Increment the date */
+    DateUpdate();
+  }
 
-	//  if((RTC_GetCounter()/3600 == 1)&&(((RTC_GetCounter()%3600)/60) == 59)&&
-	//     (((RTC_GetCounter()%3600)%60) == 59))
-	//  {
-	//    /* March Correction */
-	//    if((Month == 3) && (Day >24))
-	//    {
-	//      if(WeekDay(Year,Month,Day)==0)
-	//      {
-	//        if((SummerTimeCorrect & 0x8000) == 0x8000)
-	//        {
-	//          RTC_SetCounter(RTC_GetCounter() + 3601);
-	//         
-	//          /* Reset March correction flag */
-	//          SummerTimeCorrect &= 0x7FFF;
-	//         
-	//          /* Set October correction flag  */
-	//          SummerTimeCorrect |= 0x4000;
-	//          SummerTimeCorrect |= Year;
-	//          BKP_WriteBackupRegister(BKP_DR7,SummerTimeCorrect);
-	//        }
-	//      }
-	//    }
-	//      /* October Correction */
-	//    if((Month == 10) && (Day >24))
-	//    {
-	//      if(WeekDay(Year,Month,Day)==0)
-	//      {
-	//        if((SummerTimeCorrect & 0x4000) == 0x4000)
-	//        {
-	//          RTC_SetCounter(RTC_GetCounter() - 3599);
-	//          
-	//          /* Reset October correction flag */
-	//          SummerTimeCorrect &= 0xBFFF;
-	//          
-	//          /* Set March correction flag  */
-	//          SummerTimeCorrect |= 0x8000;
-	//          SummerTimeCorrect |= Year;
-	//          BKP_WriteBackupRegister(BKP_DR7,SummerTimeCorrect);
-	//        }
-	//      }
-	//    }
-	//  }
+  if((RTC_GetCounter()/3600 == 1)&&(((RTC_GetCounter()%3600)/60) == 59)&&
+     (((RTC_GetCounter()%3600)%60) == 59))
+  {
+    /* March Correction */
+    if((Month == 3) && (Day >24))
+    {
+      if(WeekDay(Year,Month,Day)==0)
+      {
+        if((SummerTimeCorrect & 0x8000) == 0x8000)
+        {
+          RTC_SetCounter(RTC_GetCounter() + 3601);
+         
+          /* Reset March correction flag */
+          SummerTimeCorrect &= 0x7FFF;
+         
+          /* Set October correction flag  */
+          SummerTimeCorrect |= 0x4000;
+          SummerTimeCorrect |= Year;
+          BKP_WriteBackupRegister(BKP_DR7,SummerTimeCorrect);
+        }
+      }
+    }
+      /* October Correction */
+    if((Month == 10) && (Day >24))
+    {
+      if(WeekDay(Year,Month,Day)==0)
+      {
+        if((SummerTimeCorrect & 0x4000) == 0x4000)
+        {
+          RTC_SetCounter(RTC_GetCounter() - 3599);
+          
+          /* Reset October correction flag */
+          SummerTimeCorrect &= 0xBFFF;
+          
+          /* Set March correction flag  */
+          SummerTimeCorrect |= 0x8000;
+          SummerTimeCorrect |= Year;
+          BKP_WriteBackupRegister(BKP_DR7,SummerTimeCorrect);
+        }
+      }
+    }
+  }
 }
 
 /**
-* @brief  This function handles RTCAlarm_IRQHandler .
-* @param  None
-* @retval : None
-*/
+  * @brief  This function handles RTCAlarm_IRQHandler .
+  * @param  None
+  * @retval : None
+  */
 void RTCAlarm_IRQHandler(void)
 {
-	/* Clear the Alarm Pending Bit */
-	RTC_ClearITPendingBit(RTC_IT_ALR);
-
-	//   if((BKP_ReadBackupRegister(BKP_DR8)==BKP_ReadBackupRegister(BKP_DR2)) && \
-	//     (BKP_ReadBackupRegister(BKP_DR9)==BKP_ReadBackupRegister(BKP_DR3)) && \
-	//      (BKP_ReadBackupRegister(BKP_DR10)==BKP_ReadBackupRegister(BKP_DR4)))
-	//   {
-	//     AlarmStatus = 1;
-	//   }
-
-	/* Clear the EXTI Line 17 */
-	EXTI_ClearITPendingBit(EXTI_Line17);
+   /* Clear the Alarm Pending Bit */
+   RTC_ClearITPendingBit(RTC_IT_ALR);
+   printf("\nALARM");
+   if((BKP_ReadBackupRegister(BKP_DR8)==BKP_ReadBackupRegister(BKP_DR2)) && \
+     (BKP_ReadBackupRegister(BKP_DR9)==BKP_ReadBackupRegister(BKP_DR3)) && \
+      (BKP_ReadBackupRegister(BKP_DR10)==BKP_ReadBackupRegister(BKP_DR4)))
+   {
+     AlarmStatus = 1;
+   }
 }
+
 /******************************************************************************/
 /*                 STM32F10x Peripherals Interrupt Handlers                   */
 /*  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the  */
