@@ -132,7 +132,7 @@
           <Target>
             <UseTarget>1</UseTarget>
             <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
-            <RunToMain>0</RunToMain>
+            <RunToMain>1</RunToMain>
             <RestoreBreakpoints>1</RestoreBreakpoints>
             <RestoreWatchpoints>1</RestoreWatchpoints>
             <RestoreMemoryDisplay>1</RestoreMemoryDisplay>
@@ -572,6 +572,11 @@
               <FileName>common_config.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\Jupiter_config\common_config.h</FilePath>
+            </File>
+            <File>
+              <FileName>jupiter_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Jupiter_config\jupiter_flash.c</FilePath>
             </File>
           </Files>
         </Group>

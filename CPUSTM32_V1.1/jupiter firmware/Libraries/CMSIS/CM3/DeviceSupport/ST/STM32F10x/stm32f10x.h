@@ -238,13 +238,16 @@ typedef enum {RESET = 0, SET = !RESET} FlagStatus, ITStatus;
 typedef enum {DISABLE = 0, ENABLE = !DISABLE} FunctionalState;
 #define IS_FUNCTIONAL_STATE(STATE) (((STATE) == DISABLE) || ((STATE) == ENABLE))
 
+/* Typical Value of the HSI in Hz */
+#define HSI_Value                 ((uint32_t)8000000)
+/* Typical Value of the HSE in Hz */
+#define HSE_Value                 ((uint32_t)8000000)
+
 typedef enum {ERROR = 0, SUCCESS = !ERROR} ErrorStatus;
 
 /*!< STM32F10x Standard Peripheral Library old definitions (maintained for legacy purpose) */
 #define HSEStartUp_TimeOut   HSE_STARTUP_TIMEOUT
 #define HSIStartUp_TimeOut   HSI_STARTUP_TIMEOUT
-#define HSE_Value            HSE_VALUE
-#define HSI_Value            HSI_VALUE
 /**
   * @}
   */

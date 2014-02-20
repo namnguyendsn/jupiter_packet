@@ -35,12 +35,41 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-	 
+	
 // flash config
 /* ghi data vao flash theo kieu heap/stack
 	 main code ghi vao dia chi tang tu 0x8000000 len, 
 	 data ghi vao dia chi 0x8008000 xuong
 	 */
+
+/* packet format
+|SOP|Length|CRC|DATA|EOP|
+SOP: 1 byte
+Length: 2 bytes
+CRC: 2 bytes
+DATA: length bytes
+EOP: 1 bytes
+*/
+typedef struct _packet_format
+{
+#define SOP 0x03
+    uint16_t length;
+    uint16_t crc;
+    uint8_t data;
+#define EOP 0x04;
+}STRUCT_PACKET_EFFECT;
+
+typedef enum
+{
+    PK_SOP = 0,
+    PK_EOP,
+    PK_LWAIT,
+    PK_CWAIT,
+    PK_DWAIT,
+    PK_EWAIT,
+    PK_DONE,
+    PK_CFAIL
+}PACKET_STATUS;
 
 // UART init struct
 typedef struct _user_init_uart
@@ -111,7 +140,9 @@ typedef enum
 	STR,
 	OE
 }Led_TypeDef;
-	
+
+
+
 /**
   * @}
   */ 
@@ -124,7 +155,7 @@ void STM32vldiscovery_LEDOn(Led_TypeDef Led);
 void STM32vldiscovery_LEDOff(Led_TypeDef Led);
 void STM32vldiscovery_LEDToggle(Led_TypeDef Led);
 void uart_get_data(void);
-void uart_buffer_process(CONFIG_MESSAGE_PTR buffer);
+void uart_buffer_process(uint8_t *buffer, uint8_t length);
 void write_to_flash(uint32_t address, CONFIG_MESSAGE_PTR data);
 void jupiter_cpu_init(void);
 void jupiter_adj_init(void);

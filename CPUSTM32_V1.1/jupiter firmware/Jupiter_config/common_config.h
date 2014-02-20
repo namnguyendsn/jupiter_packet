@@ -40,6 +40,11 @@
 /** @addtogroup STM32vldiscovery_LOW_LEVEL_LED
   * @{
   */
+/* Define Error code */
+#define JUPITER_OK 0
+#define JUPITER_FAIL -1
+#define JUPITER_FLASH_FAIL -2
+	
 #define LEDn                             10
 #define LED1_PIN                         GPIO_Pin_1
 #define LED1_GPIO_PORT                   GPIOA
@@ -115,6 +120,7 @@
 #define J_UART	USART1
 
 typedef void (* UART_CALLBACK)(void*);
+typedef void (*fpncallback)(uint8_t *buffer, uint8_t length);
 /**
   * @}
   */ 

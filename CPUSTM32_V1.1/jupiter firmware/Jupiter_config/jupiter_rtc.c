@@ -402,11 +402,11 @@ void RTC_NVIC_Configuration(void)
     EXTI_Init(&EXTI_InitStructure);
 
     /* Enable the RTC Alarm Interrupt */
-    NVIC_InitStructure.NVIC_IRQChannel = RTCAlarm_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
-    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-    NVIC_Init(&NVIC_InitStructure);
+//    NVIC_InitStructure.NVIC_IRQChannel = RTCAlarm_IRQn;
+//    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+//    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+//    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+//    NVIC_Init(&NVIC_InitStructure);
 
     EXTI_ClearITPendingBit(EXTI_Line16 );
     EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;

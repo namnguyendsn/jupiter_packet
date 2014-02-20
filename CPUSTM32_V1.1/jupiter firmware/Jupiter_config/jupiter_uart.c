@@ -2,8 +2,13 @@
 
 USART_InitTypeDef * g_uartInit;
 static uint8_t * g_uart_rev_buffer;
+static STRUCT_TRANSACTION transfer_struct;
+static TRANSFER_STT status_transfer;
+static uint8_t data_counter;
+static uint8_t *temp;
+static fpncallback uart_callback;
 
-void uart_init(UART_CALLBACK callback)
+void uart_init(fpncallback callback)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	NVIC_InitTypeDef NVIC_InitStructure;
@@ -44,6 +49,9 @@ void uart_init(UART_CALLBACK callback)
 	// init interrupt
 	USART_ITConfig(J_UART, USART_IT_RXNE, ENABLE);
 	free(g_uartInit);
+    status_transfer = TRANSFER_IDLE;
+    data_counter = 0;
+    uart_callback = callback;
 }
 
 /*
@@ -76,55 +84,62 @@ void uart_get_data(void)
 	static uint16_t char_count = 0;
 	switch((uint8_t)USART_ReceiveData(USART1))
 	{
-	case '1':
-		SetTime(1,1,1);
+	case HDR_SOF:
+		status_transfer = START_OF_FRAME;
+        return;
 		break;
-	case '2':
-		SetAlarm(1,2,2);
+	case HDR_EOF:
+        if(data_counter == transfer_struct.length)
+        {
+            // transfer done, check crc
+            // call process data function
+            uart_callback(transfer_struct.data);
+            //printf("Transaction done!\n");
+            status_transfer = TRANSFER_DONE;
+        }
+        else
+        {
+            status_transfer = TRANSFER_ERROR;
+            free(transfer_struct.data);
+        }
+        data_counter = 0;
 		break;
-	case '3':
-		SetDate(19,12,2013);
-		break;
-	case '4':
-		DisplayTime();
-		break;
-	case '5':
-    DisplayDate();
-		break;
-	case SET_TIME_CMD:
-		//uart_buffer_process();
-		break;
-	case SET_ALARM_CMD:
-		//uart_buffer_process();
-		break;
-	case SET_EFFECT_CMD:
-		//uart_buffer_process();
-		break;
-	case CHANGE_TIME_CMD:
-		//uart_buffer_process();
-		break;
-	case CHANGE_ALARM_CMD:
-		//uart_buffer_process();
-		break;
-	case CHANGE_EFFECT_CMD:
-		//uart_buffer_process();
-		break;
-//	case READ_TIME_CMD:
-		//uart_buffer_process();
-//		break;
-	case READ_ALARM_CMD:
-		//uart_buffer_process();
-		break;
-	case START_TRANSFER:
-		//uart_buffer_process();
-		break;
-	case STOP_TRANSFER:
-		//uart_buffer_process();
+	default:
 		break;
 	}
-	// g_uart_rev_buffer[char_count] = (uint8_t)USART_ReceiveData(USART1);
-	// if(char_count >= (uint16_t)sizeof(CONFIG_MESSAGE))
-	// uart_buffer_process(g_uart_buffer);// bufer process callback
+    switch(status_transfer)
+    {
+        case START_OF_FRAME:
+            transfer_struct.length = (uint8_t)USART_ReceiveData(USART1);
+            transfer_struct.data = (uint8_t*)malloc(transfer_struct.length);
+            memset(transfer_struct.data, 0x00, transfer_struct.length);
+            status_transfer = CRC_WAIT;
+            return;
+            break;
+        case CRC_WAIT:
+            transfer_struct.crc = (uint8_t)USART_ReceiveData(USART1);
+            status_transfer = DATA_IN;
+            temp = transfer_struct.data;
+            return;
+            break;
+        case DATA_IN:
+            if(data_counter < transfer_struct.length)
+            {
+                *temp = (uint8_t)USART_ReceiveData(USART1);
+                temp++;
+                data_counter++;
+            }
+            break;
+        case TRANSFER_ERROR:
+            printf("NAK\n");
+            free(transfer_struct.data);
+            break;
+        case TRANSFER_DONE:
+            printf("ACK");
+            free(transfer_struct.data);
+            break;
+    }
+
 }
 
 void out_char(char ch)

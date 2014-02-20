@@ -47,7 +47,7 @@
 /** @defgroup STM32vldiscovery_Private_Variables
 * @{
 */
-void uart_buffer_process(CONFIG_MESSAGE_PTR buffer);
+void uart_buffer_process(uint8_t *buffer, uint8_t length);
 void MCO_config(void);
 void rtc_init(void);
 GPIO_TypeDef* GPIO_PORT[LEDn] = {LED1_GPIO_PORT, FREQ_TEST_GPIO_PORT, LED2_GPIO_PORT, SDI_GPIO_PORT, CLK_GPIO_PORT, STR_GPIO_PORT, OE_GPIO_PORT};
@@ -69,6 +69,10 @@ uint8_t pwm_c[8];
 uint8_t pwm_num;
 volatile uint16_t DATA_OUT;
 UART_CALLBACK uart_process_callback;
+static STRUCT_PACKET_EFFECT packet_effect;
+static PACKET_STATUS packet_stt;
+static uint16_t data_count = 0;
+static uint8_t *temp;
 
 void jupiter_cpu_init(void)
 {
@@ -120,18 +124,42 @@ void jupiter_adj_init(void)
 /**
 * @brief parse data from uart_buffer
 */
-void uart_buffer_process(CONFIG_MESSAGE_PTR buffer)
+void uart_buffer_process(uint8_t *buffer, uint8_t length)
 {
-	uint32_t crc_code;
-	g_app_header_code = (uint32_t)g_uart_buffer->header_code;
-	g_app_crc_code = (uint32_t)g_uart_buffer->crc_code;
-	g_app_length = (uint16_t)g_uart_buffer->config_length;
-	g_app_config_time = g_uart_buffer->config_time;
-	g_app_config_alarm = g_uart_buffer->config_alarm;
-	g_app_led_effect = (LED_EFFECT *)g_uart_buffer->led_effect;
-	// CRC check
-	// write to flash
-	write_to_flash(FLASH_START_ADDRESS, g_uart_buffer);
+    uint8_t index;
+    for(index = 0; index < length; index++)
+    {
+        if(buffer[index] == SOP)
+        {
+            packet_stt = PK_LWAIT;
+            continue;
+        }
+        if(buffer[index] == EOP)
+        {
+            break;
+        }
+        switch(packet_stt)
+        {
+            case PK_LWAIT:
+                packet_effect.length = buffer[index] << 8 | buffer[index + 1];
+                packet_effect.data = (uint8_t*)malloc(packet_effect.length);
+                temp = packet_effect.data;
+                packet_stt = PK_CWAIT;
+                continue;
+                break;
+            case PK_CWAIT:
+                packet_effect.crc = buffer[index] << 8 | buffer[index + 1];
+                packet_stt = PK_DWAIT;
+                continue;
+                break;
+            case PK_DWAIT:
+                if(data_count < packet_effect.length)
+                {
+                    
+                }
+                break;
+        }
+    }
 }
 
 /**
