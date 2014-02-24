@@ -10,8 +10,8 @@
 #define ALARM_BEGIN_ADD  0x8005014
 #define ALARM_END_ADD    0x80050DB
 
-#define EFFECT_BEGIN_ADD 0x80050DC
-#define EFFECT_END_ADD   0x8008000
+#define EFFECT_BEGIN_ADD 0x08007C00
+#define EFFECT_END_ADD   0x08008000
 
 #define FLASH_PAGE_SIZE    ((uint16_t)0x400)
 #define FLASH_NUMPAGE   12
@@ -22,6 +22,7 @@ typedef enum
 	WRITE_ALARM
 }flash_write;
 
+void flash_init(void);
 int8_t jupiter_effect_erase(void);
-int8_t jupiter_flash_write(flash_write type, uint8_t *buff, uint16_t size);
+int8_t jupiter_flash_write(uint8_t *buff, uint8_t size);
 int8_t jupiter_flash_read(flash_write type, uint8_t *data, uint16_t size);

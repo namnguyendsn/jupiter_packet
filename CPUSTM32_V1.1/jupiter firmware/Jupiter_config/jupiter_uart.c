@@ -8,6 +8,7 @@ static uint8_t data_counter;
 static uint8_t *temp;
 static fpncallback uart_callback;
 
+
 void uart_init(fpncallback callback)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -93,7 +94,7 @@ void uart_get_data(void)
         {
             // transfer done, check crc
             // call process data function
-            uart_callback(transfer_struct.data);
+            uart_callback(transfer_struct.data, transfer_struct.length);
             //printf("Transaction done!\n");
             status_transfer = TRANSFER_DONE;
         }
@@ -111,6 +112,12 @@ void uart_get_data(void)
     {
         case START_OF_FRAME:
             transfer_struct.length = (uint8_t)USART_ReceiveData(USART1);
+            if(transfer_struct.length > FRAME_SIZE)
+            {
+                printf("NAK\n");
+                status_transfer = TRANSFER_ERROR;
+                break;
+            }
             transfer_struct.data = (uint8_t*)malloc(transfer_struct.length);
             memset(transfer_struct.data, 0x00, transfer_struct.length);
             status_transfer = CRC_WAIT;

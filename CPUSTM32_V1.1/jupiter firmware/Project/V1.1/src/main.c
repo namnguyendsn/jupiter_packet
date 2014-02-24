@@ -68,7 +68,7 @@ int main(void)
   /* main while */
   while(1)
   {
-		nam_count = RTC_GetCounter();
+		//nam_count = RTC_GetCounter();
 //		LCD_putc('A');
 #if 0
 		//hard_spi_send_595(0xFF00);

@@ -3,6 +3,8 @@
 #include "common_config.h"
 #include <stdlib.h>
 
+#define FRAME_SIZE  16
+
 typedef enum _uart_stt
 {
 	// frame header

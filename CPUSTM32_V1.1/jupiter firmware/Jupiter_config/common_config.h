@@ -121,6 +121,7 @@
 
 typedef void (* UART_CALLBACK)(void*);
 typedef void (*fpncallback)(uint8_t *buffer, uint8_t length);
+typedef int8_t (*flashcallback)(uint8_t *buffer, uint8_t length);
 /**
   * @}
   */ 

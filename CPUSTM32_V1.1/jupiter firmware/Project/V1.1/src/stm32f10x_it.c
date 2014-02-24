@@ -168,11 +168,11 @@ void SysTick_Handler(void)
 void USART1_IRQHandler(void)
 {
 //	printf("\nTest %d %x %f", RTC_GetCounter(), RTC_GetCounter(), 1.2);
-  if(USART_GetITStatus(J_UART, USART_IT_RXNE))
+    if(USART_GetITStatus(J_UART, USART_IT_RXNE))
 	{
-		uart_get_data();
+        USART_ClearFlag(J_UART, USART_FLAG_RXNE);
+        uart_get_data();
 	}
-	USART_ClearFlag(J_UART, USART_FLAG_RXNE);
 }
 
 
@@ -284,6 +284,12 @@ void RTCAlarm_IRQHandler(void)
    {
      AlarmStatus = 1;
    }
+}
+
+void FLASH_IRQHandler(void)
+{
+    while(1)
+    {}
 }
 
 /******************************************************************************/

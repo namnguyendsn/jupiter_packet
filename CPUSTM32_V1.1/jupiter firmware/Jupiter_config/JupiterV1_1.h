@@ -50,13 +50,24 @@ CRC: 2 bytes
 DATA: length bytes
 EOP: 1 bytes
 */
+#define CNT_xxx 0x00
+#define DAT_TIME    0x80
+#define DAT_ALARM   0x81
+#define DAT_EFFECT_BRIGHT   0x82
+#define DAT_EFFECT_SFOR     0x83
+#define DAT_EFFECT_EFOR     0x84
+#define DAT_EFFECT          0x85
+//#define 
+
+
+
 typedef struct _packet_format
 {
 #define SOP 0x03
     uint16_t length;
-    uint16_t crc;
-    uint8_t data;
-#define EOP 0x04;
+    uint8_t data_type;
+    uint8_t *data;
+#define EOP 0x04
 }STRUCT_PACKET_EFFECT;
 
 typedef enum
@@ -66,9 +77,11 @@ typedef enum
     PK_LWAIT,
     PK_CWAIT,
     PK_DWAIT,
+    PK_DTWAIT,
     PK_EWAIT,
     PK_DONE,
-    PK_CFAIL
+    PK_REMAIN,
+    PK_CFAIL,
 }PACKET_STATUS;
 
 // UART init struct
