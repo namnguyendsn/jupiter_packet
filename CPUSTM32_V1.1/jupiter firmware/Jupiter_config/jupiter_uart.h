@@ -3,7 +3,7 @@
 #include "common_config.h"
 #include <stdlib.h>
 
-#define FRAME_SIZE  16
+#define FRAME_SIZE  20
 
 typedef enum _uart_stt
 {

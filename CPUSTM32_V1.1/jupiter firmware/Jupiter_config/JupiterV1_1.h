@@ -58,13 +58,15 @@ EOP: 1 bytes
 #define DAT_EFFECT_EFOR     0x84
 #define DAT_EFFECT          0x85
 //#define 
-
+#define DATASIZE_PER_FRAME  16
 
 
 typedef struct _packet_format
 {
 #define SOP 0x03
-    uint16_t length;
+    uint8_t reserved;
+    uint8_t length_h;
+    uint8_t length_l;
     uint8_t data_type;
     uint8_t *data;
 #define EOP 0x04
@@ -80,6 +82,7 @@ typedef enum
     PK_DTWAIT,
     PK_EWAIT,
     PK_DONE,
+    PK_IDLE,
     PK_REMAIN,
     PK_CFAIL,
 }PACKET_STATUS;
@@ -168,7 +171,7 @@ void STM32vldiscovery_LEDOn(Led_TypeDef Led);
 void STM32vldiscovery_LEDOff(Led_TypeDef Led);
 void STM32vldiscovery_LEDToggle(Led_TypeDef Led);
 void uart_get_data(void);
-void uart_buffer_process(uint8_t *buffer, uint8_t length);
+void uart_buffer_process(uint8_t *pk_ptr, uint8_t f_langth);
 void write_to_flash(uint32_t address, CONFIG_MESSAGE_PTR data);
 void jupiter_cpu_init(void);
 void jupiter_adj_init(void);

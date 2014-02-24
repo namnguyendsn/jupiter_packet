@@ -16,6 +16,9 @@
 #define FLASH_PAGE_SIZE    ((uint16_t)0x400)
 #define FLASH_NUMPAGE   12
 
+#define PK_DONE 7
+#define PK_IDLE 8
+
 typedef enum  
 {  
 	WRITE_EFFECT = 0,	
@@ -24,5 +27,5 @@ typedef enum
 
 void flash_init(void);
 int8_t jupiter_effect_erase(void);
-int8_t jupiter_flash_write(uint8_t *buff, uint8_t size);
+int8_t jupiter_flash_write(uint8_t *buff, uint8_t size, uint8_t stt);
 int8_t jupiter_flash_read(flash_write type, uint8_t *data, uint16_t size);

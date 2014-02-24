@@ -47,7 +47,7 @@
 /** @defgroup STM32vldiscovery_Private_Variables
 * @{
 */
-void uart_buffer_process(uint8_t *buffer, uint8_t length);
+void uart_buffer_process(uint8_t *pk_ptr, uint8_t f_langth);
 void MCO_config(void);
 void rtc_init(void);
 GPIO_TypeDef* GPIO_PORT[LEDn] = {LED1_GPIO_PORT, FREQ_TEST_GPIO_PORT, LED2_GPIO_PORT, SDI_GPIO_PORT, CLK_GPIO_PORT, STR_GPIO_PORT, OE_GPIO_PORT};
@@ -70,8 +70,8 @@ uint8_t pwm_c[8];
 uint8_t pwm_num;
 volatile uint16_t DATA_OUT;
 UART_CALLBACK uart_process_callback;
-static STRUCT_PACKET_EFFECT packet_effect;
-static PACKET_STATUS packet_stt;
+static STRUCT_PACKET_EFFECT *packet_effect;
+static PACKET_STATUS packet_stt = PK_IDLE;
 static uint16_t data_count = 0;
 static uint8_t *temp;
 static uint8_t *effect_data_ptr;
@@ -131,66 +131,45 @@ void jupiter_adj_init(void)
 /**
 * @brief parse data from uart_buffer
 */
-void uart_buffer_process(uint8_t *buffer, uint8_t length)
+void uart_buffer_process(uint8_t *pk_ptr, uint8_t f_langth)
 {
     uint8_t index;
     uint8_t *add_temp_ptr;
     uint8_t data_length;
+    uint16_t length;
     //if(packet_stt == )
-    for(index = 0; index < length; index++)
+    packet_effect = (STRUCT_PACKET_EFFECT*)pk_ptr;
+    if((packet_stt == PK_IDLE) || (packet_stt == PK_DONE))
     {
-        if(buffer[index] == SOP)
-        {
-            packet_stt = PK_LWAIT;
-            continue;
-        }
-        if(buffer[index] == EOP)
-        {
-            packet_stt = PK_DONE;
-            break;
-        }
-        switch(packet_stt)
-        {
-            case PK_LWAIT:
-                packet_effect.length = buffer[index] << 8 | buffer[index + 1];
-                packet_effect.data = (uint8_t*)malloc(packet_effect.length);
-                temp = packet_effect.data;
-                packet_stt = PK_DTWAIT;
-                index++;
-                continue;
-                break;
-            case PK_DTWAIT:
-                packet_effect.data_type = buffer[index];
-                packet_stt = PK_DWAIT;
-                break;
-            case PK_DWAIT:
-                if(data_count < packet_effect.length)
-                {
-                    add_temp_ptr = (uint8_t*)&buffer[index];
-                    if((length - 5) <= packet_effect.length)
-                    {
-                        data_length = length - index - 1;
-                        effect_data_ptr = (uint8_t*)malloc(data_length);
-                    }
-                    else
-                    {
-                        data_length = length - index;
-                        effect_data_ptr = (uint8_t*)malloc(data_length);
-                    }
-                        
-                    memset(effect_data_ptr, 0, data_length);
-                    memcpy(effect_data_ptr, add_temp_ptr, data_length);
-                    // call write to flash
-                    fcallback(effect_data_ptr, data_length);
-                    // free mem
-                    free(effect_data_ptr);
-                    index = length - 1;
-                    //packet_stt = PK_REMAIN;
-                    //return;
-                }
-                break;
-        }
+        length  = packet_effect->length_h<<8 | packet_effect->length_l;
+        //if((length - 5) <= DATASIZE_PER_FRAME)
+            data_length = length - 4;
+        //else
+        //    data_length = length - 4;
     }
+    if(packet_stt == PK_REMAIN)
+    {
+    	effect_data_ptr = packet_effect->data;
+    	data_length = length;
+    }
+
+    effect_data_ptr = (uint8_t*)malloc(data_length);
+	memset(effect_data_ptr, 0, data_length);
+	memcpy(effect_data_ptr, &packet_effect->data_type + 1, data_length);
+	// call write to flash
+	fcallback(effect_data_ptr, data_length, (uint8_t)packet_stt);
+	// free mem
+	free(effect_data_ptr);
+
+    add_temp_ptr = pk_ptr;
+	if(add_temp_ptr[f_langth - 1] == EOP)
+	{
+		packet_stt = PK_DONE;
+	}
+	else
+	{
+		packet_stt = PK_REMAIN;
+	}
 }
 
 /**

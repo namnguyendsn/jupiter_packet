@@ -120,8 +120,8 @@
 #define J_UART	USART1
 
 typedef void (* UART_CALLBACK)(void*);
-typedef void (*fpncallback)(uint8_t *buffer, uint8_t length);
-typedef int8_t (*flashcallback)(uint8_t *buffer, uint8_t length);
+typedef void (*fpncallback)(uint8_t *, uint8_t );
+typedef int8_t (*flashcallback)(uint8_t *, uint8_t , uint8_t );
 /**
   * @}
   */ 
