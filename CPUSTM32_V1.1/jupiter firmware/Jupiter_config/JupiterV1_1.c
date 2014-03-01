@@ -47,7 +47,8 @@
 /** @defgroup STM32vldiscovery_Private_Variables
 * @{
 */
-void uart_buffer_process(uint8_t *pk_ptr, uint8_t f_langth);
+void uart_buffer_process(uint8_t *pk_ptr, uint8_t f_length);
+void write_to_flash(uint8_t *pk_ptr, uint8_t f_length);
 void MCO_config(void);
 void rtc_init(void);
 GPIO_TypeDef* GPIO_PORT[LEDn] = {LED1_GPIO_PORT, FREQ_TEST_GPIO_PORT, LED2_GPIO_PORT, SDI_GPIO_PORT, CLK_GPIO_PORT, STR_GPIO_PORT, OE_GPIO_PORT};
@@ -70,11 +71,16 @@ uint8_t pwm_c[8];
 uint8_t pwm_num;
 volatile uint16_t DATA_OUT;
 UART_CALLBACK uart_process_callback;
-static STRUCT_PACKET_EFFECT *packet_effect;
+static STRUCT_PACKET_EFFECT *packet_effect_ptr;
 static PACKET_STATUS packet_stt = PK_IDLE;
 static uint16_t data_count = 0;
+static uint16_t total_frame = 0;
+static uint16_t frame_count = 0;
+static uint16_t remain = 0;
+static uint16_t num_left = 0;
 static uint8_t *temp;
 static uint8_t *effect_data_ptr;
+static uint8_t packet_type;
 
 void jupiter_cpu_init(void)
 {
@@ -131,83 +137,88 @@ void jupiter_adj_init(void)
 /**
 * @brief parse data from uart_buffer
 */
-void uart_buffer_process(uint8_t *pk_ptr, uint8_t f_langth)
+uint8_t remain_counter = 0;
+void uart_buffer_process(uint8_t *pk_ptr, uint8_t f_length)
+{
+    if((packet_stt == PK_IDLE) || (packet_stt == PK_DONE))
+    {
+        packet_effect_ptr = (STRUCT_PACKET_EFFECT*)pk_ptr;
+        if(packet_effect_ptr->data_type == DAT_EFFECT)
+        {
+            packet_type = LDATA;
+            write_to_flash(pk_ptr, f_length);
+            return;
+        }
+    }
+    
+    if(packet_stt == PK_REMAIN)
+    {
+        remain_counter++;
+        if(remain_counter == 2)
+            remain_counter = 0;
+        if(packet_type == LDATA)
+        {
+            write_to_flash(pk_ptr, f_length);
+        }
+    }
+}
+
+/**
+* @brief store data in flash
+*/
+void write_to_flash(uint8_t *pk_ptr, uint8_t f_length)
 {
     uint8_t index;
     uint8_t *add_temp_ptr;
     uint8_t data_length;
     uint16_t length;
     //if(packet_stt == )
-    packet_effect = (STRUCT_PACKET_EFFECT*)pk_ptr;
+    packet_effect_ptr = (STRUCT_PACKET_EFFECT*)pk_ptr;
+    add_temp_ptr = pk_ptr;
     if((packet_stt == PK_IDLE) || (packet_stt == PK_DONE))
     {
-        length  = packet_effect->length_h<<8 | packet_effect->length_l;
-        //if((length - 5) <= DATASIZE_PER_FRAME)
-            data_length = length - 4;
-        //else
-        //    data_length = length - 4;
+        length  = packet_effect_ptr->length_h<<8 | packet_effect_ptr->length_l;
+        num_left = length;
+        length += 5;
+	    if(length > DATASIZE_PER_FRAME)
+	    {
+	    	data_length = 28;
+	    }
+        else
+            data_length = length - 5;
+            
+        effect_data_ptr = (uint8_t*)malloc(data_length);
+        memset(effect_data_ptr, 0, data_length);
+        memcpy(effect_data_ptr, &packet_effect_ptr->data_type + 1, data_length);
     }
+    
     if(packet_stt == PK_REMAIN)
     {
-    	effect_data_ptr = packet_effect->data;
-    	data_length = length;
+        if(remain > DATASIZE_PER_FRAME)
+            data_length = DATASIZE_PER_FRAME;
+        else
+            data_length = remain;
+        
+        effect_data_ptr = (uint8_t*)malloc(32);
+        memset(effect_data_ptr, 0, 32);
+        memcpy(effect_data_ptr, pk_ptr, data_length);
     }
 
-    effect_data_ptr = (uint8_t*)malloc(data_length);
-	memset(effect_data_ptr, 0, data_length);
-	memcpy(effect_data_ptr, &packet_effect->data_type + 1, data_length);
 	// call write to flash
 	fcallback(effect_data_ptr, data_length, (uint8_t)packet_stt);
 	// free mem
 	free(effect_data_ptr);
-
-    add_temp_ptr = pk_ptr;
-	if(add_temp_ptr[f_langth - 1] == EOP)
+    
+    num_left -= data_length;
+    remain = num_left;
+    
+	if((add_temp_ptr[f_length - 1] == EOP) && (remain == 0))
 	{
 		packet_stt = PK_DONE;
 	}
 	else
 	{
 		packet_stt = PK_REMAIN;
-	}
-}
-
-/**
-* @brief store data in flash
-*/
-void write_to_flash(uint32_t address, CONFIG_MESSAGE_PTR data)
-{
-	uint16_t num_left;
-	uint16_t data_length;
-	uint32_t next_add;
-	FLASH_Status flash_status;
-	uint32_t * header_ptr;
-
-	next_add = address;
-	header_ptr = (uint32_t *)data;
-	data_length = (uint16_t)strlen((uint8_t*)data);// kiem tra lai cach tinh nay
-	num_left = data_length;
-	while(num_left)
-	{
-		address = next_add;
-		flash_status = FLASH_ProgramWord(address, (uint32_t)*header_ptr);
-		switch(flash_status)
-		{
-		case FLASH_BUSY:
-		case FLASH_TIMEOUT:
-			break;
-		case FLASH_ERROR_PG:
-		case FLASH_ERROR_WRP:
-			/* Unlock the Flash Bank1 Program Erase controller */
-			FLASH_UnlockBank1();
-			break;
-		case FLASH_COMPLETE:
-			num_left -= FLASH_OPERATION_SIZE;
-			next_add -= FLASH_CHANGE_ADDRESS;
-			break;
-		default:
-			break;
-		}
 	}
 }
 

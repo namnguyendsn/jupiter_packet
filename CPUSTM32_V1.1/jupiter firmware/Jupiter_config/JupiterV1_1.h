@@ -32,6 +32,7 @@
 #include "jupiter_595.h"
 #include "jupiter_uart.h"
 #include "jupiterHSICab.h"
+#include "jupiter_crc.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -58,8 +59,11 @@ EOP: 1 bytes
 #define DAT_EFFECT_EFOR     0x84
 #define DAT_EFFECT          0x85
 //#define 
-#define DATASIZE_PER_FRAME  16
+#define DATASIZE_PER_FRAME  32
 
+// data types
+#define CDATA   0x89
+#define LDATA   0x88
 
 typedef struct _packet_format
 {
@@ -172,7 +176,7 @@ void STM32vldiscovery_LEDOff(Led_TypeDef Led);
 void STM32vldiscovery_LEDToggle(Led_TypeDef Led);
 void uart_get_data(void);
 void uart_buffer_process(uint8_t *pk_ptr, uint8_t f_langth);
-void write_to_flash(uint32_t address, CONFIG_MESSAGE_PTR data);
+void write_to_flash(uint8_t *pk_ptr, uint8_t f_length);
 void jupiter_cpu_init(void);
 void jupiter_adj_init(void);
 

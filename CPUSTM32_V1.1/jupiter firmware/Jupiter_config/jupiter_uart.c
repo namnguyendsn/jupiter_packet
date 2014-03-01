@@ -93,10 +93,16 @@ void uart_get_data(void)
         if(data_counter == transfer_struct.length)
         {
             // transfer done, check crc
+            if(1)
+            //if(calc_crc8(transfer_struct.data, transfer_struct.length) == transfer_struct.crc)
+            {
             // call process data function
             uart_callback(transfer_struct.data, transfer_struct.length);
             //printf("Transaction done!\n");
             status_transfer = TRANSFER_DONE;
+            }
+            else
+                status_transfer = TRANSFER_ERROR;
         }
         else
         {
@@ -114,7 +120,7 @@ void uart_get_data(void)
             transfer_struct.length = (uint8_t)USART_ReceiveData(USART1);
             if(transfer_struct.length > FRAME_SIZE)
             {
-                printf("NAK\n");
+                out_char(0xFF);
                 status_transfer = TRANSFER_ERROR;
                 break;
             }
@@ -138,11 +144,11 @@ void uart_get_data(void)
             }
             break;
         case TRANSFER_ERROR:
-            printf("NAK\n");
+            out_char(0xFF);
             free(transfer_struct.data);
             break;
         case TRANSFER_DONE:
-            printf("ACK");
+            out_char(0xFE);
             free(transfer_struct.data);
             break;
     }

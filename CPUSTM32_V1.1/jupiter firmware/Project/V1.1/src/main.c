@@ -64,10 +64,14 @@ extern uint8_t pwm_c[8];
   */
 int main(void)
 {
+    uint32_t crc_test = 0x12345678;
+    uint32_t crc_rl;
   jupiter_cpu_init();
   /* main while */
   while(1)
   {
+      //crc_rl = calc_crc8((uint8_t*)&crc_test, 4);
+      //crc_rl ^= 0xFFFFFFFF;
 		//nam_count = RTC_GetCounter();
 //		LCD_putc('A');
 #if 0

@@ -449,11 +449,6 @@
               <FilePath>..\..\..\Libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_gpio.c</FilePath>
             </File>
             <File>
-              <FileName>stm32f10x_crc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_crc.c</FilePath>
-            </File>
-            <File>
               <FileName>stm32f10x_flash.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\Libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_flash.c</FilePath>
@@ -577,6 +572,11 @@
               <FileName>jupiter_flash.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\Jupiter_config\jupiter_flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>jupiter_crc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Jupiter_config\jupiter_crc.c</FilePath>
             </File>
           </Files>
         </Group>

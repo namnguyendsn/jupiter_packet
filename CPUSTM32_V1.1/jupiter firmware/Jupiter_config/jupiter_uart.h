@@ -3,7 +3,7 @@
 #include "common_config.h"
 #include <stdlib.h>
 
-#define FRAME_SIZE  20
+#define FRAME_SIZE  32
 
 typedef enum _uart_stt
 {
@@ -76,3 +76,4 @@ typedef struct _uart_frame_read_alarm
 void uart_init(fpncallback callback);
 uint8_t uart_send(uint8_t sdata);
 void uart_get_data(void);
+void out_char(char ch);
