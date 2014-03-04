@@ -32,7 +32,7 @@
 #include "jupiter_595.h"
 #include "jupiter_uart.h"
 #include "jupiterHSICab.h"
-#include "jupiter_crc.h"
+#include "stack.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -90,6 +90,16 @@ typedef enum
     PK_REMAIN,
     PK_CFAIL,
 }PACKET_STATUS;
+
+typedef enum 
+{
+  EF_STT_STARTFOR = 0,
+  EF_STT_ENDFOR,
+  EF_STT_BRIGHT,
+  EF_STT_DELAY,
+  EF_STT_LED,
+  EF_STT_IDLE
+}EF_STT;
 
 // UART init struct
 typedef struct _user_init_uart
@@ -178,7 +188,7 @@ void uart_get_data(void);
 void uart_buffer_process(uint8_t *pk_ptr, uint8_t f_langth);
 void write_to_flash(uint8_t *pk_ptr, uint8_t f_length);
 void jupiter_cpu_init(void);
-void jupiter_adj_init(void);
+void effect_run(void);
 
 /**
   * @}

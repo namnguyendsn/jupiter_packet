@@ -94,10 +94,18 @@
 /* Comment this line to activate demo 2: calibration with minimum Error found */
 #define USE_HSI_Fixed_Error  0
 
-#define FLASH_START_ADDRESS 		0x8008000
-#define FLASH_CHANGE_ADDRESS		4
-#define FLASH_OPERATION_SIZE		4
-	 
+#define FLASH_START_ADDRESS     0x08007C00
+#define FLASH_END_ADDRESS       0x08008400
+
+#define EFFECT_AVAL_ADDRESS FLASH_START_ADDRESS
+#define EFFECT_AVAL_MASK    EFFCT_DT_BRIGHT
+#define EFFECT_BEGIN_ADD    FLASH_START_ADDRESS
+#define EFFECT_END_ADD      FLASH_END_ADDRESS
+#define FLASH_PAGE_SIZE     ((uint16_t)0x400)
+#define FLASH_NUMPAGE       (FLASH_END_ADDRESS - FLASH_START_ADDRESS)/FLASH_PAGE_SIZE
+
+
+
 #define EFFECT_SIZE 170
 
 #define LAST_ADD_FLASH(first_add, length)	(FLASH_START_ADDRESS - length/4+1)
@@ -115,6 +123,10 @@
 #define READ_ALARM_CMD	0x96
 #define START_TRANSFER	0xC3
 #define STOP_TRANSFER		0xB2
+
+#define EFFCT_DT_STARTFOR 0x80
+#define EFFCT_DT_ENDTFOR  0x81
+#define EFFCT_DT_BRIGHT   0x82
 
 // UART
 #define J_UART	USART1

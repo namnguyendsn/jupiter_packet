@@ -578,6 +578,16 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\Jupiter_config\jupiter_crc.c</FilePath>
             </File>
+            <File>
+              <FileName>stack.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Jupiter_config\stack.c</FilePath>
+            </File>
+            <File>
+              <FileName>timer_delay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Jupiter_config\timer_delay.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -597,16 +607,6 @@
               <FileName>printf.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\Libraries\printf.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>lcd</GroupName>
-          <Files>
-            <File>
-              <FileName>lcd_4.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\lcd\lcd_4.c</FilePath>
             </File>
           </Files>
         </Group>

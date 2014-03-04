@@ -21,7 +21,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32F10x.h"
 #include "JupiterV1_1.h"
-#include "lcd.h"
+#include "stack.h"
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 #define  LSE_FAIL_FLAG  0x80
@@ -45,7 +45,6 @@ uint16_t		g_app_length;
 uint32_t		g_app_header_code;
 uint16_t 		g_effect_length;
 
-static __IO uint32_t TimingDelay;
 int delay_in_t1;
 uint16_t nam_count;
 /* Private function prototypes -----------------------------------------------*/
@@ -64,16 +63,17 @@ extern uint8_t pwm_c[8];
   */
 int main(void)
 {
-    uint32_t crc_test = 0x12345678;
-    uint32_t crc_rl;
+  BUFFSTACK *crc_test;
   jupiter_cpu_init();
   /* main while */
+pwm_c[0] = 0;
+DATA_OUT = 0xFFFF;
   while(1)
   {
       //crc_rl = calc_crc8((uint8_t*)&crc_test, 4);
       //crc_rl ^= 0xFFFFFFFF;
 		//nam_count = RTC_GetCounter();
-//		LCD_putc('A');
+
 #if 0
 		//hard_spi_send_595(0xFF00);
 		spi_595_send(0xFF00);
@@ -82,33 +82,10 @@ int main(void)
 		spi_595_send(0x00FF);
 		Delay_ms(500);
 #else
-		led_dim_ti();
+		//led_dim_ti();
+        effect_run();
+
 #endif
-  }
-}
-
-/**
-  * @brief  Inserts a delay time.
-  * @param  nTime: specifies the delay time length, in milliseconds.
-  * @retval None
-  */
-void Delay_ms(uint32_t nTime)
-{ 
-  TimingDelay = nTime*10;
-
-  while(TimingDelay != 0);
-}
-
-/**
-  * @brief  Decrements the TimingDelay variable and blink led system status
-  * @param  None
-  * @retval None
-  */
-void TimingDelay_Decrement(void)
-{
-  if (TimingDelay != 0x00)
-  {
-    TimingDelay--;
   }
 }
 
@@ -116,8 +93,6 @@ void LEDstatus(void)
 {
   STM32vldiscovery_LEDToggle(LED1);
 }
-
-
 
 void led_dim_ti(void)
 {
@@ -129,14 +104,13 @@ void led_dim_ti(void)
 		j=0;
 		for(i=50;i>0;i--){
 			pwm_c[j] = i;
-			Delay_ms(50);
+			Delay_ms(100);
 		}
 		for(i=0;i<50;i++){
 			pwm_c[j] = i;
-			Delay_ms(50);
+			Delay_ms(100);
 		}
 		//DATA_OUT |= 1<<k;
-		
 	}
 }
 

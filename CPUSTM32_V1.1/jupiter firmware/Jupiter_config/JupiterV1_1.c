@@ -22,6 +22,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "JupiterV1_1.h"
+#include "timer_delay.h"
 
 /** @defgroup STM32vldiscovery_Private_TypesDefinitions
 * @{
@@ -47,6 +48,21 @@
 /** @defgroup STM32vldiscovery_Private_Variables
 * @{
 */
+static STRUCT_PACKET_EFFECT *packet_effect_ptr;
+static PACKET_STATUS packet_stt = PK_IDLE;
+static uint16_t data_count = 0;
+static uint16_t total_frame = 0;
+static uint16_t frame_count = 0;
+static uint16_t remain = 0;
+static uint16_t num_left = 0;
+static uint8_t *temp;
+static uint8_t *effect_data_ptr;
+static uint8_t packet_type;
+static uint32_t effect_data_counter;
+static BUFFSTACK *SF_Stack;
+static EF_STT parse_stt;
+static uint32_t effect_length;
+
 void uart_buffer_process(uint8_t *pk_ptr, uint8_t f_length);
 void write_to_flash(uint8_t *pk_ptr, uint8_t f_length);
 void MCO_config(void);
@@ -66,21 +82,13 @@ extern uint16_t g_app_length;
 extern uint32_t g_app_header_code;
 extern uint16_t g_effect_length;
 extern flashcallback fcallback;
+extern void jupiter_write_stt(uint32_t buff, uint32_t address);
 
 uint8_t pwm_c[8];
 uint8_t pwm_num;
 volatile uint16_t DATA_OUT;
 UART_CALLBACK uart_process_callback;
-static STRUCT_PACKET_EFFECT *packet_effect_ptr;
-static PACKET_STATUS packet_stt = PK_IDLE;
-static uint16_t data_count = 0;
-static uint16_t total_frame = 0;
-static uint16_t frame_count = 0;
-static uint16_t remain = 0;
-static uint16_t num_left = 0;
-static uint8_t *temp;
-static uint8_t *effect_data_ptr;
-static uint8_t packet_type;
+
 
 void jupiter_cpu_init(void)
 {
@@ -121,17 +129,10 @@ void jupiter_cpu_init(void)
 	 while (1);
 	}
 
-	// init lcd
-	//lcd_Init();
-
 	/* Enable access to the backup register => LSE can be enabled */
 	// PWR_BackupAccessCmd(ENABLE);
-//    fcallback(&test, 1);
-}
-
-void jupiter_adj_init(void)
-{
-
+    
+    SF_Stack = StackInit(200); // TODO
 }
 
 /**
@@ -178,6 +179,7 @@ void write_to_flash(uint8_t *pk_ptr, uint8_t f_length)
     if((packet_stt == PK_IDLE) || (packet_stt == PK_DONE))
     {
         length  = packet_effect_ptr->length_h<<8 | packet_effect_ptr->length_l;
+        effect_length = length + FLASH_START_ADDRESS;
         num_left = length;
         length += 5;
 	    if(length > DATASIZE_PER_FRAME)
@@ -214,7 +216,7 @@ void write_to_flash(uint8_t *pk_ptr, uint8_t f_length)
     
 	if((add_temp_ptr[f_length - 1] == EOP) && (remain == 0))
 	{
-		packet_stt = PK_DONE;
+        packet_stt = PK_DONE;
 	}
 	else
 	{
@@ -225,24 +227,85 @@ void write_to_flash(uint8_t *pk_ptr, uint8_t f_length)
 /**
 * @brief get data from flash
 */
-void read_from_flash(uint32_t Address)
+uint8_t read_from_flash(uint32_t Address)
 {
-	uint32_t end_address;
-	uint32_t start_address;
-	uint32_t *data_out_ptr;
-	uint8_t Index = 0;
-	uint8_t *pointer;
+	if(Address < FLASH_START_ADDRESS)
+        return 0;
+    return (uint8_t)*(uint32_t*)Address;
+}
 
-	start_address = FLASH_START_ADDRESS;
-	end_address = LAST_ADD_FLASH(FLASH_START_ADDRESS, g_uart_buffer->config_length);
-	while(Address > end_address)
-	{
-		data_out_ptr[Index] = *(__IO uint32_t*)Address;
-		Address += 4;
-		Index += 4;
-	}
-	(void)memcpy(g_led_effect_ptr, data_out_ptr, EFFECT_SIZE); // kiem tra lai
-	// g_uart_buffer = (CONFIG_MESSAGE_PTR)FLASH_START_ADDRESS;
+void effect_run(void)
+{
+    uint8_t temp;
+    uint8_t loop_remain;
+    uint8_t loop;
+    uint8_t shift_val = 0;
+    uint16_t delay_val;
+    if(read_from_flash(EFFECT_AVAL_ADDRESS) == (uint8_t)EFFECT_AVAL_MASK)
+    {
+    effect_data_counter = EFFECT_BEGIN_ADD;
+    while(effect_data_counter < effect_length)
+    {
+        temp = read_from_flash(effect_data_counter);
+        effect_data_counter++;
+        switch(temp)
+        {
+            case EFFCT_DT_STARTFOR:
+                parse_stt = EF_STT_STARTFOR;
+                continue;
+                break;
+            case EFFCT_DT_ENDTFOR:
+                parse_stt = EF_STT_ENDFOR;
+                break;
+            case EFFCT_DT_BRIGHT:
+                parse_stt = EF_STT_DELAY;
+                continue;
+                break;
+        }
+        
+        switch(parse_stt)
+        {
+            case EF_STT_STARTFOR:
+                PushStack(SF_Stack, temp);
+                parse_stt = EF_STT_IDLE;
+                break;
+            case EF_STT_ENDFOR:
+                loop_remain = (uint8_t)*SF_Stack->top;
+                if(loop_remain < 1)
+                {
+                    PopStack(SF_Stack, &loop);
+                    parse_stt = EF_STT_IDLE;
+                }
+                else
+                    // quay lai startfor
+                    while(1);
+                break;
+            case EF_STT_DELAY:
+                if(shift_val < 8)
+                {
+                    delay_val = temp;
+                    shift_val += 8;
+                    parse_stt = EF_STT_DELAY;
+                }
+                else
+                {
+                    delay_val <<= shift_val;
+                    delay_val |= temp;
+                    parse_stt = EF_STT_LED;
+                    shift_val = 0;
+                    Delay_ms(delay_val);
+                }
+                 break;
+            case EF_STT_LED:
+                //*SF_Stack->top = (uint8_t)*SF_Stack->top - 1;
+                pwm_c[0] = temp;
+                parse_stt = EF_STT_DELAY;
+                break;
+            default:
+                break;
+        }
+    }
+    }
 }
 
 /**
