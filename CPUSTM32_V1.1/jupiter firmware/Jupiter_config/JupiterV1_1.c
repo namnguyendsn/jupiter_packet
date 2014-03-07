@@ -61,6 +61,7 @@ static uint8_t packet_type;
 static uint32_t effect_data_counter;
 static BUFFSTACK *SF_Stack;
 static EF_STT parse_stt;
+static SFOR_STRUCT sfor_loop;
 static uint32_t effect_length;
 
 void uart_buffer_process(uint8_t *pk_ptr, uint8_t f_length);
@@ -241,6 +242,7 @@ void effect_run(void)
     uint8_t loop;
     uint8_t shift_val = 0;
     uint16_t delay_val;
+    uint8_t *temp1;
     if(read_from_flash(EFFECT_AVAL_ADDRESS) == (uint8_t)EFFECT_AVAL_MASK)
     {
     effect_data_counter = EFFECT_BEGIN_ADD;
@@ -266,19 +268,27 @@ void effect_run(void)
         switch(parse_stt)
         {
             case EF_STT_STARTFOR:
-                PushStack(SF_Stack, temp);
+                sfor_loop.loop_times = temp;
+                sfor_loop.sfor_add = effect_data_counter;
+                PushStack(SF_Stack, &sfor_loop, sizeof(sfor_loop));
                 parse_stt = EF_STT_IDLE;
                 break;
             case EF_STT_ENDFOR:
                 loop_remain = (uint8_t)*SF_Stack->top;
+                temp1 = SF_Stack->top;
                 if(loop_remain < 1)
                 {
-                    PopStack(SF_Stack, &loop);
+                    PopStack(SF_Stack, &loop, sizeof(sfor_loop));
+                    memcpy(&sfor_loop.loop_times, SF_Stack->top, sizeof(sfor_loop));
                     parse_stt = EF_STT_IDLE;
                 }
                 else
+                {
                     // quay lai startfor
-                    while(1);
+                    effect_data_counter = sfor_loop.sfor_add;
+                    *temp1 -= 1;
+                    parse_stt = EF_STT_IDLE;
+                }
                 break;
             case EF_STT_DELAY:
                 if(shift_val < 8)

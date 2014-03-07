@@ -574,11 +574,6 @@
               <FilePath>..\..\..\Jupiter_config\jupiter_flash.c</FilePath>
             </File>
             <File>
-              <FileName>jupiter_crc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Jupiter_config\jupiter_crc.c</FilePath>
-            </File>
-            <File>
               <FileName>stack.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\Jupiter_config\stack.c</FilePath>

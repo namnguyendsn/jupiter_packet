@@ -63,7 +63,6 @@ extern uint8_t pwm_c[8];
   */
 int main(void)
 {
-  BUFFSTACK *crc_test;
   jupiter_cpu_init();
   /* main while */
 pwm_c[0] = 0;

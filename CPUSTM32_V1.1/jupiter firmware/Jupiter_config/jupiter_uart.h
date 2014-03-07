@@ -32,11 +32,11 @@ EOF: 1 byte
 */
 typedef struct _transcation
 {
-    #define HDR_SOF     0x01
+    #define HDR_SOF     0xD0
     uint8_t length;
     uint8_t crc;
     uint8_t *data;
-    #define HDR_EOF     0x02
+    #define HDR_EOF     0xD1
 }STRUCT_TRANSACTION;
 
 typedef enum
