@@ -76,10 +76,10 @@ DATA_OUT = 0xFFFF;
 #if 0
 		//hard_spi_send_595(0xFF00);
 		spi_595_send(0xFF00);
-		Delay_ms(500);
+		Delay_ms(2000);
 		//hard_spi_send_595(0x00FF);
 		spi_595_send(0x00FF);
-		Delay_ms(500);
+		Delay_ms(2000);
 #else
 		//led_dim_ti();
         effect_run();

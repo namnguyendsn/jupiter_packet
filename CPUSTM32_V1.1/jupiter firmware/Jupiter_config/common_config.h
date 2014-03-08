@@ -54,8 +54,9 @@
 #define LED2_GPIO_PORT                   GPIOB
 #define LED2_GPIO_CLK                    RCC_APB2Periph_GPIOB  
 
+#define SOFT_PWM_B       1
 // software spi io
-#if 0
+#if SOFT_PWM_B
 #define SDI_PIN                         GPIO_Pin_5
 #define SDI_GPIO_PORT                   GPIOB
 #define SDI_GPIO_CLK                    RCC_APB2Periph_GPIOB  
@@ -98,7 +99,7 @@
 #define FLASH_END_ADDRESS       0x08008400
 
 #define EFFECT_AVAL_ADDRESS FLASH_START_ADDRESS
-#define EFFECT_AVAL_MASK    EFFCT_DT_BRIGHT
+#define EFFECT_AVAL_MASK    0xF3
 #define EFFECT_BEGIN_ADD    FLASH_START_ADDRESS
 #define EFFECT_END_ADD      FLASH_END_ADDRESS
 #define FLASH_PAGE_SIZE     ((uint16_t)0x400)

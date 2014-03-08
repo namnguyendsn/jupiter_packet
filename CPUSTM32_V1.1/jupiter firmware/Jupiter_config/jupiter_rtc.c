@@ -38,7 +38,7 @@ void rtc_init(void)
 
     /*Allow access to Backup Registers*/
     PWR_BackupAccessCmd(ENABLE);
-    if(BKP_ReadBackupRegister(BKP_DR1)==CONFIGURATION_RESET)
+    if(BKP_ReadBackupRegister(BKP_DR10)==CONFIGURATION_RESET)
     {
         /*Enables the clock to Backup and power interface peripherals    */
         RCC_APB1PeriphClockCmd(RCC_APB1Periph_BKP | RCC_APB1Periph_PWR,ENABLE);
@@ -56,7 +56,7 @@ void rtc_init(void)
             BKP_WriteBackupRegister(BKP_DR2,s_DateStructVar.Month);
             BKP_WriteBackupRegister(BKP_DR3,s_DateStructVar.Day);
             BKP_WriteBackupRegister(BKP_DR4,s_DateStructVar.Year);
-            BKP_WriteBackupRegister(BKP_DR1, CONFIGURATION_DONE);
+            BKP_WriteBackupRegister(BKP_DR10, CONFIGURATION_DONE);
         }
         /* Wait until last write operation on RTC registers has finished */
         RTC_WaitForLastTask();
@@ -83,7 +83,7 @@ void rtc_init(void)
 
         /* Set default system time to 09 : 24 : 00 */
         SetTime(DEFAULT_HOURS,DEFAULT_MINUTES,DEFAULT_SECONDS);
-        BKP_WriteBackupRegister(BKP_DR1, CONFIGURATION_DONE);
+        BKP_WriteBackupRegister(BKP_DR10, CONFIGURATION_DONE);
     }
     else
     {

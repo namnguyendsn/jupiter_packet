@@ -51,19 +51,37 @@ CRC: 2 bytes
 DATA: length bytes
 EOP: 1 bytes
 */
-#define CNT_xxx             0x00
-#define DAT_TIME            0x80
-#define DAT_ALARM           0x81
-#define DAT_EFFECT_BRIGHT   0x82
-#define DAT_EFFECT_SFOR     0x83
-#define DAT_EFFECT_EFOR     0x84
-#define DAT_EFFECT          0x85
+#define CNT_xxx             0xD0
+#define DAT_TIME            0xD0
+#define DAT_ALARM           0xD1
+#define DAT_EFFECT_BRIGHT   0xD2
+#define DAT_EFFECT_SFOR     0xD3
+#define DAT_EFFECT_EFOR     0xD4
+#define DAT_EFFECT          0xD5
 //#define 
 #define DATASIZE_PER_FRAME  32
 
 // data types
 #define CDATA   0x89
 #define LDATA   0x88
+
+// backup
+#define BKP_EFFECT_AVAL     0x0001
+#define BKP_EFFECT_AVAL1     0x0002
+#define BKP_EFFECT_AVAL2     0x0004
+#define BKP_EFFECT_AVAL3     0x0008
+#define BKP_EFFECT_AVAL4     0x0010
+#define BKP_EFFECT_AVAL5     0x0020
+#define BKP_EFFECT_AVAL6     0x0040
+#define BKP_EFFECT_AVAL7     0x0080
+#define BKP_EFFECT_AVAL8     0x0100
+#define BKP_EFFECT_AVAL9     0x0200
+#define BKP_EFFECT_AVAL10     0x0400
+#define BKP_EFFECT_AVAL11     0x0800
+#define BKP_EFFECT_AVAL12     0x1000
+#define BKP_EFFECT_AVAL13     0x2000
+#define BKP_EFFECT_AVAL14     0x4000
+#define BKP_EFFECT_AVAL15     0x8000
 
 typedef struct _packet_format
 {

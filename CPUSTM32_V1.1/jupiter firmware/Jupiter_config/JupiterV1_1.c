@@ -134,6 +134,8 @@ void jupiter_cpu_init(void)
 	// PWR_BackupAccessCmd(ENABLE);
     
     SF_Stack = StackInit(200); // TODO
+    // load backup data
+    effect_length = BKP_ReadBackupRegister(BKP_DR2) + FLASH_START_ADDRESS;
 }
 
 /**
@@ -174,6 +176,7 @@ void write_to_flash(uint8_t *pk_ptr, uint8_t f_length)
     uint8_t *add_temp_ptr;
     uint8_t data_length;
     uint16_t length;
+    uint16_t bkp_val;
     //if(packet_stt == )
     packet_effect_ptr = (STRUCT_PACKET_EFFECT*)pk_ptr;
     add_temp_ptr = pk_ptr;
@@ -181,6 +184,7 @@ void write_to_flash(uint8_t *pk_ptr, uint8_t f_length)
     {
         length  = packet_effect_ptr->length_h<<8 | packet_effect_ptr->length_l;
         effect_length = length + FLASH_START_ADDRESS;
+        BKP_WriteBackupRegister(BKP_DR2, length);
         num_left = length;
         length += 5;
 	    if(length > DATASIZE_PER_FRAME)
@@ -218,10 +222,16 @@ void write_to_flash(uint8_t *pk_ptr, uint8_t f_length)
 	if((add_temp_ptr[f_length - 1] == EOP) && (remain == 0))
 	{
         packet_stt = PK_DONE;
+        bkp_val = BKP_ReadBackupRegister(BKP_DR1);
+        bkp_val |= BKP_EFFECT_AVAL;
+        BKP_WriteBackupRegister(BKP_DR1, (uint16_t)bkp_val);
 	}
 	else
 	{
 		packet_stt = PK_REMAIN;
+        bkp_val = BKP_ReadBackupRegister(BKP_DR1);
+        bkp_val &= ~BKP_EFFECT_AVAL;
+        BKP_WriteBackupRegister(BKP_DR1, (uint16_t)bkp_val);
 	}
 }
 
@@ -243,7 +253,7 @@ void effect_run(void)
     uint8_t shift_val = 0;
     uint16_t delay_val;
     uint8_t *temp1;
-    if(read_from_flash(EFFECT_AVAL_ADDRESS) == (uint8_t)EFFECT_AVAL_MASK)
+    if(BKP_ReadBackupRegister(BKP_DR1) == (uint8_t)BKP_EFFECT_AVAL)
     {
     effect_data_counter = EFFECT_BEGIN_ADD;
     while(effect_data_counter < effect_length)
@@ -276,7 +286,7 @@ void effect_run(void)
             case EF_STT_ENDFOR:
                 loop_remain = (uint8_t)*SF_Stack->top;
                 temp1 = SF_Stack->top;
-                if(loop_remain < 1)
+                if(loop_remain <= 1)
                 {
                     PopStack(SF_Stack, &loop, sizeof(sfor_loop));
                     memcpy(&sfor_loop.loop_times, SF_Stack->top, sizeof(sfor_loop));
@@ -307,7 +317,6 @@ void effect_run(void)
                 }
                  break;
             case EF_STT_LED:
-                //*SF_Stack->top = (uint8_t)*SF_Stack->top - 1;
                 pwm_c[0] = temp;
                 parse_stt = EF_STT_DELAY;
                 break;

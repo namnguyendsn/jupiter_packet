@@ -375,6 +375,7 @@ void SPI_StructInit(SPI_InitTypeDef* SPI_InitStruct)
   SPI_InitStruct->SPI_Mode = SPI_Mode_Master;
   /* initialize the SPI_DataSize member */
   SPI_InitStruct->SPI_DataSize = SPI_DataSize_16b;
+  //SPI_InitStruct->SPI_DataSize = SPI_DataSize_8b;
   /* Initialize the SPI_CPOL member */
   SPI_InitStruct->SPI_CPOL = SPI_CPOL_Low;
   /* Initialize the SPI_CPHA member */
@@ -385,6 +386,7 @@ void SPI_StructInit(SPI_InitTypeDef* SPI_InitStruct)
   SPI_InitStruct->SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_2;
   /* Initialize the SPI_FirstBit member */
   SPI_InitStruct->SPI_FirstBit = SPI_FirstBit_LSB;
+  //SPI_InitStruct->SPI_FirstBit = SPI_FirstBit_MSB;
   /* Initialize the SPI_CRCPolynomial member */
   SPI_InitStruct->SPI_CRCPolynomial = 7;
 }
