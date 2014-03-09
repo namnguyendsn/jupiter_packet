@@ -24,12 +24,10 @@
 #endif 
 
 /* Includes ------------------------------------------------------------------*/
-
 #include "stm32f10x.h"                  // Device header
 
 #define printf printf_kinetis
 #define sprintf sprintf_kinetis
-
 
 /** 
   * @brief  STM32F100 Button Defines Legacy  
@@ -105,7 +103,6 @@
 #define FLASH_PAGE_SIZE     ((uint16_t)0x400)
 #define FLASH_NUMPAGE       (FLASH_END_ADDRESS - FLASH_START_ADDRESS)/FLASH_PAGE_SIZE
 
-
 #define EFFECT_SIZE 170
 
 #define LAST_ADD_FLASH(first_add, length)	(FLASH_START_ADDRESS - length/4+1)
@@ -126,37 +123,9 @@
 typedef void (* UART_CALLBACK)(void*);
 typedef void (*fpncallback)(uint8_t *, uint8_t );
 typedef int8_t (*flashcallback)(uint8_t *, uint8_t , uint8_t );
-/**
-  * @}
-  */ 
-
-/**
-  * @}
-  */ 
-
-/** @defgroup STM32vldiscovery_LOW_LEVEL__Exported_Functions
-  * @{
-  */ 
-
-
-/**
-  * @}
-  */ 
     
 #ifdef __cplusplus
 }
 #endif
-
-/**
-  * @}
-  */ 
-
-/**
-  * @}
-  */  
-
-/**
-  * @}
-  */
   
 /******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/

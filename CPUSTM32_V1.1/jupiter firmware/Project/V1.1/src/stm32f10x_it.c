@@ -37,14 +37,6 @@ void HSI_FreqMeasure(void);
 #define EXTTRIG_SWSTART      (u32)(0x00500000)
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-extern __IO int16_t IN_Buffer[2][160], OUT_Buffer[2][160];
-extern __IO uint8_t Start_Playing;
-extern __IO uint8_t Recording;
-extern __IO uint8_t Playing;
-extern __IO uint8_t Start_Encoding;
-extern __IO uint8_t Start_Decoding;
-extern uint32_t Encoded_Frames;
-extern __IO int16_t *inBuffer;
 extern __IO int16_t *outBuffer;
 
 uint8_t AlarmStatus;
@@ -52,6 +44,7 @@ uint16_t SummerTimeCorrect;
 uint8_t DisplayDateFlag;
 uint8_t AlarmDate=0;
 uint8_t TotalMenuPointer=1;
+static uint32_t sysTick = 0;
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
@@ -152,12 +145,11 @@ void PendSV_Handler(void)
 * @param  None
 * @retval None
 */
-static uint32_t tick = 0;
 void SysTick_Handler(void)
 {
-	if(tick++ == 10000)
+	if(sysTick++ == 10000)
 	{		
-		tick = 0;
+		sysTick = 0;
 		LEDstatus();
 	}
 	//SoftPWM();
@@ -185,10 +177,10 @@ void TIM3_IRQHandler(void)
 {
 	/* Mesure the current HSI frequency corresponding to HSITRIM value */
 	HSI_FreqMeasure();
-	if(tick++ == 10)
+	if(sysTick++ == 10)
 	{
 		LEDstatus();
-		tick = 0;
+		sysTick = 0;
 	}
 }
 

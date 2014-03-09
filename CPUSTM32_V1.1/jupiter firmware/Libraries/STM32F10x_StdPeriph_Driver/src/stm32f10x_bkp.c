@@ -22,27 +22,6 @@
 #include "stm32f10x_bkp.h"
 #include "stm32f10x_rcc.h"
 
-/** @addtogroup STM32F10x_StdPeriph_Driver
-  * @{
-  */
-
-/** @defgroup BKP 
-  * @brief BKP driver modules
-  * @{
-  */
-
-/** @defgroup BKP_Private_TypesDefinitions
-  * @{
-  */
-
-/**
-  * @}
-  */
-
-/** @defgroup BKP_Private_Defines
-  * @{
-  */
-
 /* ------------ BKP registers bit address in the alias region --------------- */
 #define BKP_OFFSET        (BKP_BASE - PERIPH_BASE)
 
@@ -81,39 +60,6 @@
 /* CSR register bit mask */
 #define CSR_CTE_Set       ((uint16_t)0x0001)
 #define CSR_CTI_Set       ((uint16_t)0x0002)
-
-/**
-  * @}
-  */ 
-
-
-/** @defgroup BKP_Private_Macros
-  * @{
-  */
-
-/**
-  * @}
-  */
-
-/** @defgroup BKP_Private_Variables
-  * @{
-  */
-
-/**
-  * @}
-  */
-
-/** @defgroup BKP_Private_FunctionPrototypes
-  * @{
-  */
-
-/**
-  * @}
-  */
-
-/** @defgroup BKP_Private_Functions
-  * @{
-  */
 
 /**
   * @brief  Deinitializes the BKP peripheral registers to their default reset values.
@@ -295,17 +241,5 @@ void BKP_ClearITPendingBit(void)
   /* Set CTI bit to clear Tamper Pin Interrupt pending bit */
   BKP->CSR |= CSR_CTI_Set;
 }
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
 
 /******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/

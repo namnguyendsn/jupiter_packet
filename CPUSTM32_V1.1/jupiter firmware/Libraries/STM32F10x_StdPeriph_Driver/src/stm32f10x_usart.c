@@ -22,27 +22,6 @@
 #include "stm32f10x_usart.h"
 #include "stm32f10x_rcc.h"
 
-/** @addtogroup STM32F10x_StdPeriph_Driver
-  * @{
-  */
-
-/** @defgroup USART 
-  * @brief USART driver modules
-  * @{
-  */
-
-/** @defgroup USART_Private_TypesDefinitions
-  * @{
-  */
-
-/**
-  * @}
-  */
-
-/** @defgroup USART_Private_Defines
-  * @{
-  */
-
 #define CR1_UE_Set                ((uint16_t)0x2000)  /*!< USART Enable Mask */
 #define CR1_UE_Reset              ((uint16_t)0xDFFF)  /*!< USART Disable Mask */
 
@@ -1001,16 +980,5 @@ void USART_ClearITPendingBit(USART_TypeDef* USARTx, uint16_t USART_IT)
   itmask = ((uint16_t)0x01 << (uint16_t)bitpos);
   USARTx->SR = (uint16_t)~itmask;
 }
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
 
 /******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/

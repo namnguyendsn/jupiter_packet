@@ -22,28 +22,6 @@
 #include "stm32f10x_spi.h"
 #include "stm32f10x_rcc.h"
 
-/** @addtogroup STM32F10x_StdPeriph_Driver
-  * @{
-  */
-
-/** @defgroup SPI 
-  * @brief SPI driver modules
-  * @{
-  */ 
-
-/** @defgroup SPI_Private_TypesDefinitions
-  * @{
-  */
-
-/**
-  * @}
-  */ 
-
-
-/** @defgroup SPI_Private_Defines
-  * @{
-  */
-
 /* SPI SPE mask */
 #define CR1_SPE_Set          ((uint16_t)0x0040)
 #define CR1_SPE_Reset        ((uint16_t)0xFFBF)
@@ -76,38 +54,6 @@
 #define I2S3_CLOCK_SRC       ((uint32_t)(0x00040000))
 #define I2S_MUL_MASK         ((uint32_t)(0x0000F000))
 #define I2S_DIV_MASK         ((uint32_t)(0x000000F0))
-
-/**
-  * @}
-  */
-
-/** @defgroup SPI_Private_Macros
-  * @{
-  */
-
-/**
-  * @}
-  */
-
-/** @defgroup SPI_Private_Variables
-  * @{
-  */
-
-/**
-  * @}
-  */
-
-/** @defgroup SPI_Private_FunctionPrototypes
-  * @{
-  */
-
-/**
-  * @}
-  */
-
-/** @defgroup SPI_Private_Functions
-  * @{
-  */
 
 /**
   * @brief  Deinitializes the SPIx peripheral registers to their default
@@ -309,11 +255,6 @@ void I2S_Init(SPI_TypeDef* SPIx, I2S_InitTypeDef* I2S_InitStruct)
       sourceclock = RCC_Clocks.SYSCLK_Frequency;
     }        
 #else /* STM32F10X_HD */
-    /* I2S Clock source is System clock: Get System Clock frequency */
-    RCC_GetClocksFreq(&RCC_Clocks);      
-      
-    /* Get the source clock value: based on System Clock value */
-    sourceclock = RCC_Clocks.SYSCLK_Frequency;    
 #endif /* STM32F10X_CL */    
 
     /* Compute the Real divider depending on the MCLK output state with a flaoting point */
@@ -893,16 +834,5 @@ void SPI_I2S_ClearITPendingBit(SPI_TypeDef* SPIx, uint8_t SPI_I2S_IT)
   /* Clear the selected SPI CRC Error (CRCERR) interrupt pending bit */
   SPIx->SR = (uint16_t)~itpos;
 }
-/**
-  * @}
-  */ 
-
-/**
-  * @}
-  */ 
-
-/**
-  * @}
-  */ 
 
 /******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/

@@ -24,35 +24,11 @@
 #include "JupiterV1_1.h"
 #include "timer_delay.h"
 
-/** @defgroup STM32vldiscovery_Private_TypesDefinitions
-* @{
-*/
-/**
-* @}
-*/
-
-/** @defgroup STM32vldiscovery_Private_Defines
-* @{
-*/
-/**
-* @}
-*/
-
-/** @defgroup STM32vldiscovery_Private_Macros
-* @{
-*/
-/**
-* @}
-*/
-
 /** @defgroup STM32vldiscovery_Private_Variables
 * @{
 */
 static STRUCT_PACKET_EFFECT *packet_effect_ptr;
 static PACKET_STATUS packet_stt = PK_IDLE;
-static uint16_t data_count = 0;
-static uint16_t total_frame = 0;
-static uint16_t frame_count = 0;
 static uint16_t remain = 0;
 static uint16_t num_left = 0;
 static uint8_t *effect_data_ptr;
@@ -71,16 +47,6 @@ GPIO_TypeDef* GPIO_PORT[LEDn] = {LED1_GPIO_PORT, FREQ_TEST_GPIO_PORT, LED2_GPIO_
 const uint16_t GPIO_PIN[LEDn] = {LED1_PIN, FREQ_TEST_PIN, LED2_PIN, SDI_PIN, CLK_PIN, STR_PIN, OE_PIN};
 const uint32_t GPIO_CLK[LEDn] = {LED1_GPIO_CLK, FREQ_TEST_GPIO_CLK, LED2_GPIO_CLK, SDI_GPIO_CLK, CLK_GPIO_CLK, STR_GPIO_CLK, OE_GPIO_CLK};
 
-extern uint8_t* g_led_effect_ptr;
-
-extern CONFIG_MESSAGE_PTR g_uart_buffer;
-extern TIME g_app_config_time;
-extern ALARM g_app_config_alarm;
-extern LED_EFFECT *g_app_led_effect;
-extern uint32_t g_app_crc_code;
-extern uint16_t g_app_length;
-extern uint32_t g_app_header_code;
-extern uint16_t g_effect_length;
 extern flashcallback fcallback;
 extern void jupiter_write_stt(uint32_t buff, uint32_t address);
 extern PWM_STRUCT *pwm_data;
@@ -317,13 +283,13 @@ void effect_run(void)
                     delay_val |= temp;
                     parse_stt = EF_STT_LED;
                     shift_val = 0;
-                    Delay_ms(delay_val);
                 }
                  break;
             case EF_STT_LED:
                 pwm_data[ledPosition].pwm_ldval = temp;
                 ledPosition++;
-                //parse_stt = EF_STT_IDLE;
+                if(ledPosition >= LEDS)
+                    Delay_ms(delay_val);
                 break;
             default:
                 break;

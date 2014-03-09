@@ -63,8 +63,6 @@ void Restore_RCC_UserConfiguration(void)
    SetSysClock();
 }
 
-
-
 /**
   * @brief  Calibrates the internal RC and returns the current frequency 
   *   after calibration.
@@ -158,7 +156,7 @@ int32_t HSI_CalibrateMinError(void)
   
    /* output the RTC clock with frequency divided by 64 on the Tamper pin */
    BKP_RTCOutputConfig(BKP_RTCOutputSource_CalibClock);
-#endif   
+#endif
   
    /* Configure the timer TIM3 for HSI calibration process */
    TIM_ConfigurationForHSI();
@@ -234,8 +232,6 @@ int32_t HSI_CalibrateMinError(void)
     /* Return the RC frequency after calibration */
     return (FrequencyAfterCalib);
 }
-
-
 
 /**
   * @brief  Calibrates the internal RC with the maximum allowed Error 
@@ -362,10 +358,7 @@ ErrorStatus HSI_CalibrateFixedError(uint32_t AllowedErrorMax, int32_t* Freq)
    
    /* Return the calibration status: failed or succeed */
    return (CalibrationStatus);
-
 }
-
-
 
 /**
   * @brief  Configures the GPIOs Pins.
@@ -405,7 +398,6 @@ void RTC_ConfigurationForHSI(void)
     RCC_RTCCLKCmd(ENABLE);
 }
 
-
 /**
   * @brief  Configures the TIM to mesure the frequency.
   * @param  None
@@ -440,10 +432,7 @@ void TIM_ConfigurationForHSI(void)
   
     /* Reset all flags on TIM3_SR register */
     TIM3->SR = 0x0000;
-    
 }  
-
-
 
 /**
   * @brief  Configures the different system clocks.
@@ -486,7 +475,6 @@ void RCC_ConfigurationForHSI(void)
                             RCC_APB2Periph_AFIO, ENABLE);
 }
 
-
 /**
   * @brief  Configures the GPIOs Pins.
   * @param  None
@@ -510,10 +498,5 @@ void GPIO_ConfigurationForHSI(void)
     GPIO_Init(GPIOC, &GPIO_InitStructureForHSI); 
 #endif    
 }
-
-/**
-  * @}
-  */ 
-
 
 /******************* (C) COPYRIGHT 2009 STMicroelectronics *****END OF FILE****/

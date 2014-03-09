@@ -1,7 +1,6 @@
 #include "jupiter_uart.h"
 
 USART_InitTypeDef * g_uartInit;
-static uint8_t * g_uart_rev_buffer;
 static STRUCT_TRANSACTION transfer_struct;
 static TRANSFER_STT status_transfer;
 static uint8_t data_counter;
@@ -82,7 +81,6 @@ return 8bits data to application buffer
 */
 void uart_get_data(void)
 {
-	static uint16_t char_count = 0;
 	switch((uint8_t)USART_ReceiveData(USART1))
 	{
 	case HDR_SOF:
