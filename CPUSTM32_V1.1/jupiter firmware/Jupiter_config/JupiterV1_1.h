@@ -32,6 +32,7 @@
 #include "jupiter_595.h"
 #include "jupiter_uart.h"
 #include "jupiterHSICab.h"
+#include "jupiter_pwm.h"
 #include "stack.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -51,12 +52,9 @@ CRC: 2 bytes
 DATA: length bytes
 EOP: 1 bytes
 */
-#define CNT_xxx             0xD0
-#define DAT_TIME            0xD0
-#define DAT_ALARM           0xD1
-#define DAT_EFFECT_BRIGHT   0xD2
-#define DAT_EFFECT_SFOR     0xD3
-#define DAT_EFFECT_EFOR     0xD4
+#define DAT_CONTROL         0xD0
+#define DAT_TIME            0xD1
+#define DAT_ALARM           0xD2
 #define DAT_EFFECT          0xD5
 //#define 
 #define DATASIZE_PER_FRAME  32

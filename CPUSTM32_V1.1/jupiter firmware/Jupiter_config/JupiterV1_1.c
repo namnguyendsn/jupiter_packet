@@ -55,7 +55,6 @@ static uint16_t total_frame = 0;
 static uint16_t frame_count = 0;
 static uint16_t remain = 0;
 static uint16_t num_left = 0;
-static uint8_t *temp;
 static uint8_t *effect_data_ptr;
 static uint8_t packet_type;
 static uint32_t effect_data_counter;
@@ -84,16 +83,12 @@ extern uint32_t g_app_header_code;
 extern uint16_t g_effect_length;
 extern flashcallback fcallback;
 extern void jupiter_write_stt(uint32_t buff, uint32_t address);
+extern PWM_STRUCT *pwm_data;
 
-uint8_t pwm_c[8];
-uint8_t pwm_num;
-volatile uint16_t DATA_OUT;
 UART_CALLBACK uart_process_callback;
-
 
 void jupiter_cpu_init(void)
 {
-        uint8_t test = 200;
 	/* Initialise LEDs LD3&LD4, both off */
 	STM32vldiscovery_LEDInit(LED1);
 	// cablirate HSI
@@ -133,7 +128,10 @@ void jupiter_cpu_init(void)
 	/* Enable access to the backup register => LSE can be enabled */
 	// PWR_BackupAccessCmd(ENABLE);
     
-    SF_Stack = StackInit(200); // TODO
+    SF_Stack = StackInit(50); // TODO
+    // dat tam o day
+    pwm_data = (PWM_STRUCT*)malloc(LEDS * sizeof(PWM_STRUCT));
+    memset(pwm_data, 0, LEDS);
     // load backup data
     effect_length = BKP_ReadBackupRegister(BKP_DR2) + FLASH_START_ADDRESS;
 }
@@ -147,11 +145,16 @@ void uart_buffer_process(uint8_t *pk_ptr, uint8_t f_length)
     if((packet_stt == PK_IDLE) || (packet_stt == PK_DONE))
     {
         packet_effect_ptr = (STRUCT_PACKET_EFFECT*)pk_ptr;
-        if(packet_effect_ptr->data_type == DAT_EFFECT)
+        switch(packet_effect_ptr->data_type)
         {
-            packet_type = LDATA;
-            write_to_flash(pk_ptr, f_length);
-            return;
+            case DAT_EFFECT:
+                packet_type = LDATA;
+                write_to_flash(pk_ptr, f_length);
+                return;
+                break;
+            case DAT_CONTROL:
+                
+                break;
         }
     }
     
@@ -172,7 +175,6 @@ void uart_buffer_process(uint8_t *pk_ptr, uint8_t f_length)
 */
 void write_to_flash(uint8_t *pk_ptr, uint8_t f_length)
 {
-    uint8_t index;
     uint8_t *add_temp_ptr;
     uint8_t data_length;
     uint16_t length;
@@ -253,6 +255,7 @@ void effect_run(void)
     uint8_t shift_val = 0;
     uint16_t delay_val;
     uint8_t *temp1;
+    uint8_t ledPosition = 0;
     if(BKP_ReadBackupRegister(BKP_DR1) == (uint8_t)BKP_EFFECT_AVAL)
     {
     effect_data_counter = EFFECT_BEGIN_ADD;
@@ -271,6 +274,7 @@ void effect_run(void)
                 break;
             case EFFCT_DT_BRIGHT:
                 parse_stt = EF_STT_DELAY;
+                ledPosition = 0;
                 continue;
                 break;
         }
@@ -317,8 +321,9 @@ void effect_run(void)
                 }
                  break;
             case EF_STT_LED:
-                pwm_c[0] = temp;
-                parse_stt = EF_STT_DELAY;
+                pwm_data[ledPosition].pwm_ldval = temp;
+                ledPosition++;
+                //parse_stt = EF_STT_IDLE;
                 break;
             default:
                 break;
@@ -386,28 +391,6 @@ void STM32vldiscovery_LEDOff(Led_TypeDef Led)
 void STM32vldiscovery_LEDToggle(Led_TypeDef Led)
 {
 	GPIO_PORT[Led]->ODR ^= GPIO_PIN[Led];
-}
-
-/*
-LED PWM over software SPI
-*/
-void SoftPWM(void)
-{
-	spi_595_send((pwm_c[0] > pwm_num) ? 0:DATA_OUT);
-	if(++pwm_num==50){			
-		pwm_num=0;
-	}
-}
-
-/*
-LED PWM over hardware SPI
-*/
-void HardLEDPWM(void)
-{
-	hard_spi_send_595((pwm_c[0] > pwm_num) ? 0:DATA_OUT);
-	if(++pwm_num==50){			
-		pwm_num=0;
-	}
 }
 
 // config MCO A8

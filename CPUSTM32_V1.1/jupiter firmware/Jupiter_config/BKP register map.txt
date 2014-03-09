@@ -1,0 +1,2 @@
+BKP_DR1[0]: dang co data trong flash, co the bat dau chay hieu ung
+BKP_DR2: do dai hieu ung co trong flash (uint16_t) 

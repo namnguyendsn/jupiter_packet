@@ -52,8 +52,6 @@ void Delay_ms(uint32_t nTime);
 void TimingDelay_Decrement(void);
 void delay_test(uint32_t delay);
 void led_dim_ti(void);
-extern volatile uint16_t DATA_OUT;
-extern uint8_t pwm_c[8];
 /* Private functions ---------------------------------------------------------*/
 
 /**
@@ -65,8 +63,6 @@ int main(void)
 {
   jupiter_cpu_init();
   /* main while */
-pwm_c[0] = 0;
-DATA_OUT = 0xFFFF;
   while(1)
   {
       //crc_rl = calc_crc8((uint8_t*)&crc_test, 4);
@@ -96,17 +92,15 @@ void LEDstatus(void)
 void led_dim_ti(void)
 {
 	char i,j,k;
-	//DATA_OUT = 0x8181;
-	DATA_OUT = 0xFFFF;
 	for(k=0;k<16;k++)
 	{
 		j=0;
 		for(i=50;i>0;i--){
-			pwm_c[j] = i;
+//			pwm_c[j] = i;
 			Delay_ms(100);
 		}
 		for(i=0;i<50;i++){
-			pwm_c[j] = i;
+//			pwm_c[j] = i;
 			Delay_ms(100);
 		}
 		//DATA_OUT |= 1<<k;

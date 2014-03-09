@@ -39,7 +39,7 @@ static void spi_send(uint16_t datain)
 {
 	if(!SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_BSY))
 	{
-    SPI_I2S_SendData(SPI1, datain);
+        SPI_I2S_SendData(SPI1, datain);
 	}
 }
 

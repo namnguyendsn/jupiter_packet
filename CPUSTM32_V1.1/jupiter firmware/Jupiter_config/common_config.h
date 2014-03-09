@@ -54,7 +54,7 @@
 #define LED2_GPIO_PORT                   GPIOB
 #define LED2_GPIO_CLK                    RCC_APB2Periph_GPIOB  
 
-#define SOFT_PWM_B       1
+#define SOFT_PWM_B       0
 // software spi io
 #if SOFT_PWM_B
 #define SDI_PIN                         GPIO_Pin_5
