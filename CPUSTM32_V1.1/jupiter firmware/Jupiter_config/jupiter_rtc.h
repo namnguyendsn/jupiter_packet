@@ -33,7 +33,7 @@ struct Date_s
 {
   uint8_t Month;
   uint8_t Day;
-  uint16_t Year;
+  uint8_t Year;
 };
 extern struct Date_s s_DateStructVar;
 
@@ -50,14 +50,13 @@ extern struct AlarmDate_s s_AlarmDateStructVar;
 #define BATTERY_REMOVED 98
 #define BATTERY_RESTORED 99
 #define SECONDS_IN_DAY 86399
-#define CONFIGURATION_DONE 0xAAAA
-#define CONFIGURATION_RESET 0x0000
+#define CONFIGURATION_DONE 0x0002
 #define OCTOBER_FLAG_SET 0x4000
 #define MARCH_FLAG_SET 0x8000
 // default value of date
 #define DEFAULT_DAY 15
 #define DEFAULT_MONTH 5
-#define DEFAULT_YEAR 2008
+#define DEFAULT_YEAR 13 // khi tinh toan + 2000
 #define DEFAULT_HOURS 9
 #define DEFAULT_MINUTES 24
 #define DEFAULT_SECONDS 0
@@ -67,24 +66,8 @@ extern struct AlarmDate_s s_AlarmDateStructVar;
 
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
-void CalendarInit(void);
 void RTC_Configuration(void);
-void SetTime(uint8_t,uint8_t,uint8_t);
-void SetAlarm(uint8_t,uint8_t,uint8_t);
-void SetDate(uint8_t,uint8_t,uint16_t);
-void RTC_Application(void);
-void DateUpdate(void);
-uint16_t WeekDay(uint16_t,uint8_t,uint8_t);
-uint8_t CheckLeap(uint16_t);
-void CalculateTime(void);
-void DisplayDate(void);
-void DisplayTime(void);
-void DisplayAlarm(void);
-void RTC_NVIC_Configuration(void);
-void ApplicationInit(void);
 void GPIO_Configuration(void);
-void DelayLowPower(__IO uint32_t nCount);
 void SysTickConfig(void);
 void CheckForDaysElapsed(void);
-void SummerTimeCorrection(void);
-void Tamper_NVIC_Configuration(void);
+void set_time(uint8_t *data);

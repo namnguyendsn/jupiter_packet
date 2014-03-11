@@ -52,16 +52,50 @@ CRC: 2 bytes
 DATA: length bytes
 EOP: 1 bytes
 */
-#define DAT_CONTROL         0xD0
-#define DAT_TIME            0xD1
-#define DAT_ALARM           0xD2
+// data types
+#define SET_INFO_TIME       0xD0
+#define SET_INFO_ALARM      0xD1
+#define SET_INFO_LEDS       0xD2
+#define SET_INFO_1          0xD3
+#define SET_INFO_2          0xD4
+
 #define DAT_EFFECT          0xD5
+
+#define GET_INFO_FIRM_VER   0xD6
+#define GET_INFO_1          0xD7
+#define GET_INFO_2          0xD8
+#define GET_INFO_3          0xD9
+#define GET_INFO_4          0xDA
+#define GET_INFO_5          0xDB
+#define GET_INFO_6          0xDC
+
 //#define 
 #define DATASIZE_PER_FRAME  32
 
 // data types
 #define CDATA   0x89
 #define LDATA   0x88
+
+typedef enum
+{
+    TIME_HOUR = 0xA0, // 1byte
+    TIME_MIN,// 1 byte
+    TIME_DAY,// 1 byte
+    TIME_MON,// 1 byte
+    TIME_YEAR,// 1 byte
+    TIME_IDLE
+}SET_TIME_STT;
+
+typedef enum
+{
+    ALARM_NUMS = 0xA0,// so lan bat tat trong 1 ngay
+    ALARM_X// |alarm_x|gio bat 1byte|gio tat 1byte|on trong x phut 1byte step 10p|
+}SET_ALARM_STT;
+
+typedef enum
+{
+    LEDS_PER_STATE = 0xA0
+}SET_LED;
 
 // backup
 #define BKP_EFFECT_AVAL     0x0001

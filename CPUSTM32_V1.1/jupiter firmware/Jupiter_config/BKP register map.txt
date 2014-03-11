@@ -1,2 +1,8 @@
 BKP_DR1[0]: dang co data trong flash, co the bat dau chay hieu ung
-BKP_DR2: do dai hieu ung co trong flash (uint16_t) 
+BKP_DR1[1]: cau hinh RTC ok
+BKP_DR2: do dai hieu ung co trong flash (uint16_t)
+BKP_DR3[0-7]: gia tri thoi gian ngay
+BKP_DR3[8-15]: gia tri thoi gian thang
+BKP_DR4[0-7]: gia tri thoi gian gio
+BKP_DR4[8-15]: gia tri thoi gian phut
+BKP_DR5[0-7]: gia tri thoi gian nam

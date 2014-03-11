@@ -1,6 +1,7 @@
 #include <stm32f10x.h>
 #include "stm32f10x_usart.h"
 #include "common_config.h"
+#include "jupiter_crc.h"
 #include <stdlib.h>
 
 #define FRAME_SIZE  32
@@ -42,15 +43,13 @@ typedef struct _transcation
 typedef enum
 {
     TRANSFER_DONE = 0,
+    TRANSFER_END,
     TRANSFER_ERROR,
     TRANSFER_IDLE,
     START_OF_FRAME,
     CRC_WAIT,
     CRC_FAIL,
-    DATA_IN,
-    END_OF_FRAME,
-    NAK,
-    ACK
+    DATA_IN
 }TRANSFER_STT;
 
 typedef struct _uart_frame_write_time

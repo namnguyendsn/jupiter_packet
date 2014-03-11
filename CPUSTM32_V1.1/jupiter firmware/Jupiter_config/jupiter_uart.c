@@ -6,7 +6,7 @@ static TRANSFER_STT status_transfer;
 static uint8_t data_counter;
 static uint8_t *temp;
 static fpncallback uart_callback;
-
+static uint8_t error_counter = 0;
 
 void uart_init(fpncallback callback)
 {
@@ -88,24 +88,16 @@ void uart_get_data(void)
         return;
 		break;
 	case HDR_EOF:
-        if(data_counter == transfer_struct.length)
+        // transfer done, check crc
+        if((data_counter == transfer_struct.length) && (calc_crc8(transfer_struct.data, transfer_struct.length) == transfer_struct.crc))
         {
-            // transfer done, check crc
-            if(1)
-            //if(calc_crc8(transfer_struct.data, transfer_struct.length) == transfer_struct.crc)
-            {
             // call process data function
             uart_callback(transfer_struct.data, transfer_struct.length);
-            //printf("Transaction done!\n");
             status_transfer = TRANSFER_DONE;
-            }
-            else
-                status_transfer = TRANSFER_ERROR;
         }
         else
         {
             status_transfer = TRANSFER_ERROR;
-            free(transfer_struct.data);
         }
         data_counter = 0;
 		break;
@@ -143,14 +135,18 @@ void uart_get_data(void)
             break;
         case TRANSFER_ERROR:
             out_char(0xFF);
-            free(transfer_struct.data);
+            error_counter++;
             break;
         case TRANSFER_DONE:
             out_char(0xFE);
-            free(transfer_struct.data);
+            error_counter = 0;
             break;
     }
-
+    if((status_transfer == TRANSFER_DONE) || (status_transfer == TRANSFER_ERROR))
+    {
+        if(transfer_struct.data != NULL)
+            free(transfer_struct.data);
+    }
 }
 
 void out_char(char ch)

@@ -9,7 +9,7 @@ static volatile uint32_t TimingDelay;
   */
 void Delay_ms(uint32_t nTime)
 { 
-  TimingDelay = nTime;
+  TimingDelay = nTime * 10;
   while(TimingDelay != 0);
 }
 

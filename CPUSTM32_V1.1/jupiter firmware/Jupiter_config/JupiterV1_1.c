@@ -38,7 +38,6 @@ static BUFFSTACK *SF_Stack;
 static EF_STT parse_stt;
 static SFOR_STRUCT sfor_loop;
 static uint32_t effect_length;
-
 void uart_buffer_process(uint8_t *pk_ptr, uint8_t f_length);
 void write_to_flash(uint8_t *pk_ptr, uint8_t f_length);
 void MCO_config(void);
@@ -87,8 +86,8 @@ void jupiter_cpu_init(void)
 
 	if (SysTick_Config(SystemCoreClock / 10000))
 	{
-	/* Capture error */
-	 while (1);
+        /* Capture error */
+        while (1);
 	}
 
 	/* Enable access to the backup register => LSE can be enabled */
@@ -97,6 +96,8 @@ void jupiter_cpu_init(void)
     SF_Stack = StackInit(50); // TODO
     // dat tam o day
     pwm_data = (PWM_STRUCT*)malloc(LEDS * sizeof(PWM_STRUCT));
+    if(pwm_data == NULL)
+        while(1);
     memset(pwm_data, 0, LEDS);
     // load backup data
     effect_length = BKP_ReadBackupRegister(BKP_DR2) + FLASH_START_ADDRESS;
@@ -105,7 +106,6 @@ void jupiter_cpu_init(void)
 /**
 * @brief parse data from uart_buffer
 */
-uint8_t remain_counter = 0;
 void uart_buffer_process(uint8_t *pk_ptr, uint8_t f_length)
 {
     if((packet_stt == PK_IDLE) || (packet_stt == PK_DONE))
@@ -118,22 +118,26 @@ void uart_buffer_process(uint8_t *pk_ptr, uint8_t f_length)
                 write_to_flash(pk_ptr, f_length);
                 return;
                 break;
-            case DAT_CONTROL:
-                
+            case SET_INFO_TIME:
+                set_time(packet_effect_ptr->data);
+                break;
+            case SET_INFO_ALARM:
+                break;
+            case SET_INFO_LEDS:
+                break;
+            case GET_INFO_FIRM_VER:
                 break;
         }
     }
     
     if(packet_stt == PK_REMAIN)
     {
-        remain_counter++;
-        if(remain_counter == 2)
-            remain_counter = 0;
         if(packet_type == LDATA)
         {
             write_to_flash(pk_ptr, f_length);
         }
     }
+    
 }
 
 /**
@@ -218,7 +222,6 @@ void effect_run(void)
     uint8_t temp;
     uint8_t loop_remain;
     uint8_t loop;
-    uint8_t shift_val = 0;
     uint16_t delay_val;
     uint8_t *temp1;
     uint8_t ledPosition = 0;
@@ -271,19 +274,8 @@ void effect_run(void)
                 }
                 break;
             case EF_STT_DELAY:
-                if(shift_val < 8)
-                {
-                    delay_val = temp;
-                    shift_val += 8;
-                    parse_stt = EF_STT_DELAY;
-                }
-                else
-                {
-                    delay_val <<= shift_val;
-                    delay_val |= temp;
-                    parse_stt = EF_STT_LED;
-                    shift_val = 0;
-                }
+                delay_val = temp * 50;
+                parse_stt = EF_STT_LED;
                  break;
             case EF_STT_LED:
                 pwm_data[ledPosition].pwm_ldval = temp;
@@ -295,7 +287,7 @@ void effect_run(void)
                 break;
         }
     }
-    }
+  }
 }
 
 /**
@@ -357,6 +349,11 @@ void STM32vldiscovery_LEDOff(Led_TypeDef Led)
 void STM32vldiscovery_LEDToggle(Led_TypeDef Led)
 {
 	GPIO_PORT[Led]->ODR ^= GPIO_PIN[Led];
+}
+
+void LEDstatus(void)
+{
+  STM32vldiscovery_LEDToggle(LED1);
 }
 
 // config MCO A8

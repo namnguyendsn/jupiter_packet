@@ -140,6 +140,7 @@ namespace SerialPortTerminal
         int offset = 0;
         int data_remain;
         byte[] frame_packed = new byte[36];
+        byte[] effect_packed = new byte[1000];
       if (CurrentDataMode == DataMode.Text)
       {
         // Send the user's text straight out the port
@@ -153,7 +154,17 @@ namespace SerialPortTerminal
         try
         {
           // Convert the user's string of hex digits (ex: B4 CA E2) to a byte array
-          byte[] data = HexStringToByteArray(txtSendData.Text);
+          byte[] data_ = HexStringToByteArray(txtSendData.Text);
+
+          effect_packed[0] = 0xE0;
+          effect_packed[1] = (byte)(data_.Length << 8);
+          effect_packed[2] = (byte)(data_.Length);
+          effect_packed[3] = 0xD5;
+          Array.Copy(data_, 0, effect_packed, 4, data_.Length);
+          effect_packed[data_.Length + 4] = 0xE1;
+
+          byte[] data = new byte[data_.Length + 5];
+          Array.Copy(effect_packed, 0, data, 0, data_.Length + 5);
 
           // Send the binary data out the port
           framenum = data.Length / 32;
@@ -172,12 +183,12 @@ namespace SerialPortTerminal
                   frame_len = data.Length - 32 * frame_sent;
 
               Array.Clear(frame_packed, 0, frame_packed.Length);
-              frame_packed[0] = 0x01;// SOF
+              frame_packed[0] = 0xD0;// SOF
               frame_packed[1] = (byte)(frame_len);// length
               frame_packed[2] = 0x77;// crc
 
               Array.Copy(data, offset, frame_packed, 3, frame_len);
-              frame_packed[frame_len + 3] = 0x02;// EOF
+              frame_packed[frame_len + 3] = 0xD1;// EOF
 
               comport.Write(frame_packed, 0, frame_len + 4);
               Thread.Sleep(100);

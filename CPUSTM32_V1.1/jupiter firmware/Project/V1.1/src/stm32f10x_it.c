@@ -31,22 +31,14 @@ void HSI_FreqMeasure(void);
 /** @addtogroup Demo
 * @{
 */
-
-/* Private typedef -----------------------------------------------------------*/
-/* Private define ------------------------------------------------------------*/
-#define EXTTRIG_SWSTART      (u32)(0x00500000)
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 extern __IO int16_t *outBuffer;
 
 uint8_t AlarmStatus;
-uint16_t SummerTimeCorrect;
-uint8_t DisplayDateFlag;
 uint8_t AlarmDate=0;
-uint8_t TotalMenuPointer=1;
 static uint32_t sysTick = 0;
 /* Private function prototypes -----------------------------------------------*/
-/* Private functions ---------------------------------------------------------*/
 
 /******************************************************************************/
 /*            Cortex-M3 Processor Exceptions Handlers                         */
@@ -148,7 +140,7 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
 	if(sysTick++ == 10000)
-	{		
+	{
 		sysTick = 0;
 		LEDstatus();
 	}
@@ -191,73 +183,24 @@ void TIM3_IRQHandler(void)
   */
 void RTC_IRQHandler(void)
 {
-  uint8_t Month,Day;
-  uint16_t Year;
-  
-  Month = BKP_ReadBackupRegister(BKP_DR2);
-  Day = BKP_ReadBackupRegister(BKP_DR3);
-  Year = BKP_ReadBackupRegister(BKP_DR4);
-  NVIC_ClearPendingIRQ(RTC_IRQn);
-  RTC_ClearITPendingBit(RTC_IT_SEC);
-  
-  /* If counter is equal to 86399: one day was elapsed */
-  /* This takes care of date change and resetting of counter in case of
-  power on - Run mode/ Main supply switched on condition*/
-  if(RTC_GetCounter() == 86399)
-  {
-    /* Wait until last write operation on RTC registers has finished */
-    RTC_WaitForLastTask();
-    /* Reset counter value */
-    RTC_SetCounter(0x0);
-    /* Wait until last write operation on RTC registers has finished */
-    RTC_WaitForLastTask();
+    NVIC_ClearPendingIRQ(RTC_IRQn);
+    RTC_ClearITPendingBit(RTC_IT_SEC);
 
-    /* Increment the date */
-    DateUpdate();
-  }
+    /* If counter is equal to 86399: one day was elapsed */
+    /* This takes care of date change and resetting of counter in case of
+    power on - Run mode/ Main supply switched on condition*/
+    if(RTC_GetCounter() == 86399)
+    {
+        /* Wait until last write operation on RTC registers has finished */
+        RTC_WaitForLastTask();
+        /* Reset counter value */
+        RTC_SetCounter(0x0);
+        /* Wait until last write operation on RTC registers has finished */
+        RTC_WaitForLastTask();
 
-  if((RTC_GetCounter()/3600 == 1)&&(((RTC_GetCounter()%3600)/60) == 59)&&
-     (((RTC_GetCounter()%3600)%60) == 59))
-  {
-    /* March Correction */
-    if((Month == 3) && (Day >24))
-    {
-      if(WeekDay(Year,Month,Day)==0)
-      {
-        if((SummerTimeCorrect & 0x8000) == 0x8000)
-        {
-          RTC_SetCounter(RTC_GetCounter() + 3601);
-         
-          /* Reset March correction flag */
-          SummerTimeCorrect &= 0x7FFF;
-         
-          /* Set October correction flag  */
-          SummerTimeCorrect |= 0x4000;
-          SummerTimeCorrect |= Year;
-          BKP_WriteBackupRegister(BKP_DR7,SummerTimeCorrect);
-        }
-      }
+        /* Increment the date */
+        DateUpdate();
     }
-      /* October Correction */
-    if((Month == 10) && (Day >24))
-    {
-      if(WeekDay(Year,Month,Day)==0)
-      {
-        if((SummerTimeCorrect & 0x4000) == 0x4000)
-        {
-          RTC_SetCounter(RTC_GetCounter() - 3599);
-          
-          /* Reset October correction flag */
-          SummerTimeCorrect &= 0xBFFF;
-          
-          /* Set March correction flag  */
-          SummerTimeCorrect |= 0x8000;
-          SummerTimeCorrect |= Year;
-          BKP_WriteBackupRegister(BKP_DR7,SummerTimeCorrect);
-        }
-      }
-    }
-  }
 }
 
 /**
@@ -270,9 +213,8 @@ void RTCAlarm_IRQHandler(void)
    /* Clear the Alarm Pending Bit */
    RTC_ClearITPendingBit(RTC_IT_ALR);
    printf("\nALARM");
-   if((BKP_ReadBackupRegister(BKP_DR8)==BKP_ReadBackupRegister(BKP_DR2)) && \
-     (BKP_ReadBackupRegister(BKP_DR9)==BKP_ReadBackupRegister(BKP_DR3)) && \
-      (BKP_ReadBackupRegister(BKP_DR10)==BKP_ReadBackupRegister(BKP_DR4)))
+   if(((uint8_t)(BKP_ReadBackupRegister(BKP_DR8) >> 8) == (uint8_t)(BKP_ReadBackupRegister(BKP_DR4) >> 8)) &&   // check phut
+     ((uint8_t)BKP_ReadBackupRegister(BKP_DR9) == (uint8_t)BKP_ReadBackupRegister(BKP_DR4))) // check gio
    {
      AlarmStatus = 1;
    }
@@ -290,19 +232,5 @@ void FLASH_IRQHandler(void)
 /*  available peripheral interrupt handler's name please refer to the startup */
 /*  file (startup_stm32f10x_xx.s).                                            */
 /******************************************************************************/
-
-/**
-* @brief  This function handles PPP interrupt request.
-* @param  None
-* @retval None
-*/
-/*void PPP_IRQHandler(void)
-{
-}*/
-
-
-/**
-* @}
-*/ 
 
 /******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/
