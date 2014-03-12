@@ -86,6 +86,13 @@ typedef enum
     TIME_IDLE
 }SET_TIME_STT;
 
+typedef struct 
+{
+  uint8_t on_hour;
+  uint8_t on_min;
+  uint8_t on_time;
+}ALARM_STRUCT;
+
 typedef enum
 {
     ALARM_NUMS = 0xA0,// so lan bat tat trong 1 ngay
