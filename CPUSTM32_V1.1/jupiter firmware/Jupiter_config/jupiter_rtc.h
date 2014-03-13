@@ -5,6 +5,16 @@
 
 /* Exported types ------------------------------------------------------------*/
 /* Time Structure definition */
+// time configuration
+typedef struct _config_time
+{
+    uint8_t hours;
+    uint8_t minutes;
+    uint8_t days;
+    uint8_t months;
+    uint8_t years;
+}TIME, *TIME_PTR;
+
 struct Time_s
 {
   uint8_t SecLow;

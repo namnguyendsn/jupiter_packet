@@ -93,8 +93,8 @@
 /* Comment this line to activate demo 2: calibration with minimum Error found */
 #define USE_HSI_Fixed_Error  0
 
-#define FLASH_START_ADDRESS     0x08007C00
-#define FLASH_END_ADDRESS       0x08008400
+#define FLASH_START_ADDRESS     0x08007800
+#define FLASH_END_ADDRESS       0x08007BFF
 
 #define EFFECT_AVAL_ADDRESS FLASH_START_ADDRESS
 #define EFFECT_AVAL_MASK    0xF3
@@ -102,6 +102,9 @@
 #define EFFECT_END_ADD      FLASH_END_ADDRESS
 #define FLASH_PAGE_SIZE     ((uint16_t)0x400)
 #define FLASH_NUMPAGE       (FLASH_END_ADDRESS - FLASH_START_ADDRESS)/FLASH_PAGE_SIZE
+
+#define ALARM_BEGIN_ADD     0x08007C00
+#define ALARM_END_ADD       0x08007FFF
 
 #define EFFECT_SIZE 170
 
@@ -122,7 +125,7 @@
 
 typedef void (* UART_CALLBACK)(void*);
 typedef void (*fpncallback)(uint8_t *, uint8_t );
-typedef int8_t (*flashcallback)(uint8_t *, uint8_t , uint8_t );
+typedef int8_t (*flashcallback)(uint8_t *, uint8_t, uint8_t, uint32_t, uint32_t);
     
 #ifdef __cplusplus
 }

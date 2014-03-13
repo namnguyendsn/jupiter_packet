@@ -38,8 +38,10 @@ static BUFFSTACK *SF_Stack;
 static EF_STT parse_stt;
 static SFOR_STRUCT sfor_loop;
 static uint32_t effect_length;
+static uint8_t alarms_num;
 void uart_buffer_process(uint8_t *pk_ptr, uint8_t f_length);
 void write_to_flash(uint8_t *pk_ptr, uint8_t f_length);
+void write_alarm(uint8_t *pk_ptr, uint8_t f_length);
 void MCO_config(void);
 void rtc_init(void);
 GPIO_TypeDef* GPIO_PORT[LEDn] = {LED1_GPIO_PORT, FREQ_TEST_GPIO_PORT, LED2_GPIO_PORT, SDI_GPIO_PORT, CLK_GPIO_PORT, STR_GPIO_PORT, OE_GPIO_PORT};
@@ -119,9 +121,10 @@ void uart_buffer_process(uint8_t *pk_ptr, uint8_t f_length)
                 return;
                 break;
             case SET_INFO_TIME:
-                set_time(packet_effect_ptr->data);
+                set_time(&packet_effect_ptr->data_type + 1);
                 break;
             case SET_INFO_ALARM:
+                write_alarm(pk_ptr, f_length);
                 break;
             case SET_INFO_LEDS:
                 break;
@@ -137,7 +140,14 @@ void uart_buffer_process(uint8_t *pk_ptr, uint8_t f_length)
             write_to_flash(pk_ptr, f_length);
         }
     }
-    
+}
+
+void write_alarm(uint8_t *pk_ptr, uint8_t f_length)
+{
+    uint8_t * temp;
+    temp = pk_ptr;
+    alarms_num = *(temp + 4);
+    fcallback(temp + 5, f_length - 6, 7, ALARM_BEGIN_ADD, ALARM_END_ADD);
 }
 
 /**
@@ -161,7 +171,7 @@ void write_to_flash(uint8_t *pk_ptr, uint8_t f_length)
         length += 5;
 	    if(length > DATASIZE_PER_FRAME)
 	    {
-	    	data_length = 28;
+	    	data_length = DATASIZE_PER_FRAME - 4;
 	    }
         else
             data_length = length - 5;
@@ -178,13 +188,13 @@ void write_to_flash(uint8_t *pk_ptr, uint8_t f_length)
         else
             data_length = remain;
         
-        effect_data_ptr = (uint8_t*)malloc(32);
-        memset(effect_data_ptr, 0, 32);
+        effect_data_ptr = (uint8_t*)malloc(DATASIZE_PER_FRAME);
+        memset(effect_data_ptr, 0, DATASIZE_PER_FRAME);
         memcpy(effect_data_ptr, pk_ptr, data_length);
     }
 
 	// call write to flash
-	fcallback(effect_data_ptr, data_length, (uint8_t)packet_stt);
+	fcallback(effect_data_ptr, data_length, (uint8_t)packet_stt, EFFECT_BEGIN_ADD, EFFECT_END_ADD);
 	// free mem
 	free(effect_data_ptr);
     

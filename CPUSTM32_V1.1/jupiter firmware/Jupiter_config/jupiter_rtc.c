@@ -100,8 +100,10 @@ void rtc_init(void)
 
 void set_time(uint8_t *data)
 {
-    SetTime(data[0], data[1]);
-    SetDate(data[2], data[3], data[4]);
+    TIME_PTR temp;
+    temp = (TIME_PTR)data;
+    SetTime(temp->hours, temp->minutes);
+    SetDate(temp->days, temp->months, temp->years);
 }
 
 /**

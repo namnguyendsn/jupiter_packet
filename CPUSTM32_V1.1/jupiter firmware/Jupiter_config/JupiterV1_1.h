@@ -53,9 +53,9 @@ DATA: length bytes
 EOP: 1 bytes
 */
 // data types
-#define SET_INFO_TIME       0xD0
-#define SET_INFO_ALARM      0xD1
-#define SET_INFO_LEDS       0xD2
+#define SET_INFO_TIME       0xDE
+#define SET_INFO_ALARM      0xDD
+#define SET_INFO_LEDS       0xDF
 #define SET_INFO_1          0xD3
 #define SET_INFO_2          0xD4
 
@@ -70,7 +70,7 @@ EOP: 1 bytes
 #define GET_INFO_6          0xDC
 
 //#define 
-#define DATASIZE_PER_FRAME  32
+#define DATASIZE_PER_FRAME  100
 
 // data types
 #define CDATA   0x89
@@ -88,6 +88,8 @@ typedef enum
 
 typedef struct 
 {
+#define ALARM_N   0xFF
+  uint8_t reserved;
   uint8_t on_hour;
   uint8_t on_min;
   uint8_t on_time;
@@ -172,18 +174,6 @@ typedef struct _user_init_uart
     USART_TypeDef			*UART_Index;
 }UART_APPLICATION_INIT, *UART_APPLICATION_INIT_PTR;
 
-// time configuration
-typedef struct _config_time
-{
-    uint8_t hours;
-    uint8_t minutes;
-    uint8_t seconds;
-    uint8_t days;
-    uint8_t dates;
-    uint8_t months;
-    uint16_t years;
-}TIME, *TIME_PTR;
-
 // alarm configuration (on/off time)
 typedef struct _config_alarm
 {
@@ -208,22 +198,7 @@ ten truong con:
 thu tu bytes:
 thu tu word(4bytes):
 	*/
-typedef struct _config_message_struct
-{	// 0x4A4C4444 (JLD: Jupiter Led Driver Data)
-	// 0x4A4C444C (JLL: Jupiter Led Driver Length)
-	uint32_t		header_code; 
-	uint32_t		crc_code;
-	uint16_t		config_length; // length of led effects
-	uint16_t		change_thing;// luu nhung gi can thay doi: thoi gian on/off hay rtc hay led effect
-	TIME				config_time;// config internal rtc
-	ALARM				config_alarm;// config on/off time
-	uint16_t 		effect_length;
-	LED_EFFECT	led_effect[EFFECT_SIZE];// led effect
-}CONFIG_MESSAGE, *CONFIG_MESSAGE_PTR;
-/**
-  * @}
-  */ 
-
+    
 typedef enum 
 {
   LED1 = 0,

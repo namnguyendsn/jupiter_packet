@@ -4,7 +4,7 @@
 #include "jupiter_crc.h"
 #include <stdlib.h>
 
-#define FRAME_SIZE  32
+#define FRAME_SIZE  100
 
 typedef enum _uart_stt
 {

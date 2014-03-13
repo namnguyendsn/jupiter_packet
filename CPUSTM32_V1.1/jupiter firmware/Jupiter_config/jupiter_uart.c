@@ -90,6 +90,7 @@ void uart_get_data(void)
 	case HDR_EOF:
         // transfer done, check crc
         if((data_counter == transfer_struct.length) && (calc_crc8(transfer_struct.data, transfer_struct.length) == transfer_struct.crc))
+        //if(data_counter == transfer_struct.length)
         {
             // call process data function
             uart_callback(transfer_struct.data, transfer_struct.length);
@@ -144,6 +145,7 @@ void uart_get_data(void)
     }
     if((status_transfer == TRANSFER_DONE) || (status_transfer == TRANSFER_ERROR))
     {
+        status_transfer = TRANSFER_IDLE;
         if(transfer_struct.data != NULL)
             free(transfer_struct.data);
     }

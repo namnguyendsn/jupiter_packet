@@ -35,10 +35,11 @@ void jupiter_write_stt(uint32_t buff, uint32_t address)
     FLASH_ProgramHalfWord(address, buff);
 }
 
-int8_t jupiter_flash_write(uint8_t *buff, uint8_t size, uint8_t stt)
+int8_t jupiter_flash_write(uint8_t *buff, uint8_t size, uint8_t stt, uint32_t BeginAdd, uint32_t EndAdd)
 {
 	uint8_t index = 0;
-    uint16_t *effect_data;
+    uint16_t *data_;
+    uint32_t numPages;
 
     uint32_t EraseCounter = 0x00;
     __IO uint32_t NbrOfPage = 0x00;
@@ -51,20 +52,21 @@ int8_t jupiter_flash_write(uint8_t *buff, uint8_t size, uint8_t stt)
     if((stt == PK_DONE) || (stt == PK_IDLE))
     {
         /* Erase the FLASH pages */
-        for(EraseCounter = 0; (EraseCounter < FLASH_NUMPAGE) && (FLASHStatus == FLASH_COMPLETE); EraseCounter++)
+        numPages = (EndAdd + 1 - BeginAdd)/FLASH_PAGE_SIZE;
+        for(EraseCounter = 0; (EraseCounter < numPages) && (FLASHStatus == FLASH_COMPLETE); EraseCounter++)
         {
-            FLASHStatus = FLASH_ErasePage(FLASH_START_ADDRESS + (FLASH_PAGE_SIZE * EraseCounter));
+            FLASHStatus = FLASH_ErasePage(BeginAdd + (FLASH_PAGE_SIZE * EraseCounter));
         }
-        Address = EFFECT_BEGIN_ADD;
+        Address = BeginAdd;
     }
-    effect_data = (uint16_t *)buff;
+    data_ = (uint16_t *)buff;
 
-    while((Address < EFFECT_END_ADD) && (index < size))
+    while((Address < EndAdd) && (index < size))
     {
         index += 2;
-        FLASHStatus = FLASH_ProgramHalfWord(Address, *effect_data);
+        FLASHStatus = FLASH_ProgramHalfWord(Address, *data_);
         Address = Address + 2;
-        effect_data++;
+        data_++;
 
         if(FLASHStatus != FLASH_COMPLETE)
         {
