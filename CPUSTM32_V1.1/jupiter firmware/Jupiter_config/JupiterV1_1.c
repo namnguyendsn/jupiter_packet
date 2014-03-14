@@ -44,6 +44,7 @@ void write_to_flash(uint8_t *pk_ptr, uint8_t f_length);
 void write_alarm(uint8_t *pk_ptr, uint8_t f_length);
 void MCO_config(void);
 void rtc_init(void);
+uint8_t read_from_flash(uint32_t Address);
 GPIO_TypeDef* GPIO_PORT[LEDn] = {LED1_GPIO_PORT, FREQ_TEST_GPIO_PORT, LED2_GPIO_PORT, SDI_GPIO_PORT, CLK_GPIO_PORT, STR_GPIO_PORT, OE_GPIO_PORT};
 const uint16_t GPIO_PIN[LEDn] = {LED1_PIN, FREQ_TEST_PIN, LED2_PIN, SDI_PIN, CLK_PIN, STR_PIN, OE_PIN};
 const uint32_t GPIO_CLK[LEDn] = {LED1_GPIO_CLK, FREQ_TEST_GPIO_CLK, LED2_GPIO_CLK, SDI_GPIO_CLK, CLK_GPIO_CLK, STR_GPIO_CLK, OE_GPIO_CLK};
@@ -51,8 +52,12 @@ const uint32_t GPIO_CLK[LEDn] = {LED1_GPIO_CLK, FREQ_TEST_GPIO_CLK, LED2_GPIO_CL
 extern flashcallback fcallback;
 extern void jupiter_write_stt(uint32_t buff, uint32_t address);
 extern PWM_STRUCT *pwm_data;
+extern Time_s systime;
 
 UART_CALLBACK uart_process_callback;
+uint16_t on_min_counter = 0;
+bool ALARM_START = FALSE;
+ALARM_STRUCT alarm_data;
 
 void jupiter_cpu_init(void)
 {
@@ -148,6 +153,80 @@ void write_alarm(uint8_t *pk_ptr, uint8_t f_length)
     temp = pk_ptr;
     alarms_num = *(temp + 4);
     fcallback(temp + 5, f_length - 6, 7, ALARM_BEGIN_ADD, ALARM_END_ADD);
+}
+/*
+    call while minute elapse
+*/
+void alarm_check(void)
+{
+    static SET_ALARM_STT alarm_stt;
+    static uint8_t alarm_n = 0;
+    ALARM_LOAD_STT stt;
+    uint8_t temp;
+    uint8_t i;
+
+    if(alarm_stt == ALARM_LOAD)
+    {
+        if(alarm_n/4 > MAX_ALARM)
+        {
+            alarm_n = 0;
+        }
+        else
+        {
+            for(i = 0; i < 4; i++)
+            {
+                temp = read_from_flash(alarm_n + ALARM_BEGIN_ADD);
+                alarm_n++;
+                if(temp == ALARM_N)
+                {
+                    stt = READ_HOUR;
+                    continue;
+                }
+                switch(stt)
+                {
+                    case READ_HOUR:
+                        alarm_data.on_hour = temp;
+                        stt = READ_MIN;
+                        break;
+                    case READ_MIN:
+                        alarm_data.on_min = temp;
+                        stt = READ_TIME;
+                        break;
+                    case READ_TIME:
+                        alarm_data.on_time = temp;
+                        break;
+                }
+            }
+        alarm_stt = CHECK_ALARM;
+        }
+    }
+
+    if(alarm_stt == CHECK_ALARM)
+    {
+        if((alarm_data.on_hour == systime.Hour) && (alarm_data.on_min == systime.Min))
+        {
+            alarm_stt = RUN_ALARM;
+        }
+    }
+
+    if(alarm_stt == RUN_ALARM)
+    {
+        ALARM_START = TRUE;
+        if(on_min_counter < alarm_data.on_time)
+        {
+            on_min_counter++;
+        }
+        else
+        {
+            alarm_stt = STOP_ALARM;
+        }
+    }
+    if(alarm_stt == RUN_ALARM)
+    {
+        ALARM_START = FALSE;
+        on_min_counter = 0;
+        alarm_stt = ALARM_LOAD;
+    }
 }
 
 /**
@@ -386,25 +465,5 @@ void MCO_config(void)
 	// RCC_MCOConfig(RCC_MCO_HSE);// HSE selected
 	// RCC_MCOConfig(RCC_MCO_PLLCLK_Div2);// SYSTEMCLK selected
 }
-
-/**
-* @}
-*/
-
-/**
-* @}
-*/
-
-/**
-* @}
-*/
-
-/**
-* @}
-*/
-
-/**
-* @}
-*/
 
 /******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/

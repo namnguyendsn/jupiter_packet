@@ -11,9 +11,8 @@ const uint8_t CalibrationPpm[128]={0,1,2,3,4,5,6,7,8,9,10,10,11,12,13,14,15,16,1
     115,116,117,118,119,120,121};
 /*Structure variable declaration for system time, system date,
 alarm time, alarm date */
-struct Time_s s_TimeStructVar;
+Time_s systime;
 struct AlarmTime_s s_AlarmStructVar;
-struct Date_s s_DateStructVar;
 struct AlarmDate_s s_AlarmDateStructVar;
 extern uint8_t AlarmDate;
 
@@ -42,12 +41,12 @@ void rtc_init(void)
 
         /* Backup Domain Reset */
         BKP_DeInit();
-        s_DateStructVar.Month=DEFAULT_MONTH;
-        s_DateStructVar.Day=DEFAULT_DAY;
-        s_DateStructVar.Year=DEFAULT_YEAR;
+        systime.Month=DEFAULT_MONTH;
+        systime.Day=DEFAULT_DAY;
+        systime.Year=DEFAULT_YEAR;
 
-        BKP_WriteBackupRegister(BKP_DR3, (s_DateStructVar.Month << 8) | s_DateStructVar.Day);
-        BKP_WriteBackupRegister(BKP_DR5, s_DateStructVar.Year);
+        BKP_WriteBackupRegister(BKP_DR3, (systime.Month << 8) | systime.Day);
+        BKP_WriteBackupRegister(BKP_DR5, systime.Year);
             
         /* Wait until last write operation on RTC registers has finished */
         RTC_WaitForLastTask();
@@ -91,9 +90,9 @@ void rtc_init(void)
     /* Check if how many days are elapsed in power down/Low Power Mode-
         Updates Date that many Times*/
     CheckForDaysElapsed();
-    s_DateStructVar.Month = (uint8_t)(BKP_ReadBackupRegister(BKP_DR3) >> 8);
-    s_DateStructVar.Day = (uint8_t)BKP_ReadBackupRegister(BKP_DR3);
-    s_DateStructVar.Year = (uint8_t)BKP_ReadBackupRegister(BKP_DR5);
+    systime.Month = (uint8_t)(BKP_ReadBackupRegister(BKP_DR3) >> 8);
+    systime.Day = (uint8_t)BKP_ReadBackupRegister(BKP_DR3);
+    systime.Year = (uint8_t)BKP_ReadBackupRegister(BKP_DR5);
     
     BKP_RTCOutputConfig(BKP_RTCOutputSource_None);
 }
@@ -124,7 +123,7 @@ static void SetTime(uint8_t Hour,uint8_t Minute)
 
 /**
 * @brief  Sets the RTC Alarm Register Value
-* @param Hours, Minutes and Seconds data
+* @param Hours, Minutes data
 * @retval : None
 */
 static void SetAlarm(uint8_t Hour,uint8_t Minute)
@@ -179,78 +178,78 @@ static void SetDate(uint8_t Day, uint8_t Month, uint8_t Year)
 */
 void DateUpdate(void)
 {
-    s_DateStructVar.Month = (uint8_t)BKP_ReadBackupRegister(BKP_DR3) >> 8;
-    s_DateStructVar.Day = (uint8_t)BKP_ReadBackupRegister(BKP_DR3);
-    s_DateStructVar.Year = (uint8_t)BKP_ReadBackupRegister(BKP_DR5);
+    systime.Month = (uint8_t)BKP_ReadBackupRegister(BKP_DR3) >> 8;
+    systime.Day = (uint8_t)BKP_ReadBackupRegister(BKP_DR3);
+    systime.Year = (uint8_t)BKP_ReadBackupRegister(BKP_DR5);
 
-    if(s_DateStructVar.Month == 1 || s_DateStructVar.Month == 3 || \
-            s_DateStructVar.Month == 5 || s_DateStructVar.Month == 7 ||\
-            s_DateStructVar.Month == 8 || s_DateStructVar.Month == 10 \
-            || s_DateStructVar.Month == 12)
+    if(systime.Month == 1 || systime.Month == 3 || \
+            systime.Month == 5 || systime.Month == 7 ||\
+            systime.Month == 8 || systime.Month == 10 \
+            || systime.Month == 12)
     {
-        if(s_DateStructVar.Day < 31)
+        if(systime.Day < 31)
         {
-            s_DateStructVar.Day++;
+            systime.Day++;
         }
-        /* Date structure member: s_DateStructVar.Day = 31 */
+        /* Date structure member: systime.Day = 31 */
         else
         {
-            if(s_DateStructVar.Month != 12)
+            if(systime.Month != 12)
             {
-                s_DateStructVar.Month++;
-                s_DateStructVar.Day = 1;
+                systime.Month++;
+                systime.Day = 1;
             }
-            /* Date structure member: s_DateStructVar.Day = 31 & s_DateStructVar.Month =12 */
+            /* Date structure member: systime.Day = 31 & systime.Month =12 */
             else
             {
-                s_DateStructVar.Month = 1;
-                s_DateStructVar.Day = 1;
-                s_DateStructVar.Year++;
+                systime.Month = 1;
+                systime.Day = 1;
+                systime.Year++;
             }
         }
     }
-    else if(s_DateStructVar.Month == 4 || s_DateStructVar.Month == 6 \
-            || s_DateStructVar.Month == 9 ||s_DateStructVar.Month == 11)
+    else if(systime.Month == 4 || systime.Month == 6 \
+            || systime.Month == 9 ||systime.Month == 11)
     {
-        if(s_DateStructVar.Day < 30)
+        if(systime.Day < 30)
         {
-            s_DateStructVar.Day++;
+            systime.Day++;
         }
-        /* Date structure member: s_DateStructVar.Day = 30 */
+        /* Date structure member: systime.Day = 30 */
         else
         {
-            s_DateStructVar.Month++;
-            s_DateStructVar.Day = 1;
+            systime.Month++;
+            systime.Day = 1;
         }
     }
-    else if(s_DateStructVar.Month == 2)
+    else if(systime.Month == 2)
     {
-        if(s_DateStructVar.Day < 28)
+        if(systime.Day < 28)
         {
-            s_DateStructVar.Day++;
+            systime.Day++;
         }
-        else if(s_DateStructVar.Day == 28)
+        else if(systime.Day == 28)
         {
             /* Leap Year Correction */
-            if(CheckLeap(s_DateStructVar.Year))
+            if(CheckLeap(systime.Year))
             {
-                s_DateStructVar.Day++;
+                systime.Day++;
             }
             else
             {
-                s_DateStructVar.Month++;
-                s_DateStructVar.Day = 1;
+                systime.Month++;
+                systime.Day = 1;
             }
         }
-        else if(s_DateStructVar.Day == 29)
+        else if(systime.Day == 29)
         {
-            s_DateStructVar.Month++;
-            s_DateStructVar.Day = 1;
+            systime.Month++;
+            systime.Day = 1;
         }
     }
 
-    BKP_WriteBackupRegister(BKP_DR3,s_DateStructVar.Day | (s_DateStructVar.Month << 8));
-    BKP_WriteBackupRegister(BKP_DR5,s_DateStructVar.Year);
+    BKP_WriteBackupRegister(BKP_DR3,systime.Day | (systime.Month << 8));
+    BKP_WriteBackupRegister(BKP_DR5,systime.Year);
 }
 
 /**
@@ -285,18 +284,15 @@ static uint8_t CheckLeap(uint16_t Year)
 * @param None
 * @retval :None
 */
-static void CalculateTime(void)
+void CalculateTime(void)
 {
     uint32_t TimeVar;
 
     TimeVar = RTC_GetCounter();
     TimeVar = TimeVar % 86400;
-    s_TimeStructVar.HourHigh=(uint8_t)(TimeVar/3600)/10;
-    s_TimeStructVar.HourLow=(uint8_t)(TimeVar/3600)%10;
-    s_TimeStructVar.MinHigh=(uint8_t)((TimeVar%3600)/60)/10;
-    s_TimeStructVar.MinLow=(uint8_t)((TimeVar%3600)/60)%10;
-    s_TimeStructVar.SecHigh=(uint8_t)((TimeVar%3600)%60)/10;
-    s_TimeStructVar.SecLow=(uint8_t)((TimeVar %3600)%60)%10;
+    systime.Hour = (uint8_t)(TimeVar/3600);
+    systime.Min = (uint8_t)((TimeVar%3600)/60);
+    systime.Sec = (uint8_t)((TimeVar%3600)%60);
 }
 
 /**
@@ -360,7 +356,7 @@ static void RTC_NVIC_Configuration(void)
 static void DisplayTime(void)
 {
 	CalculateTime();
-  printf("\nHour: %d%d\nMin: %d%d\nSec: %d%d", s_TimeStructVar.HourHigh, s_TimeStructVar.HourLow, s_TimeStructVar.MinHigh, s_TimeStructVar.MinLow, s_TimeStructVar.SecHigh, s_TimeStructVar.SecLow);
+  printf("\nHour: %d\nMin: %d\nSec: %d", systime.Hour, systime.Min, systime.Sec);
 }
 
 /**
@@ -370,12 +366,12 @@ static void DisplayTime(void)
   */
 static void DisplayDate(void)
 {
-    s_DateStructVar.Year = (BKP_ReadBackupRegister(BKP_DR5));
-    s_DateStructVar.Month = (uint8_t)(BKP_ReadBackupRegister(BKP_DR3) >> 8);
-    s_DateStructVar.Day = (uint8_t)BKP_ReadBackupRegister(BKP_DR3);
+    systime.Year = (BKP_ReadBackupRegister(BKP_DR5));
+    systime.Month = (uint8_t)(BKP_ReadBackupRegister(BKP_DR3) >> 8);
+    systime.Day = (uint8_t)BKP_ReadBackupRegister(BKP_DR3);
 	
-    printf("\nDay: %c%c", (s_DateStructVar.Day/10) + 0x30, (s_DateStructVar.Day%10) + 0x30);
-	printf("\nMonth: %s", s_DateStructVar.Month);
-	printf("\nYear: %c%c", ((s_DateStructVar.Year/1000) + 0x30), ((s_DateStructVar.Year/100)%10) + 0x30);
-	printf("%c%c\n", ((s_DateStructVar.Year/10)%10) + 0x30, (s_DateStructVar.Year%10) + 0x30);
+    printf("\nDay: %c%c", (systime.Day/10) + 0x30, (systime.Day%10) + 0x30);
+	printf("\nMonth: %d", systime.Month);
+	printf("\nYear: %c%c", ((systime.Year/1000) + 0x30), ((systime.Year/100)%10) + 0x30);
+	printf("%c%c\n", ((systime.Year/10)%10) + 0x30, (systime.Year%10) + 0x30);
 }

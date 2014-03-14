@@ -28,6 +28,8 @@ void LEDstatus(void);
 void SoftPWM(void);
 void HardLEDPWM(void);
 void HSI_FreqMeasure(void);
+void alarm_check(void);
+void CalculateTime(void);
 /** @addtogroup Demo
 * @{
 */
@@ -37,6 +39,7 @@ extern __IO int16_t *outBuffer;
 
 uint8_t AlarmStatus;
 uint8_t AlarmDate=0;
+uint8_t sec_count = 0;
 static uint32_t sysTick = 0;
 /* Private function prototypes -----------------------------------------------*/
 
@@ -185,7 +188,13 @@ void RTC_IRQHandler(void)
 {
     NVIC_ClearPendingIRQ(RTC_IRQn);
     RTC_ClearITPendingBit(RTC_IT_SEC);
-
+    
+    if(sec_count++ == 60)
+    {
+        sec_count = 0;
+        CalculateTime();
+        alarm_check();
+    }
     /* If counter is equal to 86399: one day was elapsed */
     /* This takes care of date change and resetting of counter in case of
     power on - Run mode/ Main supply switched on condition*/

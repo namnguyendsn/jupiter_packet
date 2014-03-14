@@ -396,8 +396,13 @@
       </TargetOption>
       <Groups>
         <Group>
-          <GroupName>CMSIS</GroupName>
+          <GroupName>Startup</GroupName>
           <Files>
+            <File>
+              <FileName>startup_stm32f10x_ld_vl.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>..\..\..\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\startup\arm\startup_stm32f10x_ld_vl.s</FilePath>
+            </File>
             <File>
               <FileName>system_stm32f10x.c</FileName>
               <FileType>1</FileType>
@@ -407,16 +412,6 @@
               <FileName>core_cm3.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\Libraries\CMSIS\CM3\CoreSupport\core_cm3.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Startup</GroupName>
-          <Files>
-            <File>
-              <FileName>startup_stm32f10x_ld_vl.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>..\..\..\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\startup\arm\startup_stm32f10x_ld_vl.s</FilePath>
             </File>
           </Files>
         </Group>
@@ -464,11 +459,6 @@
               <FilePath>..\..\..\Libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_spi.c</FilePath>
             </File>
             <File>
-              <FileName>stm32f10x_tim.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_tim.c</FilePath>
-            </File>
-            <File>
               <FileName>stm32f10x_usart.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\Libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_usart.c</FilePath>
@@ -504,11 +494,6 @@
               <FilePath>..\..\..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_spi.h</FilePath>
             </File>
             <File>
-              <FileName>stm32f10x_tim.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_tim.h</FilePath>
-            </File>
-            <File>
               <FileName>stm32f10x_usart.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_usart.h</FilePath>
@@ -523,21 +508,16 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\Libraries\STM32F10x_StdPeriph_Driver\src\HSI_calibration.c</FilePath>
             </File>
+            <File>
+              <FileName>stm32f10x_tim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_tim.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
           <GroupName>JupiterV1.1</GroupName>
           <Files>
-            <File>
-              <FileName>JupiterV1_1.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\Jupiter_config\JupiterV1_1.h</FilePath>
-            </File>
-            <File>
-              <FileName>JupiterV1_1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Jupiter_config\JupiterV1_1.c</FilePath>
-            </File>
             <File>
               <FileName>jupiter_spi.c</FileName>
               <FileType>1</FileType>
@@ -612,6 +592,11 @@
               <FileName>printf.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\Libraries\printf.c</FilePath>
+            </File>
+            <File>
+              <FileName>JupiterV1_1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Jupiter_config\JupiterV1_1.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -33,6 +33,7 @@
 #include "jupiter_uart.h"
 #include "jupiterHSICab.h"
 #include "jupiter_pwm.h"
+#include "jupiter_rtc.h"
 #include "stack.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -86,6 +87,7 @@ typedef enum
     TIME_IDLE
 }SET_TIME_STT;
 
+#define MAX_ALARM 22
 typedef struct 
 {
 #define ALARM_N   0xFF
@@ -95,11 +97,20 @@ typedef struct
   uint8_t on_time;
 }ALARM_STRUCT;
 
+typedef enum 
+{  
+  ALARM_LOAD = 0,
+  CHECK_ALARM,
+  RUN_ALARM,
+  STOP_ALARM
+}SET_ALARM_STT;
+
 typedef enum
 {
-    ALARM_NUMS = 0xA0,// so lan bat tat trong 1 ngay
-    ALARM_X// |alarm_x|gio bat 1byte|gio tat 1byte|on trong x phut 1byte step 10p|
-}SET_ALARM_STT;
+    READ_HOUR = 0,
+    READ_MIN,
+    READ_TIME
+}ALARM_LOAD_STT;
 
 typedef enum
 {

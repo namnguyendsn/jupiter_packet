@@ -1,7 +1,7 @@
 #include <stm32f10x.h>
 #include "stm32f10x_bkp.h"
 #include "stm32f10x_pwr.h"
-#include "common_config.h"
+//#include "common_config.h"
 
 /* Exported types ------------------------------------------------------------*/
 /* Time Structure definition */
@@ -15,16 +15,15 @@ typedef struct _config_time
     uint8_t years;
 }TIME, *TIME_PTR;
 
-struct Time_s
+typedef struct 
 {
-  uint8_t SecLow;
-  uint8_t SecHigh;
-  uint8_t MinLow;
-  uint8_t MinHigh;
-  uint8_t HourLow;
-  uint8_t HourHigh;
-};
-extern struct Time_s s_TimeStructVar;
+  uint8_t Sec;
+  uint8_t Min;
+  uint8_t Hour;
+  uint8_t Month;
+  uint8_t Day;
+  uint8_t Year;
+}Time_s;
 
 /* Alarm Structure definition */
 struct AlarmTime_s
@@ -37,15 +36,6 @@ struct AlarmTime_s
   uint8_t HourHigh;
 };
 extern struct AlarmTime_s s_AlarmStructVar;
-
-/* Date Structure definition */
-struct Date_s
-{
-  uint8_t Month;
-  uint8_t Day;
-  uint8_t Year;
-};
-extern struct Date_s s_DateStructVar;
 
 /* Alarm Date Structure definition */
 struct AlarmDate_s
