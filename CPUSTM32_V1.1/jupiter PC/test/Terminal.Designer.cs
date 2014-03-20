@@ -41,6 +41,10 @@ namespace SerialPortTerminal
             this.btnClear = new System.Windows.Forms.Button();
             this.tmrCheckComPorts = new System.Windows.Forms.Timer(this.components);
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.rbtEffect = new System.Windows.Forms.RadioButton();
+            this.rbtSettime = new System.Windows.Forms.RadioButton();
+            this.rbtAlarm = new System.Windows.Forms.RadioButton();
+            this.rbtLedinfo = new System.Windows.Forms.RadioButton();
             this.gbPortSettings.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -129,7 +133,7 @@ namespace SerialPortTerminal
             this.gbPortSettings.Controls.Add(this.lblComPort);
             this.gbPortSettings.Location = new System.Drawing.Point(15, 236);
             this.gbPortSettings.Name = "gbPortSettings";
-            this.gbPortSettings.Size = new System.Drawing.Size(171, 64);
+            this.gbPortSettings.Size = new System.Drawing.Size(171, 62);
             this.gbPortSettings.TabIndex = 4;
             this.gbPortSettings.TabStop = false;
             this.gbPortSettings.Text = "COM Serial Port Settings";
@@ -150,11 +154,59 @@ namespace SerialPortTerminal
             this.tmrCheckComPorts.Interval = 500;
             this.tmrCheckComPorts.Tick += new System.EventHandler(this.tmrCheckComPorts_Tick);
             // 
+            // rbtEffect
+            // 
+            this.rbtEffect.AutoSize = true;
+            this.rbtEffect.Location = new System.Drawing.Point(309, 235);
+            this.rbtEffect.Name = "rbtEffect";
+            this.rbtEffect.Size = new System.Drawing.Size(58, 17);
+            this.rbtEffect.TabIndex = 10;
+            this.rbtEffect.TabStop = true;
+            this.rbtEffect.Text = "Effects";
+            this.rbtEffect.UseVisualStyleBackColor = true;
+            // 
+            // rbtSettime
+            // 
+            this.rbtSettime.AutoSize = true;
+            this.rbtSettime.Location = new System.Drawing.Point(373, 236);
+            this.rbtSettime.Name = "rbtSettime";
+            this.rbtSettime.Size = new System.Drawing.Size(60, 17);
+            this.rbtSettime.TabIndex = 11;
+            this.rbtSettime.TabStop = true;
+            this.rbtSettime.Text = "Settime";
+            this.rbtSettime.UseVisualStyleBackColor = true;
+            // 
+            // rbtAlarm
+            // 
+            this.rbtAlarm.AutoSize = true;
+            this.rbtAlarm.Location = new System.Drawing.Point(439, 235);
+            this.rbtAlarm.Name = "rbtAlarm";
+            this.rbtAlarm.Size = new System.Drawing.Size(51, 17);
+            this.rbtAlarm.TabIndex = 12;
+            this.rbtAlarm.TabStop = true;
+            this.rbtAlarm.Text = "Alarm";
+            this.rbtAlarm.UseVisualStyleBackColor = true;
+            // 
+            // rbtLedinfo
+            // 
+            this.rbtLedinfo.AutoSize = true;
+            this.rbtLedinfo.Location = new System.Drawing.Point(506, 236);
+            this.rbtLedinfo.Name = "rbtLedinfo";
+            this.rbtLedinfo.Size = new System.Drawing.Size(63, 17);
+            this.rbtLedinfo.TabIndex = 13;
+            this.rbtLedinfo.TabStop = true;
+            this.rbtLedinfo.Text = "Led info";
+            this.rbtLedinfo.UseVisualStyleBackColor = true;
+            // 
             // frmTerminal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(772, 311);
+            this.Controls.Add(this.rbtLedinfo);
+            this.Controls.Add(this.rbtAlarm);
+            this.Controls.Add(this.rbtSettime);
+            this.Controls.Add(this.rbtEffect);
             this.Controls.Add(this.btnClear);
             this.Controls.Add(this.gbPortSettings);
             this.Controls.Add(this.btnOpenPort);
@@ -188,6 +240,10 @@ namespace SerialPortTerminal
     private System.Windows.Forms.Button btnClear;
 		private System.Windows.Forms.Timer tmrCheckComPorts;
 		private System.Windows.Forms.ToolTip toolTip;
+        private System.Windows.Forms.RadioButton rbtEffect;
+        private System.Windows.Forms.RadioButton rbtSettime;
+        private System.Windows.Forms.RadioButton rbtAlarm;
+        private System.Windows.Forms.RadioButton rbtLedinfo;
   }
 }
 

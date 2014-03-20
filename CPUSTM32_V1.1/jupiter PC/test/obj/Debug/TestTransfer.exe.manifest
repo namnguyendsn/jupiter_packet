@@ -58,14 +58,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TestTransfer.exe" size="26112">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TestTransfer.exe" size="27648">
       <assemblyIdentity name="TestTransfer" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>HraCWGo9TI6E+9tIERvA4ewFXtA=</dsig:DigestValue>
+        <dsig:DigestValue>5FvQ4zPj0Iv2HbDUz4H6LMZhrSo=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

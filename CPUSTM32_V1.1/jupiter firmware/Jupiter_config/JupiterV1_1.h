@@ -87,14 +87,16 @@ typedef enum
     TIME_IDLE
 }SET_TIME_STT;
 
+#define SHIFTVAL 0x01
+#define ALARM_ARRAY_SIZE 36//bytes
 #define MAX_ALARM 22
+#define ALARM_DATA_SIZE 5
 typedef struct 
 {
 #define ALARM_N   0xFF
-  uint8_t reserved;
   uint8_t on_hour;
   uint8_t on_min;
-  uint8_t on_time;
+  uint16_t on_time;
 }ALARM_STRUCT;
 
 typedef enum 
@@ -239,6 +241,7 @@ void uart_buffer_process(uint8_t *pk_ptr, uint8_t f_langth);
 void write_to_flash(uint8_t *pk_ptr, uint8_t f_length);
 void jupiter_cpu_init(void);
 void effect_run(void);
+void alarm_check(uint8_t * temp);
 
 /**
   * @}

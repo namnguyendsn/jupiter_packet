@@ -28,7 +28,7 @@ void LEDstatus(void);
 void SoftPWM(void);
 void HardLEDPWM(void);
 void HSI_FreqMeasure(void);
-void alarm_check(void);
+void alarm_check(uint8_t * temp);
 void CalculateTime(void);
 /** @addtogroup Demo
 * @{
@@ -37,10 +37,15 @@ void CalculateTime(void);
 /* Private variables ---------------------------------------------------------*/
 extern __IO int16_t *outBuffer;
 
+extern  uint16_t on_min_counter;
+extern bool ALARM_START;
 uint8_t AlarmStatus;
 uint8_t AlarmDate=0;
 uint8_t sec_count = 0;
+uint8_t sec_10count = 0;
 static uint32_t sysTick = 0;
+extern uint8_t * alarm_buffer_ptr;
+extern Time_s systime;
 /* Private function prototypes -----------------------------------------------*/
 
 /******************************************************************************/
@@ -188,13 +193,14 @@ void RTC_IRQHandler(void)
 {
     NVIC_ClearPendingIRQ(RTC_IRQn);
     RTC_ClearITPendingBit(RTC_IT_SEC);
-    
-    if(sec_count++ == 60)
+
+    CalculateTime();
+    if((systime.Min % 5 == 0) && (systime.Sec % 59 == 0))
     {
-        sec_count = 0;
-        CalculateTime();
-        alarm_check();
+        alarm_check(alarm_buffer_ptr);
+        printf("Test\n");
     }
+
     /* If counter is equal to 86399: one day was elapsed */
     /* This takes care of date change and resetting of counter in case of
     power on - Run mode/ Main supply switched on condition*/
@@ -221,12 +227,6 @@ void RTCAlarm_IRQHandler(void)
 {
    /* Clear the Alarm Pending Bit */
    RTC_ClearITPendingBit(RTC_IT_ALR);
-   printf("\nALARM");
-   if(((uint8_t)(BKP_ReadBackupRegister(BKP_DR8) >> 8) == (uint8_t)(BKP_ReadBackupRegister(BKP_DR4) >> 8)) &&   // check phut
-     ((uint8_t)BKP_ReadBackupRegister(BKP_DR9) == (uint8_t)BKP_ReadBackupRegister(BKP_DR4))) // check gio
-   {
-     AlarmStatus = 1;
-   }
 }
 
 void FLASH_IRQHandler(void)

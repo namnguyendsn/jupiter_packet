@@ -139,7 +139,7 @@ namespace SerialPortTerminal
         int frame_len;
         int offset = 0;
         int data_remain;
-        byte[] frame_packed = new byte[36];
+        byte[] frame_packed = new byte[104];
         byte[] effect_packed = new byte[1000];
       if (CurrentDataMode == DataMode.Text)
       {
@@ -156,33 +156,60 @@ namespace SerialPortTerminal
           // Convert the user's string of hex digits (ex: B4 CA E2) to a byte array
           byte[] data_ = HexStringToByteArray(txtSendData.Text);
 
-          effect_packed[0] = 0xE0;
-          effect_packed[1] = (byte)(data_.Length << 8);
-          effect_packed[2] = (byte)(data_.Length);
-          effect_packed[3] = 0xD5;
+          /* structure of Packet
+           * |SOP|Length|Data type|Data|EOP|
+            */
+          effect_packed[0] = 0xE0; // start of packet
+          effect_packed[1] = (byte)(data_.Length << 8); // length
+          effect_packed[2] = (byte)(data_.Length); // length
+          if (rbtEffect.Checked)
+          {
+              effect_packed[3] = 0xD5;// data type data effect
+          }
+          else if (rbtAlarm.Checked)
+          {
+              effect_packed[3] = 0xDD;// data type set alarm
+          }
+          else if (rbtSettime.Checked)
+          {
+              effect_packed[3] = 0xDE;// data type set time
+          }
+          else if (rbtSettime.Checked)
+          {
+              effect_packed[3] = 0xDF;// data type led info
+          }
+          else
+          {
+              MessageBox.Show("Data type ?!!!");
+              return;
+          }
+          
           Array.Copy(data_, 0, effect_packed, 4, data_.Length);
-          effect_packed[data_.Length + 4] = 0xE1;
+          effect_packed[data_.Length + 4] = 0xE1;// end of packet
 
           byte[] data = new byte[data_.Length + 5];
           Array.Copy(effect_packed, 0, data, 0, data_.Length + 5);
 
           // Send the binary data out the port
-          framenum = data.Length / 32;
-          if (data.Length % 32 != 0)
+          framenum = data.Length / 100;
+          if (data.Length % 100 != 0)
               framenum++;
           frame_sent = 0;
           for (int i = 0; i < framenum; i++)
           {
               frame_remain = framenum - frame_sent;
-              data_remain = data.Length - 32 * frame_sent;
-              if (data_remain > 32)
-                  frame_len = 32;
-              else if (data_remain == 32)
-                  frame_len = data.Length - 32 * frame_sent - 1;
+              data_remain = data.Length - 100 * frame_sent;
+              if (data_remain > 100)
+                  frame_len = 100;
+              else if (data_remain == 100)
+                  frame_len = data.Length - 100 * frame_sent - 1;
               else
-                  frame_len = data.Length - 32 * frame_sent;
+                  frame_len = data.Length - 100 * frame_sent;
 
               Array.Clear(frame_packed, 0, frame_packed.Length);
+              /* structure of SCI frame
+                * |SOF|Length|CRC|Data|EOF|
+                */
               frame_packed[0] = 0xD0;// SOF
               frame_packed[1] = (byte)(frame_len);// length
               frame_packed[2] = 0x77;// crc
@@ -191,9 +218,9 @@ namespace SerialPortTerminal
               frame_packed[frame_len + 3] = 0xD1;// EOF
 
               comport.Write(frame_packed, 0, frame_len + 4);
-              Thread.Sleep(100);
+              Thread.Sleep(200);
               ++frame_sent;
-              offset += 32;
+              offset += 100;
               // Show the hex digits on in the terminal window
               Log(LogMsgType.Outgoing, ByteArrayToHexString(frame_packed) + "\n");
           }

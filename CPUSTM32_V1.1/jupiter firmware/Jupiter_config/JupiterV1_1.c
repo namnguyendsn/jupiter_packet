@@ -39,12 +39,20 @@ static EF_STT parse_stt;
 static SFOR_STRUCT sfor_loop;
 static uint32_t effect_length;
 static uint8_t alarms_num;
+static SET_ALARM_STT alarm_stt;
+static uint8_t alarm_n = 0;
+static uint8_t * alarm_check_ptr;
+
 void uart_buffer_process(uint8_t *pk_ptr, uint8_t f_length);
 void write_to_flash(uint8_t *pk_ptr, uint8_t f_length);
 void write_alarm(uint8_t *pk_ptr, uint8_t f_length);
 void MCO_config(void);
 void rtc_init(void);
 uint8_t read_from_flash(uint32_t Address);
+void alarm_load(uint8_t * temp);
+bool get_alarm(ALARM_STRUCT * alarm_data_buff, uint8_t alarm_index);
+void alarm_check(uint8_t * temp);
+
 GPIO_TypeDef* GPIO_PORT[LEDn] = {LED1_GPIO_PORT, FREQ_TEST_GPIO_PORT, LED2_GPIO_PORT, SDI_GPIO_PORT, CLK_GPIO_PORT, STR_GPIO_PORT, OE_GPIO_PORT};
 const uint16_t GPIO_PIN[LEDn] = {LED1_PIN, FREQ_TEST_PIN, LED2_PIN, SDI_PIN, CLK_PIN, STR_PIN, OE_PIN};
 const uint32_t GPIO_CLK[LEDn] = {LED1_GPIO_CLK, FREQ_TEST_GPIO_CLK, LED2_GPIO_CLK, SDI_GPIO_CLK, CLK_GPIO_CLK, STR_GPIO_CLK, OE_GPIO_CLK};
@@ -58,6 +66,7 @@ UART_CALLBACK uart_process_callback;
 uint16_t on_min_counter = 0;
 bool ALARM_START = FALSE;
 ALARM_STRUCT alarm_data;
+uint8_t * alarm_buffer_ptr = NULL;
 
 void jupiter_cpu_init(void)
 {
@@ -73,12 +82,9 @@ void jupiter_cpu_init(void)
 	// test clock source
 	MCO_config();
 
-	// init rtc
-	rtc_init();
-
 	// Init UART
 	uart_init(uart_buffer_process);
-    
+
     // Init Flash
     flash_init();
 	/* Enable GPIOx Clock */
@@ -108,6 +114,14 @@ void jupiter_cpu_init(void)
     memset(pwm_data, 0, LEDS);
     // load backup data
     effect_length = BKP_ReadBackupRegister(BKP_DR2) + FLASH_START_ADDRESS;
+    alarms_num = (uint8_t)(BKP_ReadBackupRegister(BKP_DR5) >> 8);
+    
+    alarm_buffer_ptr = (uint8_t *)malloc(ALARM_ARRAY_SIZE);
+    alarm_check_ptr = alarm_buffer_ptr;
+    alarm_load(alarm_buffer_ptr);
+    
+    // init rtc
+	rtc_init();
 }
 
 /**
@@ -149,84 +163,131 @@ void uart_buffer_process(uint8_t *pk_ptr, uint8_t f_length)
 
 void write_alarm(uint8_t *pk_ptr, uint8_t f_length)
 {
-    uint8_t * temp;
-    temp = pk_ptr;
-    alarms_num = *(temp + 4);
-    fcallback(temp + 5, f_length - 6, 7, ALARM_BEGIN_ADD, ALARM_END_ADD);
+    uint8_t * tempx;
+    uint8_t bkp_val;
+    tempx = pk_ptr;
+    alarms_num = *(tempx + 4);
+    bkp_val = (uint8_t)BKP_ReadBackupRegister(BKP_DR5);
+    if(alarms_num > MAX_ALARM)
+        return;
+    BKP_WriteBackupRegister(BKP_DR5, (alarms_num << 8) | bkp_val);
+    fcallback(tempx + 5, f_length - 6, 7, ALARM_BEGIN_ADD, ALARM_END_ADD);
+    
+    alarm_load(alarm_buffer_ptr);    
+    
+    alarm_stt = ALARM_LOAD;
+    alarm_n = 0;
 }
 /*
     call while minute elapse
 */
-void alarm_check(void)
+
+void alarm_load(uint8_t * temp)
 {
-    static SET_ALARM_STT alarm_stt;
-    static uint8_t alarm_n = 0;
+    uint16_t Start;
+    uint16_t Stop;
+    uint16_t index__;
+    uint8_t i;
+    uint8_t * mem_head;
+    index__ = 0;
+
+    if(temp == NULL)
+        return;
+    memset(temp, 0, ALARM_ARRAY_SIZE);
+    mem_head = temp;
+    for(i = 0; i< alarms_num; i++)
+    {
+        if(get_alarm(&alarm_data, i) != TRUE)
+            break;
+        Start = (alarm_data.on_hour * 60 + alarm_data.on_min) / 5;
+        if(alarm_data.on_time > 287)
+            break;
+        else
+            Stop = Start + alarm_data.on_time / 5;
+        index__ = 0;
+        temp = mem_head;
+        while(1)
+        {
+            if(((index__ % 8) == 0) && (index__ != 0))
+            {
+                temp++;
+            }
+
+            if((index__ >= Start) && (index__ < Stop))
+                *temp |= (SHIFTVAL << (index__ % 8));
+            if(index__ >= Stop)
+                break;
+            index__++;
+        }
+    }
+}
+
+bool get_alarm(ALARM_STRUCT * alarm_data_buff, uint8_t alarm_index)
+{
     ALARM_LOAD_STT stt;
     uint8_t temp;
+    uint8_t array[2], index = 0;
     uint8_t i;
 
-    if(alarm_stt == ALARM_LOAD)
+    if(alarm_data_buff == NULL)
+        return FALSE;
+    if(alarm_index/ALARM_DATA_SIZE > alarms_num)
     {
-        if(alarm_n/4 > MAX_ALARM)
+        alarm_index = 0;
+        return FALSE;
+    }
+    else
+    {
+        index = 0;
+        alarm_index *= ALARM_DATA_SIZE;
+        for(i = 0; i < ALARM_DATA_SIZE; i++)
         {
-            alarm_n = 0;
-        }
-        else
-        {
-            for(i = 0; i < 4; i++)
+            temp = read_from_flash(alarm_index + ALARM_BEGIN_ADD);
+            alarm_index++;
+            if(temp == ALARM_N)
             {
-                temp = read_from_flash(alarm_n + ALARM_BEGIN_ADD);
-                alarm_n++;
-                if(temp == ALARM_N)
-                {
-                    stt = READ_HOUR;
-                    continue;
-                }
-                switch(stt)
-                {
-                    case READ_HOUR:
-                        alarm_data.on_hour = temp;
-                        stt = READ_MIN;
-                        break;
-                    case READ_MIN:
-                        alarm_data.on_min = temp;
-                        stt = READ_TIME;
-                        break;
-                    case READ_TIME:
-                        alarm_data.on_time = temp;
-                        break;
-                }
+                stt = READ_HOUR;
+                continue;
             }
-        alarm_stt = CHECK_ALARM;
+            switch(stt)
+            {
+                case READ_HOUR:
+                    alarm_data_buff->on_hour = temp;
+                    stt = READ_MIN;
+                    break;
+                case READ_MIN:
+                    alarm_data_buff->on_min = temp;
+                    stt = READ_TIME;
+                    break;
+                case READ_TIME:
+                    array[index] = temp;
+                    index++;
+                    break;
+            }
         }
+    alarm_data_buff->on_time = (array[0] << 8) | array[1];
+    alarm_stt = CHECK_ALARM;
+    return TRUE;
     }
+}
 
-    if(alarm_stt == CHECK_ALARM)
+void alarm_check(uint8_t * alarm_ptr)
+{
+    static uint8_t shift_count = 0;
+    uint16_t alarm_index;
+    alarm_index = (systime.Hour*60 + systime.Min) / 5;
+    if(alarm_index == 0)
+        alarm_check_ptr = alarm_ptr;
+
+    if(shift_count++ >= 7)
     {
-        if((alarm_data.on_hour == systime.Hour) && (alarm_data.on_min == systime.Min))
-        {
-            alarm_stt = RUN_ALARM;
-        }
+        shift_count = 0;
+        alarm_check_ptr++;
     }
-
-    if(alarm_stt == RUN_ALARM)
-    {
+    if(*alarm_check_ptr & (SHIFTVAL << shift_count))
         ALARM_START = TRUE;
-        if(on_min_counter < alarm_data.on_time)
-        {
-            on_min_counter++;
-        }
-        else
-        {
-            alarm_stt = STOP_ALARM;
-        }
-    }
-    if(alarm_stt == RUN_ALARM)
-    {
+    else
         ALARM_START = FALSE;
-        on_min_counter = 0;
-        alarm_stt = ALARM_LOAD;
-    }
 }
 
 /**
@@ -309,6 +370,7 @@ uint8_t read_from_flash(uint32_t Address)
 void effect_run(void)
 {
     uint8_t temp;
+    uint8_t index;
     uint8_t loop_remain;
     uint8_t loop;
     uint16_t delay_val;
@@ -319,6 +381,13 @@ void effect_run(void)
     effect_data_counter = EFFECT_BEGIN_ADD;
     while(effect_data_counter < effect_length)
     {
+        if(ALARM_START == FALSE)
+        {
+            for(index = 0; index < LEDS; index++)
+                pwm_data[index].pwm_ldval = 0;
+            return;            
+        }
+
         temp = read_from_flash(effect_data_counter);
         effect_data_counter++;
         switch(temp)
