@@ -195,7 +195,7 @@ void RTC_IRQHandler(void)
     RTC_ClearITPendingBit(RTC_IT_SEC);
 
     CalculateTime();
-    if((systime.Min % 5 == 0) && (systime.Sec % 59 == 0))
+    if((systime.Min % 5 == 0) && (systime.Sec == 0))
     {
         alarm_check(alarm_buffer_ptr);
         printf("Test\n");
