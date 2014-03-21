@@ -275,7 +275,12 @@ void alarm_check(uint8_t * alarm_ptr)
 {
     static uint8_t shift_count = 0;
     uint16_t alarm_index;
+
+    if(alarm_ptr == NULL)
+    	return;
+
     alarm_index = (systime.Hour*60 + systime.Min) / 5;
+
     if(alarm_index == 0)
         alarm_check_ptr = alarm_ptr;
 
