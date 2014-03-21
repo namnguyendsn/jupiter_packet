@@ -273,14 +273,15 @@ bool get_alarm(ALARM_STRUCT * alarm_data_buff, uint8_t alarm_index)
 
 void alarm_check(uint8_t * alarm_ptr)
 {
-    static uint8_t shift_count = 0;
+    uint8_t shift_count = 0;
     uint16_t alarm_index;
 
     if(alarm_ptr == NULL)
     	return;
 
     alarm_index = (systime.Hour*60 + systime.Min) / 5;
-
+    alarm_check_ptr = alarm_ptr + (alarm_index / 8);
+    shift_count = alarm_index % 8;
     if(alarm_index == 0)
         alarm_check_ptr = alarm_ptr;
 
@@ -288,12 +289,6 @@ void alarm_check(uint8_t * alarm_ptr)
         ALARM_START = TRUE;
     else
         ALARM_START = FALSE;
-
-    if(shift_count++ > 7)
-    {
-        shift_count = 0;
-        alarm_check_ptr++;
-    }
 }
 
 /**

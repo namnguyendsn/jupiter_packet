@@ -200,6 +200,7 @@ void RTC_IRQHandler(void)
         alarm_check(alarm_buffer_ptr);
         printf("Test\n");
     }
+    alarm_check(alarm_buffer_ptr);
 
     /* If counter is equal to 86399: one day was elapsed */
     /* This takes care of date change and resetting of counter in case of
