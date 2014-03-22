@@ -1,3 +1,6 @@
 [submodule "CPUSTM32_V1.1/jupiter PC/Led_Simulator_v2.0_beta"]
 	path = CPUSTM32_V1.1/jupiter PC/Led_Simulator_v2.0_beta
 	url = D:\\Work\\TnTech\\LED driver+RTC\\firmware and utility\\CPUSTM32_V1.1\\jupiter PC\\Led_Simulator_v2.0_beta
+[submodule "CPUSTM32_V1.1/jupiter PC/Led_Simulator_v2_0_beta"]
+	path = CPUSTM32_V1.1/jupiter PC/Led_Simulator_v2_0_beta
+	url = D:\\Work\\TnTech\\LED driver+RTC\\firmware and utility\\CPUSTM32_V1.1\\jupiter PC\\Led_Simulator_v2_0_beta
