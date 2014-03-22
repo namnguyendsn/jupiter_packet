@@ -220,9 +220,12 @@ namespace Led_Simulator_v2._0_beta
                         byte[] frame_packed = new byte[frame_len+4];
                         Array.Clear(frame_packed, 0, frame_packed.Length);
 
+                        byte[] crcBuff = new byte[frame_len];
+                        Array.Copy(PacketBuff, offset, crcBuff, 0, frame_len);
+
                         frame_packed[0] = 0xD0;// SOF
                         frame_packed[1] = (byte)(frame_len);// length
-                        frame_packed[2] = CalcCRC8(PacketBuff);// crc
+                        frame_packed[2] = CalcCRC8(crcBuff);// crc
                         Array.Copy(PacketBuff, offset, frame_packed, 3, frame_len);
                         frame_packed[frame_len + 3] = 0xD1;// EOF
 
@@ -240,7 +243,7 @@ namespace Led_Simulator_v2._0_beta
                                 return;
                             }
 
-                            Thread.Sleep(100);
+                            Thread.Sleep(200);
                             if (ACK == 0xFF)
                             { 
                                 tryingTime++;

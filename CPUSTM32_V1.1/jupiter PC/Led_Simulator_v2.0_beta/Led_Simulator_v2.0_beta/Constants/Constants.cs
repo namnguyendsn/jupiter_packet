@@ -33,10 +33,10 @@ namespace Led_Simulator_v2._0_beta
         //Constants for data
         public const int MAX_LED = 100;
         public const int MAX_STATE = 100;
-        public const int MAX_BRIGHT = 100;
+        public const int MAX_BRIGHT = 50;
         public const int DEFAULT_BRIGHT = 0;
         public const int DEFAULT_BRIGHTTIME = 5;
-        public const int BRIGHT_STEP = 5;
+        public const int BRIGHT_STEP = 1;
         public const int FORLOOP_STEP = 1;
         public const int DEFAULT_LOOP_TIME = 1;
         public const int TYPE_NONE = 0;
