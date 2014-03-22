@@ -1,0 +1,491 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Project:</h2>
+D:\Phung_The_Vu\My Projects\development board\GEM\Firmware\Demo\V2.0\source code\Project\LCD\LCD_16x2\RVMDK\lcd_16x2.uvproj
+Project File Date:  02/28/2010
+
+<h2>Output:</h2>
+Build target 'STM32_GEM3M_PROJECT'
+compiling main.c...
+..\main.c(29): error:  #5: cannot open source input file "spi_flash.h": No such file or directory
+compiling lcd.c...
+..\lcd.c(93): error:  #20: identifier "__IO" is undefined
+..\lcd.c(93): error:  #18: expected a ")"
+..\lcd.c(100): error:  #20: identifier "__IO" is undefined
+..\lcd.c(100): error:  #18: expected a ")"
+..\lcd.c(102): error:  #20: identifier "__IO" is undefined
+..\lcd.c(102): error:  #101: "u32" has already been declared in the current scope
+..\lcd.c(102): error:  #65: expected a ";"
+..\lcd.c(105): error:  #20: identifier "index" is undefined
+..\lcd.c(105): error:  #20: identifier "nCount" is undefined
+..\lcd.c(373): warning:  #223-D: function "lcd_Init_HW" declared implicitly
+..\lcd.c(375): warning:  #223-D: function "lcd_Control_Write" declared implicitly
+..\lcd.c(375): error:  #20: identifier "LCD_DISP_INIT" is undefined
+..\lcd.c(377): error:  #20: identifier "LCD_CLEAR_DISPLAY" is undefined
+..\lcd.c(381): error:  #20: identifier "LCD_INC_MODE" is undefined
+..\lcd.c(383): error:  #20: identifier "LCD_DISP_ON" is undefined
+..\lcd.c(385): error:  #20: identifier "LCD_RETRN_HOME" is undefined
+..\lcd.c(410): warning:  #223-D: function "lcd_Control_Write" declared implicitly
+..\lcd.c(410): error:  #20: identifier "LCD_RETRN_HOME" is undefined
+..\lcd.c(420): warning:  #223-D: function "lcd_Control_Write" declared implicitly
+..\lcd.c(420): error:  #20: identifier "LCD_CLEAR_DISPLAY" is undefined
+..\lcd.c(434): error:  #20: identifier "u8" is undefined
+..\lcd.c(434): error:  #20: identifier "u8" is undefined
+..\lcd.c(436): error:  #20: identifier "u8" is undefined
+..\lcd.c(441): error:  #20: identifier "LCD_LINE0_ADDR" is undefined
+..\lcd.c(442): error:  #20: identifier "LCD_LINE1_ADDR" is undefined
+..\lcd.c(449): warning:  #223-D: function "lcd_Control_Write" declared implicitly
+..\lcd.c(449): error:  #20: identifier "LCD_DD_RAM_PTR" is undefined
+..\lcd.c(465): error:  #20: identifier "u8" is undefined
+..\lcd.c(465): error:  #20: identifier "u8" is undefined
+..\lcd.c(465): error:  #20: identifier "u8" is undefined
+..\lcd.c(467): error:  #20: identifier "u8" is undefined
+..\lcd.c(468): error:  #20: identifier "u8" is undefined
+..\lcd.c(471): warning:  #223-D: function "lcd_Control_Read" declared implicitly
+..\lcd.c(483): warning:  #223-D: function "lcd_Control_Write" declared implicitly
+..\lcd.c(483): error:  #20: identifier "LCD_CG_RAM_PTR" is undefined
+..\lcd.c(485): warning:  #223-D: function "lcd_Data_Write" declared implicitly
+..\lcd.c(489): warning:  #223-D: function "lcd_Control_Write" declared implicitly
+..\lcd.c(489): error:  #20: identifier "LCD_DD_RAM_PTR" is undefined
+..\lcd.c(503): error:  #20: identifier "u8" is undefined
+compiling reprintf.c...
+..\reprintf.c(31): error:  #5: cannot open source input file "uart.h": No such file or directory
+compiling stm32f10x_it.c...
+compiling misc.c...
+compiling stm32f10x_gpio.c...
+compiling stm32f10x_rcc.c...
+compiling core_cm3.c...
+compiling system_stm32f10x.c...
+assembling startup_stm32f10x_hd.s...
+Target not created
+Build target 'STM32_GEM3M_PROJECT'
+compiling main.c...
+..\main.c(59): error:  #20: identifier "USART_InitTypeDef" is undefined
+..\main.c(105): warning:  #223-D: function "USART_SendData" declared implicitly
+..\main.c(108): warning:  #223-D: function "USART_GetFlagStatus" declared implicitly
+..\main.c(108): error:  #20: identifier "USART_FLAG_TC" is undefined
+..\main.c(176): error:  #20: identifier "USART_WordLength_8b" is undefined
+..\main.c(177): error:  #20: identifier "USART_StopBits_1" is undefined
+..\main.c(178): error:  #20: identifier "USART_Parity_No" is undefined
+..\main.c(179): error:  #20: identifier "USART_HardwareFlowControl_None" is undefined
+..\main.c(180): error:  #20: identifier "USART_Mode_Rx" is undefined
+..\main.c(180): error:  #20: identifier "USART_Mode_Tx" is undefined
+..\main.c(183): warning:  #223-D: function "USART_Init" declared implicitly
+..\main.c(186): warning:  #223-D: function "USART_Cmd" declared implicitly
+..\main.c(125): warning:  #177-D: variable "buf" was declared but never referenced
+..\main.c(125): warning:  #177-D: variable "test_id" was declared but never referenced
+compiling lcd.c...
+..\lcd.h(162): error:  #79: expected a type specifier
+..\lcd.h(162): error:  #757: constant "ENABLE" is not a type name
+..\lcd.h(162): warning:  #77-D: this declaration has no storage class or type specifier
+..\lcd.h(162): error:  #147: declaration is incompatible with "void RCC_APB2PeriphClockCmd(uint32_t, FunctionalState)" (declared at line 666 of "..\..\..\..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rcc.h")
+..\lcd.h(165): error:  #77-D: this declaration has no storage class or type specifier
+..\lcd.h(165): error:  #65: expected a ";"
+..\lcd.h(166): error:  #77-D: this declaration has no storage class or type specifier
+..\lcd.h(166): error:  #65: expected a ";"
+..\lcd.h(167): error:  #169: expected a declaration
+..\lcd.h(177): warning:  #12-D: parsing restarts here after previous syntax error
+..\lcd.h(178): error:  #169: expected a declaration
+..\lcd.h(207): warning:  #12-D: parsing restarts here after previous syntax error
+..\lcd.c(147): warning:  #223-D: function "asm" declared implicitly
+..\lcd.c(235): error:  #7: unrecognized token
+..\lcd.c(235): error:  #29: expected an expression
+..\lcd.c(251): error:  #7: unrecognized token
+..\lcd.c(251): error:  #29: expected an expression
+..\lcd.c(251): warning:  #177-D: variable "GPIO_InitStructure" was declared but never referenced
+..\lcd.c(259): error:  #268: declaration may not appear after executable statement in block
+..\lcd.c(260): error:  #65: expected a ";"
+..\lcd.c(269): error:  #7: unrecognized token
+..\lcd.c(282): warning:  #12-D: parsing restarts here after previous syntax error
+..\lcd.c(288): error:  #29: expected an expression
+..\lcd.c(296): error:  #7: unrecognized token
+..\lcd.c(296): error:  #29: expected an expression
+..\lcd.c(298): error:  #118: a void function may not return a value
+..\lcd.c(296): warning:  #177-D: variable "GPIO_InitStructure" was declared but never referenced
+..\lcd.c(307): error:  #268: declaration may not appear after executable statement in block
+..\lcd.c(308): error:  #65: expected a ";"
+..\lcd.c(325): error:  #7: unrecognized token
+..\lcd.c(330): warning:  #12-D: parsing restarts here after previous syntax error
+..\lcd.c(332): warning:  #111-D: statement is unreachable
+..\lcd.c(340): error:  #7: unrecognized token
+..\lcd.c(340): error:  #29: expected an expression
+..\lcd.c(340): warning:  #177-D: variable "GPIO_InitStructure" was declared but never referenced
+..\lcd.c(348): error:  #268: declaration may not appear after executable statement in block
+..\lcd.c(349): error:  #65: expected a ";"
+..\lcd.c(358): error:  #7: unrecognized token
+..\lcd.c(371): warning:  #12-D: parsing restarts here after previous syntax error
+..\lcd.c(378): error:  #29: expected an expression
+..\lcd.c(386): error:  #7: unrecognized token
+compiling reprintf.c...
+..\lcd.h(162): error:  #79: expected a type specifier
+..\lcd.h(162): error:  #757: constant "ENABLE" is not a type name
+..\lcd.h(162): warning:  #77-D: this declaration has no storage class or type specifier
+..\lcd.h(162): error:  #147: declaration is incompatible with "void RCC_APB2PeriphClockCmd(uint32_t, FunctionalState)" (declared at line 666 of "..\..\..\..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rcc.h")
+..\lcd.h(165): error:  #77-D: this declaration has no storage class or type specifier
+..\lcd.h(165): error:  #65: expected a ";"
+..\lcd.h(166): error:  #77-D: this declaration has no storage class or type specifier
+..\lcd.h(166): error:  #65: expected a ";"
+..\lcd.h(167): error:  #169: expected a declaration
+..\lcd.h(177): warning:  #12-D: parsing restarts here after previous syntax error
+..\lcd.h(178): error:  #169: expected a declaration
+..\lcd.h(207): warning:  #12-D: parsing restarts here after previous syntax error
+..\reprintf.c(31): error:  #5: cannot open source input file "uart.h": No such file or directory
+compiling stm32f10x_it.c...
+compiling misc.c...
+compiling stm32f10x_gpio.c...
+compiling stm32f10x_rcc.c...
+compiling core_cm3.c...
+compiling system_stm32f10x.c...
+assembling startup_stm32f10x_hd.s...
+Target not created
+Build target 'STM32_GEM3M_PROJECT'
+compiling main.c...
+..\main.c(59): error:  #20: identifier "USART_InitTypeDef" is undefined
+..\main.c(105): warning:  #223-D: function "USART_SendData" declared implicitly
+..\main.c(108): warning:  #223-D: function "USART_GetFlagStatus" declared implicitly
+..\main.c(108): error:  #20: identifier "USART_FLAG_TC" is undefined
+..\main.c(125): warning:  #177-D: variable "buf" was declared but never referenced
+..\main.c(125): warning:  #177-D: variable "test_id" was declared but never referenced
+compiling lcd.c...
+..\lcd.h(162): error:  #79: expected a type specifier
+..\lcd.h(162): error:  #757: constant "ENABLE" is not a type name
+..\lcd.h(162): warning:  #77-D: this declaration has no storage class or type specifier
+..\lcd.h(162): error:  #147: declaration is incompatible with "void RCC_APB2PeriphClockCmd(uint32_t, FunctionalState)" (declared at line 666 of "..\..\..\..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rcc.h")
+..\lcd.h(165): error:  #77-D: this declaration has no storage class or type specifier
+..\lcd.h(165): error:  #65: expected a ";"
+..\lcd.h(166): error:  #77-D: this declaration has no storage class or type specifier
+..\lcd.h(166): error:  #65: expected a ";"
+..\lcd.h(167): error:  #169: expected a declaration
+..\lcd.h(177): warning:  #12-D: parsing restarts here after previous syntax error
+..\lcd.h(178): error:  #169: expected a declaration
+..\lcd.h(207): warning:  #12-D: parsing restarts here after previous syntax error
+..\lcd.c(147): warning:  #223-D: function "asm" declared implicitly
+..\lcd.c(235): error:  #7: unrecognized token
+..\lcd.c(235): error:  #29: expected an expression
+..\lcd.c(251): error:  #7: unrecognized token
+..\lcd.c(251): error:  #29: expected an expression
+..\lcd.c(251): warning:  #177-D: variable "GPIO_InitStructure" was declared but never referenced
+..\lcd.c(259): error:  #268: declaration may not appear after executable statement in block
+..\lcd.c(260): error:  #65: expected a ";"
+..\lcd.c(269): error:  #7: unrecognized token
+..\lcd.c(282): warning:  #12-D: parsing restarts here after previous syntax error
+..\lcd.c(288): error:  #29: expected an expression
+..\lcd.c(296): error:  #7: unrecognized token
+..\lcd.c(296): error:  #29: expected an expression
+..\lcd.c(298): error:  #118: a void function may not return a value
+..\lcd.c(296): warning:  #177-D: variable "GPIO_InitStructure" was declared but never referenced
+..\lcd.c(307): error:  #268: declaration may not appear after executable statement in block
+..\lcd.c(308): error:  #65: expected a ";"
+..\lcd.c(325): error:  #7: unrecognized token
+..\lcd.c(330): warning:  #12-D: parsing restarts here after previous syntax error
+..\lcd.c(332): warning:  #111-D: statement is unreachable
+..\lcd.c(340): error:  #7: unrecognized token
+..\lcd.c(340): error:  #29: expected an expression
+..\lcd.c(340): warning:  #177-D: variable "GPIO_InitStructure" was declared but never referenced
+..\lcd.c(348): error:  #268: declaration may not appear after executable statement in block
+..\lcd.c(349): error:  #65: expected a ";"
+..\lcd.c(358): error:  #7: unrecognized token
+..\lcd.c(371): warning:  #12-D: parsing restarts here after previous syntax error
+..\lcd.c(378): error:  #29: expected an expression
+..\lcd.c(386): error:  #7: unrecognized token
+compiling reprintf.c...
+..\lcd.h(162): error:  #79: expected a type specifier
+..\lcd.h(162): error:  #757: constant "ENABLE" is not a type name
+..\lcd.h(162): warning:  #77-D: this declaration has no storage class or type specifier
+..\lcd.h(162): error:  #147: declaration is incompatible with "void RCC_APB2PeriphClockCmd(uint32_t, FunctionalState)" (declared at line 666 of "..\..\..\..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rcc.h")
+..\lcd.h(165): error:  #77-D: this declaration has no storage class or type specifier
+..\lcd.h(165): error:  #65: expected a ";"
+..\lcd.h(166): error:  #77-D: this declaration has no storage class or type specifier
+..\lcd.h(166): error:  #65: expected a ";"
+..\lcd.h(167): error:  #169: expected a declaration
+..\lcd.h(177): warning:  #12-D: parsing restarts here after previous syntax error
+..\lcd.h(178): error:  #169: expected a declaration
+..\lcd.h(207): warning:  #12-D: parsing restarts here after previous syntax error
+..\reprintf.c(31): error:  #5: cannot open source input file "uart.h": No such file or directory
+compiling stm32f10x_it.c...
+compiling misc.c...
+compiling stm32f10x_gpio.c...
+compiling stm32f10x_rcc.c...
+compiling core_cm3.c...
+compiling system_stm32f10x.c...
+assembling startup_stm32f10x_hd.s...
+Target not created
+Build target 'STM32_GEM3M_PROJECT'
+compiling main.c...
+..\main.c(107): warning:  #177-D: variable "buf" was declared but never referenced
+..\main.c(107): warning:  #177-D: variable "test_id" was declared but never referenced
+compiling lcd.c...
+..\lcd.h(162): error:  #79: expected a type specifier
+..\lcd.h(162): error:  #757: constant "ENABLE" is not a type name
+..\lcd.h(162): warning:  #77-D: this declaration has no storage class or type specifier
+..\lcd.h(162): error:  #147: declaration is incompatible with "void RCC_APB2PeriphClockCmd(uint32_t, FunctionalState)" (declared at line 666 of "..\..\..\..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rcc.h")
+..\lcd.h(165): error:  #77-D: this declaration has no storage class or type specifier
+..\lcd.h(165): error:  #65: expected a ";"
+..\lcd.h(166): error:  #77-D: this declaration has no storage class or type specifier
+..\lcd.h(166): error:  #65: expected a ";"
+..\lcd.h(167): error:  #169: expected a declaration
+..\lcd.h(177): warning:  #12-D: parsing restarts here after previous syntax error
+..\lcd.h(178): error:  #169: expected a declaration
+..\lcd.h(207): warning:  #12-D: parsing restarts here after previous syntax error
+..\lcd.c(147): warning:  #223-D: function "asm" declared implicitly
+..\lcd.c(235): error:  #7: unrecognized token
+..\lcd.c(235): error:  #29: expected an expression
+..\lcd.c(251): error:  #7: unrecognized token
+..\lcd.c(251): error:  #29: expected an expression
+..\lcd.c(251): warning:  #177-D: variable "GPIO_InitStructure" was declared but never referenced
+..\lcd.c(259): error:  #268: declaration may not appear after executable statement in block
+..\lcd.c(260): error:  #65: expected a ";"
+..\lcd.c(269): error:  #7: unrecognized token
+..\lcd.c(282): warning:  #12-D: parsing restarts here after previous syntax error
+..\lcd.c(288): error:  #29: expected an expression
+..\lcd.c(296): error:  #7: unrecognized token
+..\lcd.c(296): error:  #29: expected an expression
+..\lcd.c(298): error:  #118: a void function may not return a value
+..\lcd.c(296): warning:  #177-D: variable "GPIO_InitStructure" was declared but never referenced
+..\lcd.c(307): error:  #268: declaration may not appear after executable statement in block
+..\lcd.c(308): error:  #65: expected a ";"
+..\lcd.c(325): error:  #7: unrecognized token
+..\lcd.c(330): warning:  #12-D: parsing restarts here after previous syntax error
+..\lcd.c(332): warning:  #111-D: statement is unreachable
+..\lcd.c(340): error:  #7: unrecognized token
+..\lcd.c(340): error:  #29: expected an expression
+..\lcd.c(340): warning:  #177-D: variable "GPIO_InitStructure" was declared but never referenced
+..\lcd.c(348): error:  #268: declaration may not appear after executable statement in block
+..\lcd.c(349): error:  #65: expected a ";"
+..\lcd.c(358): error:  #7: unrecognized token
+..\lcd.c(371): warning:  #12-D: parsing restarts here after previous syntax error
+..\lcd.c(378): error:  #29: expected an expression
+..\lcd.c(386): error:  #7: unrecognized token
+compiling reprintf.c...
+..\lcd.h(162): error:  #79: expected a type specifier
+..\lcd.h(162): error:  #757: constant "ENABLE" is not a type name
+..\lcd.h(162): warning:  #77-D: this declaration has no storage class or type specifier
+..\lcd.h(162): error:  #147: declaration is incompatible with "void RCC_APB2PeriphClockCmd(uint32_t, FunctionalState)" (declared at line 666 of "..\..\..\..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rcc.h")
+..\lcd.h(165): error:  #77-D: this declaration has no storage class or type specifier
+..\lcd.h(165): error:  #65: expected a ";"
+..\lcd.h(166): error:  #77-D: this declaration has no storage class or type specifier
+..\lcd.h(166): error:  #65: expected a ";"
+..\lcd.h(167): error:  #169: expected a declaration
+..\lcd.h(177): warning:  #12-D: parsing restarts here after previous syntax error
+..\lcd.h(178): error:  #169: expected a declaration
+..\lcd.h(207): warning:  #12-D: parsing restarts here after previous syntax error
+..\reprintf.c(31): error:  #5: cannot open source input file "uart.h": No such file or directory
+Target not created
+Build target 'STM32_GEM3M_PROJECT'
+compiling main.c...
+compiling lcd.c...
+..\lcd.h(162): error:  #79: expected a type specifier
+..\lcd.h(162): error:  #757: constant "ENABLE" is not a type name
+..\lcd.h(162): warning:  #77-D: this declaration has no storage class or type specifier
+..\lcd.h(162): error:  #147: declaration is incompatible with "void RCC_APB2PeriphClockCmd(uint32_t, FunctionalState)" (declared at line 666 of "..\..\..\..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rcc.h")
+..\lcd.h(165): error:  #77-D: this declaration has no storage class or type specifier
+..\lcd.h(165): error:  #65: expected a ";"
+..\lcd.h(166): error:  #77-D: this declaration has no storage class or type specifier
+..\lcd.h(166): error:  #65: expected a ";"
+..\lcd.h(167): error:  #169: expected a declaration
+..\lcd.h(177): warning:  #12-D: parsing restarts here after previous syntax error
+..\lcd.h(178): error:  #169: expected a declaration
+..\lcd.h(207): warning:  #12-D: parsing restarts here after previous syntax error
+..\lcd.c(147): warning:  #223-D: function "asm" declared implicitly
+..\lcd.c(235): error:  #7: unrecognized token
+..\lcd.c(235): error:  #29: expected an expression
+..\lcd.c(251): error:  #7: unrecognized token
+..\lcd.c(251): error:  #29: expected an expression
+..\lcd.c(251): warning:  #177-D: variable "GPIO_InitStructure" was declared but never referenced
+..\lcd.c(259): error:  #268: declaration may not appear after executable statement in block
+..\lcd.c(260): error:  #65: expected a ";"
+..\lcd.c(269): error:  #7: unrecognized token
+..\lcd.c(282): warning:  #12-D: parsing restarts here after previous syntax error
+..\lcd.c(288): error:  #29: expected an expression
+..\lcd.c(296): error:  #7: unrecognized token
+..\lcd.c(296): error:  #29: expected an expression
+..\lcd.c(298): error:  #118: a void function may not return a value
+..\lcd.c(296): warning:  #177-D: variable "GPIO_InitStructure" was declared but never referenced
+..\lcd.c(307): error:  #268: declaration may not appear after executable statement in block
+..\lcd.c(308): error:  #65: expected a ";"
+..\lcd.c(325): error:  #7: unrecognized token
+..\lcd.c(330): warning:  #12-D: parsing restarts here after previous syntax error
+..\lcd.c(332): warning:  #111-D: statement is unreachable
+..\lcd.c(340): error:  #7: unrecognized token
+..\lcd.c(340): error:  #29: expected an expression
+..\lcd.c(340): warning:  #177-D: variable "GPIO_InitStructure" was declared but never referenced
+..\lcd.c(348): error:  #268: declaration may not appear after executable statement in block
+..\lcd.c(349): error:  #65: expected a ";"
+..\lcd.c(358): error:  #7: unrecognized token
+..\lcd.c(371): warning:  #12-D: parsing restarts here after previous syntax error
+..\lcd.c(378): error:  #29: expected an expression
+..\lcd.c(386): error:  #7: unrecognized token
+compiling reprintf.c...
+..\lcd.h(162): error:  #79: expected a type specifier
+..\lcd.h(162): error:  #757: constant "ENABLE" is not a type name
+..\lcd.h(162): warning:  #77-D: this declaration has no storage class or type specifier
+..\lcd.h(162): error:  #147: declaration is incompatible with "void RCC_APB2PeriphClockCmd(uint32_t, FunctionalState)" (declared at line 666 of "..\..\..\..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rcc.h")
+..\lcd.h(165): error:  #77-D: this declaration has no storage class or type specifier
+..\lcd.h(165): error:  #65: expected a ";"
+..\lcd.h(166): error:  #77-D: this declaration has no storage class or type specifier
+..\lcd.h(166): error:  #65: expected a ";"
+..\lcd.h(167): error:  #169: expected a declaration
+..\lcd.h(177): warning:  #12-D: parsing restarts here after previous syntax error
+..\lcd.h(178): error:  #169: expected a declaration
+..\lcd.h(207): warning:  #12-D: parsing restarts here after previous syntax error
+..\reprintf.c(31): error:  #5: cannot open source input file "uart.h": No such file or directory
+Target not created
+Build target 'STM32_GEM3M_PROJECT'
+compiling main.c...
+compiling lcd.c...
+..\lcd.h(162): error:  #79: expected a type specifier
+..\lcd.h(162): error:  #757: constant "ENABLE" is not a type name
+..\lcd.h(162): warning:  #77-D: this declaration has no storage class or type specifier
+..\lcd.h(162): error:  #147: declaration is incompatible with "void RCC_APB2PeriphClockCmd(uint32_t, FunctionalState)" (declared at line 666 of "..\..\..\..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rcc.h")
+..\lcd.h(165): error:  #77-D: this declaration has no storage class or type specifier
+..\lcd.h(165): error:  #65: expected a ";"
+..\lcd.h(166): error:  #77-D: this declaration has no storage class or type specifier
+..\lcd.h(166): error:  #65: expected a ";"
+..\lcd.h(167): error:  #169: expected a declaration
+..\lcd.h(177): warning:  #12-D: parsing restarts here after previous syntax error
+..\lcd.h(178): error:  #169: expected a declaration
+..\lcd.h(207): warning:  #12-D: parsing restarts here after previous syntax error
+..\lcd.c(147): warning:  #223-D: function "asm" declared implicitly
+..\lcd.c(235): error:  #7: unrecognized token
+..\lcd.c(235): error:  #29: expected an expression
+..\lcd.c(251): error:  #7: unrecognized token
+..\lcd.c(251): error:  #29: expected an expression
+..\lcd.c(251): warning:  #177-D: variable "GPIO_InitStructure" was declared but never referenced
+..\lcd.c(259): error:  #268: declaration may not appear after executable statement in block
+..\lcd.c(260): error:  #65: expected a ";"
+..\lcd.c(269): error:  #7: unrecognized token
+..\lcd.c(282): warning:  #12-D: parsing restarts here after previous syntax error
+..\lcd.c(288): error:  #29: expected an expression
+..\lcd.c(296): error:  #7: unrecognized token
+..\lcd.c(296): error:  #29: expected an expression
+..\lcd.c(298): error:  #118: a void function may not return a value
+..\lcd.c(296): warning:  #177-D: variable "GPIO_InitStructure" was declared but never referenced
+..\lcd.c(307): error:  #268: declaration may not appear after executable statement in block
+..\lcd.c(308): error:  #65: expected a ";"
+..\lcd.c(325): error:  #7: unrecognized token
+..\lcd.c(330): warning:  #12-D: parsing restarts here after previous syntax error
+..\lcd.c(332): warning:  #111-D: statement is unreachable
+..\lcd.c(340): error:  #7: unrecognized token
+..\lcd.c(340): error:  #29: expected an expression
+..\lcd.c(340): warning:  #177-D: variable "GPIO_InitStructure" was declared but never referenced
+..\lcd.c(348): error:  #268: declaration may not appear after executable statement in block
+..\lcd.c(349): error:  #65: expected a ";"
+..\lcd.c(358): error:  #7: unrecognized token
+..\lcd.c(371): warning:  #12-D: parsing restarts here after previous syntax error
+..\lcd.c(378): error:  #29: expected an expression
+..\lcd.c(386): error:  #7: unrecognized token
+compiling reprintf.c...
+..\lcd.h(162): error:  #79: expected a type specifier
+..\lcd.h(162): error:  #757: constant "ENABLE" is not a type name
+..\lcd.h(162): warning:  #77-D: this declaration has no storage class or type specifier
+..\lcd.h(162): error:  #147: declaration is incompatible with "void RCC_APB2PeriphClockCmd(uint32_t, FunctionalState)" (declared at line 666 of "..\..\..\..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rcc.h")
+..\lcd.h(165): error:  #77-D: this declaration has no storage class or type specifier
+..\lcd.h(165): error:  #65: expected a ";"
+..\lcd.h(166): error:  #77-D: this declaration has no storage class or type specifier
+..\lcd.h(166): error:  #65: expected a ";"
+..\lcd.h(167): error:  #169: expected a declaration
+..\lcd.h(177): warning:  #12-D: parsing restarts here after previous syntax error
+..\lcd.h(178): error:  #169: expected a declaration
+..\lcd.h(207): warning:  #12-D: parsing restarts here after previous syntax error
+..\reprintf.c(31): error:  #5: cannot open source input file "uart.h": No such file or directory
+compiling stm32f10x_it.c...
+compiling misc.c...
+compiling stm32f10x_gpio.c...
+compiling stm32f10x_rcc.c...
+compiling core_cm3.c...
+compiling system_stm32f10x.c...
+assembling startup_stm32f10x_hd.s...
+Target not created
+Build target 'STM32_GEM3M_PROJECT'
+compiling main.c...
+compiling lcd.c...
+..\lcd.c(447): warning:  #223-D: function "_delay_" declared implicitly
+compiling reprintf.c...
+..\reprintf.c(82): warning:  #223-D: function "uart_tx_putc" declared implicitly
+..\reprintf.c(82): error:  #20: identifier "APP_CFG_DEBUG_COM" is undefined
+..\reprintf.c(82): warning:  #223-D: function "uart_tx_get_buf_ptr" declared implicitly
+compiling stm32f10x_it.c...
+compiling misc.c...
+compiling stm32f10x_gpio.c...
+compiling stm32f10x_rcc.c...
+compiling core_cm3.c...
+compiling system_stm32f10x.c...
+assembling startup_stm32f10x_hd.s...
+Target not created
+Build target 'STM32_GEM3M_PROJECT'
+compiling main.c...
+compiling lcd.c...
+compiling reprintf.c...
+compiling stm32f10x_it.c...
+compiling misc.c...
+compiling stm32f10x_gpio.c...
+compiling stm32f10x_rcc.c...
+compiling core_cm3.c...
+compiling system_stm32f10x.c...
+assembling startup_stm32f10x_hd.s...
+linking...
+Program Size: Code=1404 RO-data=336 RW-data=20 ZI-data=1028  
+FromELF: creating hex file...
+".\Obj\lcd_16x2.axf" - 0 Error(s), 0 Warning(s).
+Build target 'STM32_GEM3M_PROJECT'
+compiling main.c...
+compiling lcd.c...
+compiling reprintf.c...
+compiling stm32f10x_it.c...
+compiling misc.c...
+compiling stm32f10x_gpio.c...
+compiling stm32f10x_rcc.c...
+compiling core_cm3.c...
+compiling system_stm32f10x.c...
+assembling startup_stm32f10x_hd.s...
+linking...
+Program Size: Code=496 RO-data=320 RW-data=0 ZI-data=1024  
+FromELF: creating hex file...
+".\Obj\lcd_16x2.axf" - 0 Error(s), 0 Warning(s).
+Build target 'STM32_GEM3M_PROJECT'
+compiling main.c...
+compiling lcd.c...
+compiling reprintf.c...
+compiling stm32f10x_it.c...
+compiling misc.c...
+compiling stm32f10x_gpio.c...
+compiling stm32f10x_rcc.c...
+compiling core_cm3.c...
+compiling system_stm32f10x.c...
+assembling startup_stm32f10x_hd.s...
+linking...
+Program Size: Code=1444 RO-data=336 RW-data=4 ZI-data=1028  
+FromELF: creating hex file...
+".\Obj\lcd_16x2.axf" - 0 Error(s), 0 Warning(s).
+Build target 'STM32_GEM3M_PROJECT'
+compiling main.c...
+compiling lcd.c...
+compiling reprintf.c...
+compiling stm32f10x_it.c...
+compiling misc.c...
+compiling stm32f10x_gpio.c...
+compiling stm32f10x_rcc.c...
+compiling core_cm3.c...
+compiling system_stm32f10x.c...
+assembling startup_stm32f10x_hd.s...
+linking...
+Program Size: Code=1416 RO-data=336 RW-data=4 ZI-data=1028  
+FromELF: creating hex file...
+".\Obj\lcd_16x2.axf" - 0 Error(s), 0 Warning(s).
+Build target 'STM32_GEM3M_PROJECT'
+compiling main.c...
+compiling lcd.c...
+compiling reprintf.c...
+compiling stm32f10x_it.c...
+compiling misc.c...
+compiling stm32f10x_gpio.c...
+compiling stm32f10x_rcc.c...
+compiling core_cm3.c...
+compiling system_stm32f10x.c...
+assembling startup_stm32f10x_hd.s...
+linking...
+Program Size: Code=1420 RO-data=336 RW-data=4 ZI-data=1028  
+FromELF: creating hex file...
+".\Obj\lcd_16x2.axf" - 0 Error(s), 0 Warning(s).

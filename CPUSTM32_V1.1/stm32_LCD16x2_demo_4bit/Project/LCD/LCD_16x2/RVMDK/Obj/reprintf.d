@@ -1,0 +1,14 @@
+.\Obj\reprintf.o: ..\reprintf.c
+.\Obj\reprintf.o: C:\Keil\ARM\RV31\INC\stdio.h
+.\Obj\reprintf.o: ..\reprintf.h
+.\Obj\reprintf.o: ..\lcd.h
+.\Obj\reprintf.o: ..\..\..\..\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\stm32f10x.h
+.\Obj\reprintf.o: ..\..\..\..\Libraries\CMSIS\CM3\CoreSupport\core_cm3.h
+.\Obj\reprintf.o: C:\Keil\ARM\RV31\INC\stdint.h
+.\Obj\reprintf.o: ..\..\..\..\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\system_stm32f10x.h
+.\Obj\reprintf.o: ..\stm32f10x_conf.h
+.\Obj\reprintf.o: ..\..\..\..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_gpio.h
+.\Obj\reprintf.o: ..\..\..\..\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\stm32f10x.h
+.\Obj\reprintf.o: ..\..\..\..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rcc.h
+.\Obj\reprintf.o: ..\..\..\..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_spi.h
+.\Obj\reprintf.o: ..\..\..\..\Libraries\STM32F10x_StdPeriph_Driver\inc\misc.h

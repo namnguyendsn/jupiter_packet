@@ -1,0 +1,5 @@
+--device DARMSTM ".\obj\main.o" ".\obj\lcd.o" ".\obj\reprintf.o" ".\obj\stm32f10x_it.o" ".\obj\misc.o" ".\obj\stm32f10x_gpio.o" ".\obj\stm32f10x_rcc.o" ".\obj\core_cm3.o" ".\obj\system_stm32f10x.o" ".\obj\startup_stm32f10x_hd.o" --library_type=microlib --feedback ".\Obj\lcd_16x2.fed" 
+--strict --scatter ".\Obj\lcd_16x2.sct" 
+--autoat --summary_stderr --info summarysizes --map --xref --callgraph --symbols 
+--info sizes --info totals --info unused --info veneers 
+ --list ".\List\lcd_16x2.map" -o ".\Obj\lcd_16x2.axf"
