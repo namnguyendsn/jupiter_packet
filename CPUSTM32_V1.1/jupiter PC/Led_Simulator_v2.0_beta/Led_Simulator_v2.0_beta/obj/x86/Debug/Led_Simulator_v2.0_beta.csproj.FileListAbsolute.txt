@@ -1,0 +1,27 @@
+C:\Users\Loc\documents\visual studio 2010\Projects\Led_Simulator_v2.0_beta\Led_Simulator_v2.0_beta\obj\x86\Debug\Led_Simulator_v2._0_beta.Form1.resources
+C:\Users\Loc\documents\visual studio 2010\Projects\Led_Simulator_v2.0_beta\Led_Simulator_v2.0_beta\obj\x86\Debug\Led_Simulator_v2._0_beta.Properties.Resources.resources
+C:\Users\Loc\documents\visual studio 2010\Projects\Led_Simulator_v2.0_beta\Led_Simulator_v2.0_beta\obj\x86\Debug\Led_Simulator_v2.0_beta.csproj.GenerateResource.Cache
+C:\Users\Loc\documents\visual studio 2010\Projects\Led_Simulator_v2.0_beta\Led_Simulator_v2.0_beta\bin\Debug\Led_Simulator_v2.0_beta.exe
+C:\Users\Loc\documents\visual studio 2010\Projects\Led_Simulator_v2.0_beta\Led_Simulator_v2.0_beta\bin\Debug\Led_Simulator_v2.0_beta.pdb
+C:\Users\Loc\documents\visual studio 2010\Projects\Led_Simulator_v2.0_beta\Led_Simulator_v2.0_beta\obj\x86\Debug\Led_Simulator_v2.0_beta.exe
+C:\Users\Loc\documents\visual studio 2010\Projects\Led_Simulator_v2.0_beta\Led_Simulator_v2.0_beta\obj\x86\Debug\Led_Simulator_v2.0_beta.pdb
+C:\Users\Loc\documents\visual studio 2010\Projects\Led_Simulator_v2.0_beta\Led_Simulator_v2.0_beta\obj\x86\Debug\Led_Simulator_v2.0_beta.csprojResolveAssemblyReference.cache
+C:\Documents and Settings\LocNT2.FSOFT.FPT.VN\My Documents\Visual Studio 2010\Projects\Led_Simulator_v2.0_beta\Led_Simulator_v2.0_beta\obj\x86\Debug\Led_Simulator_v2.0_beta.exe
+C:\Documents and Settings\LocNT2.FSOFT.FPT.VN\My Documents\Visual Studio 2010\Projects\Led_Simulator_v2.0_beta\Led_Simulator_v2.0_beta\obj\x86\Debug\Led_Simulator_v2.0_beta.pdb
+C:\Documents and Settings\LocNT2.FSOFT.FPT.VN\My Documents\Visual Studio 2010\Projects\Led_Simulator_v2.0_beta\Led_Simulator_v2.0_beta\bin\Debug\Led_Simulator_v2.0_beta.exe
+C:\Documents and Settings\LocNT2.FSOFT.FPT.VN\My Documents\Visual Studio 2010\Projects\Led_Simulator_v2.0_beta\Led_Simulator_v2.0_beta\bin\Debug\Led_Simulator_v2.0_beta.pdb
+C:\Documents and Settings\LocNT2.FSOFT.FPT.VN\My Documents\Visual Studio 2010\Projects\Led_Simulator_v2.0_beta\Led_Simulator_v2.0_beta\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\LocNT2.FSOFT.FPT.VN\My Documents\Visual Studio 2010\Projects\Led_Simulator_v2.0_beta\Led_Simulator_v2.0_beta\obj\x86\Debug\Led_Simulator_v2._0_beta.Form1.resources
+C:\Documents and Settings\LocNT2.FSOFT.FPT.VN\My Documents\Visual Studio 2010\Projects\Led_Simulator_v2.0_beta\Led_Simulator_v2.0_beta\obj\x86\Debug\Led_Simulator_v2._0_beta.Properties.Resources.resources
+C:\Documents and Settings\LocNT2.FSOFT.FPT.VN\My Documents\Visual Studio 2010\Projects\Led_Simulator_v2.0_beta\Led_Simulator_v2.0_beta\obj\x86\Debug\GenerateResource.read.1.tlog
+C:\Documents and Settings\LocNT2.FSOFT.FPT.VN\My Documents\Visual Studio 2010\Projects\Led_Simulator_v2.0_beta\Led_Simulator_v2.0_beta\obj\x86\Debug\GenerateResource.write.1.tlog
+C:\Users\Loc\documents\visual studio 2010\Projects\Led_Simulator_v2.0_beta\Led_Simulator_v2.0_beta\obj\x86\Debug\Led_Simulator_v2._0_beta.TimeDurationImplement.resources
+D:\Work\TnTech\LED driver+RTC\firmware and utility\CPUSTM32_V1.1\jupiter PC\Led_Simulator_v2.0_beta\Led_Simulator_v2.0_beta\obj\x86\Debug\Led_Simulator_v2.0_beta.exe
+D:\Work\TnTech\LED driver+RTC\firmware and utility\CPUSTM32_V1.1\jupiter PC\Led_Simulator_v2.0_beta\Led_Simulator_v2.0_beta\obj\x86\Debug\Led_Simulator_v2.0_beta.pdb
+D:\Work\TnTech\LED driver+RTC\firmware and utility\CPUSTM32_V1.1\jupiter PC\Led_Simulator_v2.0_beta\Led_Simulator_v2.0_beta\bin\Debug\Led_Simulator_v2.0_beta.exe
+D:\Work\TnTech\LED driver+RTC\firmware and utility\CPUSTM32_V1.1\jupiter PC\Led_Simulator_v2.0_beta\Led_Simulator_v2.0_beta\bin\Debug\Led_Simulator_v2.0_beta.pdb
+D:\Work\TnTech\LED driver+RTC\firmware and utility\CPUSTM32_V1.1\jupiter PC\Led_Simulator_v2.0_beta\Led_Simulator_v2.0_beta\obj\x86\Debug\Led_Simulator_v2.0_beta.csprojResolveAssemblyReference.cache
+D:\Work\TnTech\LED driver+RTC\firmware and utility\CPUSTM32_V1.1\jupiter PC\Led_Simulator_v2.0_beta\Led_Simulator_v2.0_beta\obj\x86\Debug\Led_Simulator_v2._0_beta.TimeDurationImplement.resources
+D:\Work\TnTech\LED driver+RTC\firmware and utility\CPUSTM32_V1.1\jupiter PC\Led_Simulator_v2.0_beta\Led_Simulator_v2.0_beta\obj\x86\Debug\Led_Simulator_v2._0_beta.Form1.resources
+D:\Work\TnTech\LED driver+RTC\firmware and utility\CPUSTM32_V1.1\jupiter PC\Led_Simulator_v2.0_beta\Led_Simulator_v2.0_beta\obj\x86\Debug\Led_Simulator_v2._0_beta.Properties.Resources.resources
+D:\Work\TnTech\LED driver+RTC\firmware and utility\CPUSTM32_V1.1\jupiter PC\Led_Simulator_v2.0_beta\Led_Simulator_v2.0_beta\obj\x86\Debug\Led_Simulator_v2.0_beta.csproj.GenerateResource.Cache
