@@ -189,7 +189,6 @@ void alarm_load(uint8_t * temp)
     uint16_t index__;
     uint8_t i;
     uint8_t * mem_head;
-    index__ = 0;
 
     if(temp == NULL)
         return;
