@@ -9,6 +9,23 @@ namespace Led_Simulator_v2._0_beta
     public struct gbVar
     {
         public static int TransferType = 0xFF;
+        public struct alarm_data
+        {
+            public static bool AlarmSelected = false;
+            public static Int16 ontime;
+            public static byte H_On;
+            public static byte M_On;
+        }
+
+        public struct time_data
+        {
+            public static bool TimeSelected = false;
+            public static byte Cur_H;
+            public static byte Cur_Mi;
+            public static byte Cur_D;
+            public static byte Cur_Mo;
+            public static byte Cur_Y;
+        }
     }
 
     public static class Constants

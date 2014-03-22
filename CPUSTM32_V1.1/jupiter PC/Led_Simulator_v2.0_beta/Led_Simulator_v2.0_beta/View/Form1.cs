@@ -207,11 +207,17 @@ namespace Led_Simulator_v2._0_beta
         private void btnSetAlarm_Click(object sender, EventArgs e)
         {
             TimeSpan subTime;
-            Int16 ontime;
             if (dtpOff.Value < dtpOn.Value)
+            {
+                MessageBox.Show("Thời gian Bật/Tắt không đúng!!!");
                 return;
+            }
             subTime = (TimeSpan)(dtpOff.Value - dtpOn.Value);
-            ontime = (Int16)(subTime.Hours * 60 + subTime.Minutes);
+
+            gbVar.alarm_data.ontime = (Int16)(subTime.Hours * 60 + subTime.Minutes);
+            gbVar.alarm_data.H_On = (byte)dtpOn.Value.Hour;
+            gbVar.alarm_data.M_On = (byte)dtpOn.Value.Minute;
+            gbVar.alarm_data.AlarmSelected = true;
         }
 
         private void rbtLedInfo_CheckedChanged(object sender, EventArgs e)
@@ -232,6 +238,31 @@ namespace Led_Simulator_v2._0_beta
         private void rbtAlarm_CheckedChanged(object sender, EventArgs e)
         {
             gbVar.TransferType = (int)Constants.DataType.SetInfoAlarm;
+        }
+
+        private void btnSetTime_Click(object sender, EventArgs e)
+        {
+            gbVar.time_data.Cur_H = (byte)dtpOn.Value.Hour;
+            gbVar.time_data.Cur_Mi = (byte)dtpOn.Value.Minute;
+            gbVar.time_data.Cur_D = (byte)dtpOn.Value.Day;
+            gbVar.time_data.Cur_Mo = (byte)dtpOn.Value.Month;
+            gbVar.time_data.Cur_Y = (byte)dtpOn.Value.Year;
+            gbVar.time_data.TimeSelected = true;
+        }
+
+        TextBox tbx = new TextBox();
+        private void btnSetAlarm_MouseEnter(object sender, EventArgs e)
+        {
+            tbx.Text = "Đặt thời gian Bật/Tắt!!!";
+            tbx.Visible = true;
+            tbx.Location = new System.Drawing.Point(482, 520);
+            tbx.Size = new System.Drawing.Size(120, 20);
+            this.Controls.Add(tbx);
+        }
+
+        private void btnSetAlarm_MouseLeave(object sender, EventArgs e)
+        {
+            this.Controls.Remove(tbx);
         }
     }
 }

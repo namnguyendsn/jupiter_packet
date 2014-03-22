@@ -64,11 +64,70 @@ namespace Led_Simulator_v2._0_beta
                 return null;
             }
         }
+
+        byte[] getAlarmData()
+        {
+            if (gbVar.alarm_data.AlarmSelected == false)
+            {
+                MessageBox.Show("Chọn thời gian Tắt/Bật!!!");
+                return null;
+            }
+            byte[] AlarmData = new byte[6];
+            AlarmData[0] = 0x01;
+            AlarmData[1] = 0xFF;
+            AlarmData[2] = gbVar.alarm_data.H_On;
+            AlarmData[3] = gbVar.alarm_data.M_On;
+            AlarmData[4] = (byte)(gbVar.alarm_data.ontime/256);
+            AlarmData[5] = (byte)gbVar.alarm_data.ontime;
+            return AlarmData;
+        }
+
+        byte[] getTimeData()
+        {
+            if (gbVar.time_data.TimeSelected == false)
+            {
+                MessageBox.Show("Chọn thời gian hiện tại!!!");
+                return null;
+            }
+            byte[] TimeData = new byte[5];
+            TimeData[0] = gbVar.time_data.Cur_H;
+            TimeData[1] = gbVar.time_data.Cur_Mi;
+            TimeData[2] = gbVar.time_data.Cur_D;
+            TimeData[3] = gbVar.time_data.Cur_Mo;
+            TimeData[4] = gbVar.time_data.Cur_Y;
+            return TimeData;
+        }
+
         void SendData(SerialPort sendPort)
         {
-            byte[] data = GetHexData();
-            commandHub.ReceiveCommand("StartSendData");
-            SendData(data, sendPort);
+            switch (gbVar.TransferType)
+            {
+                case (int)Constants.DataType.SetInfoAlarm:
+                    if (getAlarmData() == null)
+                        return;
+                    byte[] data0 = getAlarmData();
+                    commandHub.ReceiveCommand("StartSendData");
+                    SendData(data0, sendPort);
+                    break;
+                case (int)Constants.DataType.SetInfoLed:
+                    break;
+                case (int)Constants.DataType.SetInfoTime:
+                    if (getTimeData() == null)
+                        return;
+                    byte[] data2 = getTimeData();
+                    commandHub.ReceiveCommand("StartSendData");
+                    SendData(data2, sendPort);
+                    break;
+                case (int)Constants.DataType.DataEffect:
+                    byte[] data3 = GetHexData();
+                    commandHub.ReceiveCommand("StartSendData");
+                    SendData(data3, sendPort);
+                    break;
+                default:
+                    MessageBox.Show("Chọn kiểu dữ liệu!!!");
+                    return;
+                    break;
+            }
             commandHub.ReceiveCommand("SendDataDone");
         }
         
@@ -163,8 +222,8 @@ namespace Led_Simulator_v2._0_beta
 
                         frame_packed[0] = 0xD0;// SOF
                         frame_packed[1] = (byte)(frame_len);// length
+                        frame_packed[2] = CalcCRC8(PacketBuff);// crc
                         Array.Copy(PacketBuff, offset, frame_packed, 3, frame_len);
-                        frame_packed[2] = CalcCRC8(frame_packed);// crc
                         frame_packed[frame_len + 3] = 0xD1;// EOF
 
                         int tryingTime = 0;

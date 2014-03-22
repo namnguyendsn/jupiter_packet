@@ -89,8 +89,8 @@ void uart_get_data(void)
 		break;
 	case HDR_EOF:
         // transfer done, check crc
-        //if((data_counter == transfer_struct.length) && (calc_crc8(transfer_struct.data, transfer_struct.length) == transfer_struct.crc))
-        if(data_counter == transfer_struct.length)
+        if((data_counter == transfer_struct.length) && (calc_crc8(transfer_struct.data, transfer_struct.length) == transfer_struct.crc))
+        //if(data_counter == transfer_struct.length)
         {
             // call process data function
             uart_callback(transfer_struct.data, transfer_struct.length);

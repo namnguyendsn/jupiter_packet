@@ -114,6 +114,7 @@
             this.rbtEffect = new System.Windows.Forms.RadioButton();
             this.rbtSettime = new System.Windows.Forms.RadioButton();
             this.rbtAlarm = new System.Windows.Forms.RadioButton();
+            this.btnSetTime = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.gbStatus.SuspendLayout();
@@ -849,9 +850,11 @@
             this.btnSetAlarm.Name = "btnSetAlarm";
             this.btnSetAlarm.Size = new System.Drawing.Size(62, 43);
             this.btnSetAlarm.TabIndex = 16;
-            this.btnSetAlarm.Text = "Set";
+            this.btnSetAlarm.Text = "Set Alarm";
             this.btnSetAlarm.UseVisualStyleBackColor = true;
             this.btnSetAlarm.Click += new System.EventHandler(this.btnSetAlarm_Click);
+            this.btnSetAlarm.MouseEnter += new System.EventHandler(this.btnSetAlarm_MouseEnter);
+            this.btnSetAlarm.MouseLeave += new System.EventHandler(this.btnSetAlarm_MouseLeave);
             // 
             // groupBox2
             // 
@@ -915,11 +918,22 @@
             this.rbtAlarm.UseVisualStyleBackColor = true;
             this.rbtAlarm.CheckedChanged += new System.EventHandler(this.rbtAlarm_CheckedChanged);
             // 
+            // btnSetTime
+            // 
+            this.btnSetTime.Location = new System.Drawing.Point(550, 537);
+            this.btnSetTime.Name = "btnSetTime";
+            this.btnSetTime.Size = new System.Drawing.Size(62, 43);
+            this.btnSetTime.TabIndex = 18;
+            this.btnSetTime.Text = "Set Time";
+            this.btnSetTime.UseVisualStyleBackColor = true;
+            this.btnSetTime.Click += new System.EventHandler(this.btnSetTime_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(786, 592);
+            this.Controls.Add(this.btnSetTime);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.btnSetAlarm);
             this.Controls.Add(this.lbOff);
@@ -1041,6 +1055,7 @@
         public System.Windows.Forms.RadioButton rbtEffect;
         public System.Windows.Forms.RadioButton rbtSettime;
         public System.Windows.Forms.RadioButton rbtAlarm;
+        private System.Windows.Forms.Button btnSetTime;
 
 
     }
