@@ -174,7 +174,7 @@ namespace Led_Simulator_v2._0_beta
                      * |SOP|Length|Data type|Data|EOP|
                       */
                     effect_packed[0] = 0xE0; // SOP
-                    effect_packed[1] = (byte)(data.Length << 8); // length
+                    effect_packed[1] = (byte)(data.Length >> 8); // length
                     effect_packed[2] = (byte)(data.Length); // length
                     switch (gbVar.TransferType)
                     { 
@@ -243,7 +243,7 @@ namespace Led_Simulator_v2._0_beta
                                 return;
                             }
 
-                            Thread.Sleep(200);
+                            Thread.Sleep(300);
                             if (ACK == 0xFF)
                             { 
                                 tryingTime++;
