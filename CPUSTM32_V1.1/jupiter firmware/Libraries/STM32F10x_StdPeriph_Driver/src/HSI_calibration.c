@@ -70,7 +70,7 @@ void Restore_RCC_UserConfiguration(void)
   * @retval : None
   */
 void HSI_FreqMeasure(void)
-{  
+{
   /* If the counter has overflowed */
   if((TIM_GetITStatus(TIM3, TIM_IT_Update) == SET)&&(MeasurementDone == 0)) 
   {

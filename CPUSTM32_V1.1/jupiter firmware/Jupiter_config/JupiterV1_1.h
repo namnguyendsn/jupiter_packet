@@ -88,6 +88,7 @@ typedef enum
 }SET_TIME_STT;
 
 #define SHIFTVAL 0x01
+#define MAX_TIME_ON 1440
 #define ALARM_ARRAY_SIZE 36//bytes
 #define MAX_ALARM 22
 #define ALARM_DATA_SIZE 5

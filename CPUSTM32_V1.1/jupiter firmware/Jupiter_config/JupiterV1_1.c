@@ -199,10 +199,10 @@ void alarm_load(uint8_t * temp)
         if(get_alarm(&alarm_data, i) != TRUE)
             break;
         Start = (alarm_data.on_hour * 60 + alarm_data.on_min) / 5;
-        if(alarm_data.on_time > 287)
+        if(alarm_data.on_time > MAX_TIME_ON)
             break;
         else
-            Stop = Start + alarm_data.on_time / 5;
+            Stop = Start + alarm_data.on_time;
         index__ = 0;
         temp = mem_head;
         while(1)

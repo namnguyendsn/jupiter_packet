@@ -214,7 +214,7 @@ namespace Led_Simulator_v2._0_beta
             }
             subTime = (TimeSpan)(dtpOff.Value - dtpOn.Value);
 
-            gbVar.alarm_data.ontime = (Int16)(subTime.Hours * 60 + subTime.Minutes);
+            gbVar.alarm_data.ontime = (Int16)((subTime.Hours * 60 + subTime.Minutes)/5);
             gbVar.alarm_data.H_On = (byte)dtpOn.Value.Hour;
             gbVar.alarm_data.M_On = (byte)dtpOn.Value.Minute;
             gbVar.alarm_data.AlarmSelected = true;
