@@ -573,6 +573,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\Jupiter_config\jupiter_crc.c</FilePath>
             </File>
+            <File>
+              <FileName>LCD1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\lcd\LCD1.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

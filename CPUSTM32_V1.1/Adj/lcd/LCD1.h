@@ -58,25 +58,10 @@
 #ifndef __LCD1_H
 #define __LCD1_H
 
-/* MODULE LCD1. */
-
 /* Include shared modules, which are used for whole project */
-#include "PE_Types.h"
-#include "PE_Error.h"
-#include "PE_Const.h"
-#include "IO_Map.h"
+#include "stdint.h"
+#include "stm32f10x_gpio.h"
 /* Include inherited beans */
-#include "RW1.h"
-#include "EN1.h"
-#include "RS1.h"
-#include "Inhr1.h"
-#include "DB51.h"
-#include "DB61.h"
-#include "DB71.h"
-#include "WAIT1.h"
-
-#include "Cpu.h"
-
 /* ID's for the soft characters which can be used as first argument for LCD1_LoadSoftChar().
   Note that ID's can start with zero, but if you want to use a zero byte in LCD1_WriteString()
   then this would be the zero delimiter byte, so not very useful. */
@@ -85,16 +70,22 @@
 #define LCD1_SOFTCHAR_OE 3 /*<! ID for 'ö' */
 
 /* support for custom soft characters in the display which can be used with LCD1_LoadSoftChar() */
-extern const byte LCD1_SoftCharUE[8]; /* ü */
-extern const byte LCD1_SoftCharAE[8]; /* ä */
-extern const byte LCD1_SoftCharOE[8]; /* ö */
+extern const uint8_t LCD1_SoftCharUE[8]; /* ü */
+extern const uint8_t LCD1_SoftCharAE[8]; /* ä */
+extern const uint8_t LCD1_SoftCharOE[8]; /* ö */
 
 #define LCD1_MAX_LCD_LINE_CHARS 16 /* number of chars of the LCD on a line */
 
+#define LCD_CLK     RCC_APB2Periph_GPIOB
+#define LCD_PORT    GPIOB
+#define LCD_RS  GPIO_Pin_10
+#define LCD_EN  GPIO_Pin_11
+#define LCD_D4  GPIO_Pin_12
+#define LCD_D5  GPIO_Pin_13
+#define LCD_D6  GPIO_Pin_14
+#define LCD_D7  GPIO_Pin_15
 
-
-
-void LCD1_WriteLCDData(byte ch);
+void LCD1_WriteLCDData(uint8_t ch);
 /*
 ** ===================================================================
 **     Method      :  LCD1_WriteLCDData (component LCDHTA)
@@ -140,7 +131,7 @@ void LCD1_Home(void);
 ** ===================================================================
 */
 
-void LCD1_GotoXY(byte line, byte column);
+void LCD1_GotoXY(uint8_t line, uint8_t column);
 /*
 ** ===================================================================
 **     Method      :  LCD1_GotoXY (component LCDHTA)
@@ -167,7 +158,7 @@ void LCD1_ShiftLeft(void);
 ** ===================================================================
 */
 
-#define LCD1_Write(ch)   LCD1_WriteLCDData((byte)ch)
+#define LCD1_Write(ch)   LCD1_WriteLCDData((uint8_t)ch)
 /*
 ** ===================================================================
 **     Method      :  LCD1_Write (component LCDHTA)
@@ -209,7 +200,7 @@ void LCD1_WriteString(char *str);
 ** ===================================================================
 */
 
-void LCD1_WriteLineStr(byte line, char *str);
+void LCD1_WriteLineStr(uint8_t line, char *str);
 /*
 ** ===================================================================
 **     Method      :  LCD1_WriteLineStr (component LCDHTA)
@@ -226,7 +217,7 @@ void LCD1_WriteLineStr(byte line, char *str);
 ** ===================================================================
 */
 
-void LCD1_Line(byte line);
+void LCD1_Line(uint8_t line);
 /*
 ** ===================================================================
 **     Method      :  LCD1_Line (component LCDHTA)
@@ -276,8 +267,6 @@ void LCD1_SetEntryMode(bool increment, bool shiftLeft);
 **     Returns     : Nothing
 ** ===================================================================
 */
-
-/* END LCD1. */
 
 #endif
 /* ifndef __LCD1_H */

@@ -1,0 +1,2 @@
+1, thanh ghi BKD5 mat data khi cam jlink
+2, real time chua chinh xac

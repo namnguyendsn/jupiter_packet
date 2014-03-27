@@ -35,14 +35,14 @@
 **     Contents    :
 **         Write        - void LCD1_Write(char ch);
 **         WriteLn      - void LCD1_WriteLn(void);
-**         WriteLineStr - void LCD1_WriteLineStr(byte line, char *str);
+**         WriteLineStr - void LCD1_WriteLineStr(uint8_t line, char *str);
 **         WriteString  - void LCD1_WriteString(char *str);
 **         ShiftLeft    - void LCD1_ShiftLeft(void);
 **         ShiftRight   - void LCD1_ShiftRight(void);
-**         GotoXY       - void LCD1_GotoXY(byte line, byte column);
+**         GotoXY       - void LCD1_GotoXY(uint8_t line, uint8_t column);
 **         SetEntryMode - void LCD1_SetEntryMode(bool increment, bool shiftLeft);
 **         Home         - void LCD1_Home(void);
-**         Line         - void LCD1_Line(byte line);
+**         Line         - void LCD1_Line(uint8_t line);
 **         Clear        - void LCD1_Clear(void);
 **
 **     License   :  Open Source (LGPL)
@@ -56,34 +56,32 @@
 ** ###################################################################*/
 
 /* MODULE LCD1. */
-
 #include "LCD1.h"
-
 
 /* DEFINES for display commands.
    See as well www.freescale.com/files/microcontrollers/doc/app_note/AN1745.pdf
    for additional details.
 */
-#define ClearDisplayCmd                 0x01 /* clears the display */
+#define ClearDisplayCmd                   0x01 /* clears the display */
 
-#define ReturnHomeCmd                   0x02 /* moves the cursor to the beginning of the first line */
+#define ReturnHomeCmd                     0x02 /* moves the cursor to the beginning of the first line */
 
-#define EntryModeSetCmd                 0x04
-  #define EntryModeSet_ShiftOn             1 /* S flag: shift display */
-  #define EntryModeSet_IncrementOn         2 /* I/D flag: increment cursor */
+#define EntryModeSetCmd                   0x04
+#define EntryModeSet_ShiftOn              1 /* S flag: shift display */
+#define EntryModeSet_IncrementOn          2 /* I/D flag: increment cursor */
 
-#define DisplayOnOffControlCmd          0x08 /* Display on/off control command. There are 3 bits D, C and B as well */
-  #define DisplayOnOffControl_BlinkOn      1 /* B flag: blinking cursor on/off; B=1 blinking, B=0 not blinking */
-  #define DisplayOnOffControl_CursorOn     2 /* C flag: cursor on/off, C=1 cursor on, C=0 cursor off */
-  #define DisplayOnOffControl_DisplayOn    4 /* D flag: display on/off, D=1 display on, D=0 display off */
+#define DisplayOnOffControlCmd            0x08 /* Display on/off control command. There are 3 bits D, C and B as well */
+#define DisplayOnOffControl_BlinkOn       1 /* B flag: blinking cursor on/off; B=1 blinking, B=0 not blinking */
+#define DisplayOnOffControl_CursorOn      2 /* C flag: cursor on/off, C=1 cursor on, C=0 cursor off */
+#define DisplayOnOffControl_DisplayOn     4 /* D flag: display on/off, D=1 display on, D=0 display off */
 
-#define FunctionSetCmd                  0x20
-  #define FunctionSet_8bit              0x10 /* DL flag: DL=1: 8bit, DL=0: 4bit */
-  #define FunctionSet_4bit                 0 /* DL flag: DL=1: 8bit, DL=0: 4bit */
-  #define FunctionSet_2Lines            0x08 /* N flag: number of display lines: N=1 2 lines, N=0 1 line */
-  #define FunctionSet_1Line                0 /* N flag: number of display lines: N=1 2 lines, N=0 1 line */
-  #define FunctionSet_Font5x10          0x04 /* F flag: character font, F=1 5x10 dots, F=0 5x8 dots */
-  #define FunctionSet_Font5x8              0 /* F flag: character font, F=1 5x10 dots, F=0 5x8 dots */
+#define FunctionSetCmd          0x20
+#define FunctionSet_8bit        0x10 /* DL flag: DL=1: 8bit, DL=0: 4bit */
+#define FunctionSet_4bit        0 /* DL flag: DL=1: 8bit, DL=0: 4bit */
+#define FunctionSet_2Lines      0x08 /* N flag: number of display lines: N=1 2 lines, N=0 1 line */
+#define FunctionSet_1Line       0 /* N flag: number of display lines: N=1 2 lines, N=0 1 line */
+#define FunctionSet_Font5x10    0x04 /* F flag: character font, F=1 5x10 dots, F=0 5x8 dots */
+#define FunctionSet_Font5x8     0 /* F flag: character font, F=1 5x10 dots, F=0 5x8 dots */
 
 #define CursorOnCmd    (DisplayOnOffControlCmd|DisplayOnOffControl_DisplayOn|DisplayOnOffControl_CursorOn)
 #define CursorOffCmd   (DisplayOnOffControlCmd|DisplayOnOffControl_DisplayOn)
@@ -98,7 +96,7 @@
 #define BusyFlag       0x80 /* BF Flag */
 
 /* support for custom soft characters in the display which can be used with LCD1_LoadSoftChar() */
-const byte LCD1_SoftCharUE[8] = { /* ü */
+const uint8_t LCD1_SoftCharUE[8] = { /* ü */
   0x11, 0x00, 0x11, 0x11, 0x11, 0x13, 0x0d, 0
 /* X...X
    .....
@@ -109,7 +107,7 @@ const byte LCD1_SoftCharUE[8] = { /* ü */
    .XX.X */
 };
 
-const byte LCD1_SoftCharAE[8] = { /* ä */
+const uint8_t LCD1_SoftCharAE[8] = { /* ä */
   0x11, 0x00, 0x0E, 0x01, 0x0F, 0x11, 0x0F, 0
 /* X...X
    .....
@@ -120,7 +118,7 @@ const byte LCD1_SoftCharAE[8] = { /* ä */
    .XXXX */
 };
 
-const byte LCD1_SoftCharOE[8] = { /* ö */
+const uint8_t LCD1_SoftCharOE[8] = { /* ö */
   0x11, 0x00, 0x0E, 0x11, 0x11, 0x11, 0x0E, 0
 /* X...X
    .....
@@ -131,71 +129,40 @@ const byte LCD1_SoftCharOE[8] = { /* ö */
    .XXX. */
 };
 
-/* macros for the RW pin */
-#define ClrRW() \
-        RW1_ClrVal()                    /* RW=0: write mode */
-#define SetRW() \
-        RW1_SetVal()                    /* RW=1: read mode */
-
 /* macros for the RS pin */
 #define ClrRS() \
-        RS1_ClrVal()                    /* RS=0: command mode */
+        GPIO_WriteBit(LCD_PORT, LCD_RS, Bit_RESET);   /* RS=0: command mode */
 #define SetRS() \
-        RS1_SetVal()                    /* RS=1: data mode */
+        GPIO_WriteBit(LCD_PORT, LCD_RS, Bit_SET);   /* RS=1: data mode */
 
 /* macros for the EN pin */
 #define ClrEN() \
-        EN1_ClrVal()                    /* EN=0 */
+        GPIO_WriteBit(LCD_PORT, LCD_EN, Bit_RESET);   /* EN=0 */
 #define SetEN() \
-        EN1_SetVal()                    /* EN=1 */
+        GPIO_WriteBit(LCD_PORT, LCD_EN, Bit_SET);   /* EN=1 */
 
-/* macros for the data bus */
-#define DataAsOutput() \
-        Inhr1_SetOutput();              /* set data port as output */ \
-        DB51_SetOutput();               /* set data port as output */ \
-        DB61_SetOutput();               /* set data port as output */ \
-        DB71_SetOutput()                /* set data port as output */
-#define DataAsInput() \
-        Inhr1_SetInput();               /* set data port as input */ \
-        DB51_SetInput();                /* set data port as input */ \
-        DB61_SetInput();                /* set data port as input */ \
-        DB71_SetInput()                 /* set data port as input */
-
-/* waiting macros */
-#define Waitns(x) \
-        WAIT1_Waitns(x)                 /* Wait x ns */
-#define Waitus(x) \
-        WAIT1_Waitus(x)                 /* Wait x us */
-#define Waitms(x) \
-        WAIT1_Waitms(x)                 /* Wait x ms */
-
-/* timings from Hitachi HD44708.pdf */
-#define Timing_PWeh_ns   230 /* PWeh: Enable Pulse width (high level) */
-#define Timing_tAS_ns     40 /* tAB: Address set-up time (RS, RW to E ) */
-#define Timing_tDDR_ns   160 /* tDDR: Data delay time */
-#define Timing_tCYCLE_ns 500 /* tCYLE: Enable Cycle time */
-
-static uint8_t DataGet(void) {
+static uint8_t DataGet(void) 
+{
   uint8_t val;
 
-  val =  (DB71_GetVal()<<3)
-        |(DB61_GetVal()<<2)
-        |(DB51_GetVal()<<1)
-        |(Inhr1_GetVal()<<0);
+  val =  (GPIO_ReadInputDataBit(LCD_PORT, LCD_D7)<<3)
+        |(GPIO_ReadInputDataBit(LCD_PORT, LCD_D6)<<2)
+        |(GPIO_ReadInputDataBit(LCD_PORT, LCD_D5)<<1)
+        |(GPIO_ReadInputDataBit(LCD_PORT, LCD_D4)<<0);
   return val;
 }
 
-static void DataPut(uint8_t val) {
-  DB71_PutVal((val&(1<<3))!=0);
-  DB61_PutVal((val&(1<<2))!=0);
-  DB51_PutVal((val&(1<<1))!=0);
-  Inhr1_PutVal((val&(1<<0))!=0);
+static void DataPut(uint8_t val) 
+{
+  GPIO_WriteBit(LCD_PORT, LCD_D7, (val&(1<<3))!=0);
+  GPIO_WriteBit(LCD_PORT, LCD_D6, (val&(1<<2))!=0);
+  GPIO_WriteBit(LCD_PORT, LCD_D5, (val&(1<<1))!=0);
+  GPIO_WriteBit(LCD_PORT, LCD_D4, (val&(1<<0))!=0);
 }
 
 /* Internal method prototypes */
 static void EnablePulse(void);
-static void WaitForLCDReady(void);
-static void WriteLCDCommand(byte cmd);
+static void WriteLCDCommand(uint8_t cmd);
 
 /*
 ** ===================================================================
@@ -209,48 +176,8 @@ static void WriteLCDCommand(byte cmd);
 static void EnablePulse(void)
 {
   SetEN();                              /* set EN to 1 to create pulse */
-  Waitns(Timing_PWeh_ns);
+  Delay_ms(1);
   ClrEN();                              /* set to 0 to finish pulse */
-}
-
-/*
-** ===================================================================
-**     Method      :  WaitForLCDReady (component LCDHTA)
-**
-**     Description :
-**         Waits until the display is ready
-**         This method is internal. It is used by Processor Expert only.
-** ===================================================================
-*/
-static void WaitForLCDReady(void)
-{
-  byte ch;
-
-  /* Wait until the display is ready for new data.
-     This means that we wait until the busy flag (MSB) in the status register is cleared */
-  DataAsInput();                        /* set data port as input */
-  SetRW();                              /* RW = 1: read mode */
-  Waitns(Timing_tAS_ns);
-  for(;;) {                             /* loop breaks as soon the busy flag is cleared */
-    SetEN();                            /* EN = 1; EN to high for getting the busy flag  */
-    Waitns(Timing_tDDR_ns);             /* Read mode timing tDDR: time until we can read data */
-    /* for 4bit data bus: need to do read twice */
-    ch = (byte)(DataGet()<<4);          /* read high byte */
-    Waitns(Timing_PWeh_ns-Timing_tDDR_ns); /* for accurate lenght of EN pulse */
-    ClrEN();
-    Waitns(Timing_tCYCLE_ns-Timing_PWeh_ns); /* need to wait a cycle time until we can enable EN again */
-    SetEN();
-    Waitns(Timing_tDDR_ns);             /* Read mode timing tDDR: time until we can read data */
-    ch |= DataGet();                    /* read low byte */
-    Waitns(Timing_PWeh_ns-Timing_tDDR_ns); /* for accurate length of EN pulse */
-    ClrEN();                            /* EN = 0 */
-    if (!(ch&BusyFlag)) {
-      break;
-    }
-    Waitns(Timing_tCYCLE_ns-Timing_PWeh_ns); /* need to wait a cycle time until we can enable EN again */
-  } /* for */
-  ClrRW();                              /* RW = 0: back to write mode */
-  DataAsOutput();                       /* set data port as output */
 }
 
 /*
@@ -262,16 +189,15 @@ static void WaitForLCDReady(void)
 **         This method is internal. It is used by Processor Expert only.
 ** ===================================================================
 */
-static void WriteLCDCommand(byte cmd)
+static void WriteLCDCommand(uint8_t cmd)
 {
-  WaitForLCDReady();                    /* Wait until LCD is ready */
   /* 2 4bit transfer */
-  DataPut((byte)((cmd&0xF0)>>4));       /* Write the data (cycle #1) */
+  DataPut((uint8_t)((cmd&0xF0)>>4));       /* Write the data (cycle #1) */
   EnablePulse();                        /* transfer data */
-  Waitus(15);
-  DataPut((byte)(cmd&0x0F) );           /* Write the data (cycle #2) */
+  Delay_ms(1);
+  DataPut((uint8_t)(cmd&0x0F) );           /* Write the data (cycle #2) */
   EnablePulse();                        /* do the command transfer */
-  Waitus(60);
+  Delay_ms(1);
 }
 
 /*
@@ -313,17 +239,16 @@ void LCD1_Home(void)
 **         This method is internal. It is used by Processor Expert only.
 ** ===================================================================
 */
-void LCD1_WriteLCDData(byte ch)
+void LCD1_WriteLCDData(uint8_t ch)
 {
-   WaitForLCDReady();                   /* Wait until LCD is ready */
    SetRS();                             /* RS = 1: data mode */
    /* 2 4bit transfer */
-   DataPut((byte)((ch&0xF0)>>4));       /* Write the data (cycle #1) */
+   DataPut((uint8_t)((ch&0xF0)>>4));       /* Write the data (cycle #1) */
    EnablePulse();                       /* transfer data */
-   Waitus(15);
-   DataPut((byte)(ch&0x0F));            /* Write the data (cycle #2) */
+   Delay_ms(1);
+   DataPut((uint8_t)(ch&0x0F));            /* Write the data (cycle #2) */
    EnablePulse();                       /* do the command transfer */
-   Waitus(60);
+   Delay_ms(1);
    ClrRS();                             /* RS = 0: back to command mode */
 }
 
@@ -340,10 +265,10 @@ void LCD1_WriteLCDData(byte ch)
 **     Returns     : Nothing
 ** ===================================================================
 */
-void LCD1_GotoXY(byte line, byte column)
+void LCD1_GotoXY(uint8_t line, uint8_t column)
 {
 /* row is in the range 1..LCD_Nof_Lines and column in the range 1..LCD_Nof_Columns */
-  WriteLCDCommand((byte)(GotoXYCmd + (column-1) + (line==1 ? 0x00:Line2Offset)));
+  WriteLCDCommand((uint8_t)(GotoXYCmd + (column-1) + (line==1 ? 0x00:Line2Offset)));
 }
 
 /*
@@ -426,9 +351,9 @@ void LCD1_WriteString(char *str)
 **     Returns     : Nothing
 ** ===================================================================
 */
-void LCD1_WriteLineStr(byte line, char *str)
+void LCD1_WriteLineStr(uint8_t line, char *str)
 {
-  byte i;
+  uint8_t i;
 
   LCD1_Line(line);                      /* select line */
   for(i = 0; i < LCD1_MAX_LCD_LINE_CHARS && *str!='\0'; i++, str++) {
@@ -452,9 +377,9 @@ void LCD1_WriteLineStr(byte line, char *str)
 **     Returns     : Nothing
 ** ===================================================================
 */
-void LCD1_Line(byte line)
+void LCD1_Line(uint8_t line)
 {
-  WriteLCDCommand((byte)(line==1?FirstLineCmd:SecondLineCmd));
+  WriteLCDCommand((uint8_t)(line==1?FirstLineCmd:SecondLineCmd));
 }
 
 /*
@@ -468,40 +393,62 @@ void LCD1_Line(byte line)
 */
 void LCD1_Init(void)
 {
-  /* This function initializes the driver.
+    GPIO_InitTypeDef GPIO_InitStructure;
+
+    /* Enable the GPIO_LED Clock */
+    RCC_APB2PeriphClockCmd(LCD_CLK, ENABLE);
+
+    /* Configure the GPIO_LED pin */
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    
+    GPIO_InitStructure.GPIO_Pin = LCD_RS;
+    GPIO_Init(LCD_PORT, &GPIO_InitStructure);
+    GPIO_InitStructure.GPIO_Pin = LCD_EN;
+    GPIO_Init(LCD_PORT, &GPIO_InitStructure);
+    GPIO_InitStructure.GPIO_Pin = LCD_D7;
+    GPIO_Init(LCD_PORT, &GPIO_InitStructure);
+    GPIO_InitStructure.GPIO_Pin = LCD_D6;
+    GPIO_Init(LCD_PORT, &GPIO_InitStructure);
+    GPIO_InitStructure.GPIO_Pin = LCD_D5;
+    GPIO_Init(LCD_PORT, &GPIO_InitStructure);
+    GPIO_InitStructure.GPIO_Pin = LCD_D4;
+    GPIO_Init(LCD_PORT, &GPIO_InitStructure);
+
+    /* This function initializes the driver.
      The low level init already shall have set our data port to input/output, currently set to output,
      plus all control pins are set as outputs with low values. To be sure, we do it here again. */
-  ClrEN();                              /* EN Pin low */
-  ClrRW();                              /* RW Pin low */
-  ClrRS();                              /* RS Pin low: command mode */
-  DataPut(0);
+    ClrEN();                              /* EN Pin low */
+    //ClrRW();                              /* RW Pin low */
+    ClrRS();                              /* RS Pin low: command mode */
+    DataPut(0);
 
-  /* make pins output */
-  DataAsOutput();
+    /* make pins output */
+    //DataAsOutput();
 
-  /* send the reset sequence according to the data sheet */
-  Waitms(80);                           /* wait for more than 15ms after Vcc rises to 4.5V, wait for more than 40ms after Vcc rises to 2.7V. In case of POR (Power On Reset) we need some additional time. */
-  DataPut(0x3);                         /* BF cannot be checked before this function, function set (interface is 8bits long) */
-  EnablePulse();                        /* transfer data */
-  Waitms(5);                            /* wait for more than 4.1 ms */
-  /* 0x3 is already on the bus from previous DataPut(), do not need to put it again here */
-  EnablePulse();                        /* transfer data */
-  Waitus(100);                          /* wait for more than 100us */
-  /* 0x3 is already on the bus from previous DataPut(), do not need to put it again here */
-  EnablePulse();                        /* transfer data */
-  Waitus(100);                          /* wait for more than 100us */
+    /* send the reset sequence according to the data sheet */
+    Delay_ms(1);                           /* wait for more than 15ms after Vcc rises to 4.5V, wait for more than 40ms after Vcc rises to 2.7V. In case of POR (Power On Reset) we need some additional time. */
+    DataPut(0x3);                         /* BF cannot be checked before this function, function set (interface is 8bits long) */
+    EnablePulse();                        /* transfer data */
+    Delay_ms(1);                            /* wait for more than 4.1 ms */
+    /* 0x3 is already on the bus from previous DataPut(), do not need to put it again here */
+    EnablePulse();                        /* transfer data */
+    Delay_ms(1);                          /* wait for more than 100us */
+    /* 0x3 is already on the bus from previous DataPut(), do not need to put it again here */
+    EnablePulse();                        /* transfer data */
+    Delay_ms(1);                          /* wait for more than 100us */
 
-  DataPut(0x2);                         /* Function set */
-  EnablePulse();                        /* transfer data */
-  Waitus(100);
+    DataPut(0x2);                         /* Function set */
+    EnablePulse();                        /* transfer data */
+    Delay_ms(1);
 
-  WriteLCDCommand(FunctionSetCmd|FunctionSet_Font5x8
-                 |FunctionSet_4bit      /* we are using 4bit data bus */ \
-                 |FunctionSet_2Lines    /* we are using two lines */
-                 );
-  WriteLCDCommand(DisplayOnOffControlCmd|DisplayOnOffControl_DisplayOn);
-  WriteLCDCommand(ClearDisplayCmd); /* Clear display */
-  WriteLCDCommand(EntryModeSetCmd|EntryModeSet_IncrementOn); /* Entry mode set: Increment mode, display shift off */
+    WriteLCDCommand(FunctionSetCmd|FunctionSet_Font5x8
+             |FunctionSet_4bit      /* we are using 4bit data bus */ \
+             |FunctionSet_2Lines    /* we are using two lines */
+             );
+    WriteLCDCommand(DisplayOnOffControlCmd|DisplayOnOffControl_DisplayOn);
+    WriteLCDCommand(ClearDisplayCmd); /* Clear display */
+    WriteLCDCommand(EntryModeSetCmd|EntryModeSet_IncrementOn); /* Entry mode set: Increment mode, display shift off */
 }
 
 /*
@@ -544,7 +491,7 @@ void LCD1_ShiftRight(void)
 */
 void LCD1_SetEntryMode(bool increment, bool shiftLeft)
 {
-  byte flags = 0;
+  uint8_t flags = 0;
 
   if (increment) {
     flags |= EntryModeSet_IncrementOn;
@@ -552,7 +499,7 @@ void LCD1_SetEntryMode(bool increment, bool shiftLeft)
   if (shiftLeft) {
     flags |= EntryModeSet_ShiftOn;
   }
-  WriteLCDCommand((byte)(EntryModeSetCmd|flags)); /* Entry mode set: Increment mode, display shift mode */
+  WriteLCDCommand((uint8_t)(EntryModeSetCmd|flags)); /* Entry mode set: Increment mode, display shift mode */
 }
 
 /* END LCD1. */

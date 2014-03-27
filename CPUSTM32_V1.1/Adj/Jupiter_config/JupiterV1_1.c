@@ -96,7 +96,6 @@ void jupiter_cpu_init(void)
 	//spi_595_init();
 
 	/* Setup SysTick Timer for 1 msec interrupts */
-
 	if (SysTick_Config(SystemCoreClock / 10000))
 	{
         /* Capture error */
@@ -122,6 +121,12 @@ void jupiter_cpu_init(void)
     
     // init rtc
 	rtc_init();
+    
+    // khoi tao LCD
+    
+    LCD1_Init();
+    LCD1_Clear();
+    LCD1_WriteLineStr(1, "Hello FRDM-KL25K");
 }
 
 /**
