@@ -73,7 +73,7 @@ void rtc_init(void)
 
         /* Set default system time to 09 : 24 : 00 */
         SetTime(DEFAULT_HOURS,DEFAULT_MINUTES);
-        BKP_WriteBackupRegister(BKP_DR1, CONFIGURATION_DONE);
+        BKP_ModifyBackupRegister(BKP_DR1, CONFIGURATION_DONE);
     }
     else
     {
@@ -166,7 +166,7 @@ static void SetDate(uint8_t Day, uint8_t Month, uint8_t Year)
     /* if date entered is correct then set the date*/
     else
     {
-        BKP_WriteBackupRegister(BKP_DR3,Day | (Month << 8));
+        BKP_ModifyBackupRegister(BKP_DR3,Day | (Month << 8));
         BKP_ModifyBackupRegister(BKP_DR5,Year);
     }
 }

@@ -308,7 +308,7 @@ void write_to_flash(uint8_t *pk_ptr, uint8_t f_length)
     {
         length  = packet_effect_ptr->length_h<<8 | packet_effect_ptr->length_l;
         effect_length = length + FLASH_START_ADDRESS;
-        BKP_WriteBackupRegister(BKP_DR2, length);
+        BKP_ModifyBackupRegister(BKP_DR2, length);
         num_left = length;
         length += 5;
 	    if(length > DATASIZE_PER_FRAME)
@@ -348,14 +348,14 @@ void write_to_flash(uint8_t *pk_ptr, uint8_t f_length)
         packet_stt = PK_DONE;
         bkp_val = BKP_ReadBackupRegister(BKP_DR1);
         bkp_val |= BKP_EFFECT_AVAL;
-        BKP_WriteBackupRegister(BKP_DR1, (uint16_t)bkp_val);
+        BKP_ModifyBackupRegister(BKP_DR1, (uint16_t)bkp_val);
 	}
 	else
 	{
 		packet_stt = PK_REMAIN;
         bkp_val = BKP_ReadBackupRegister(BKP_DR1);
         bkp_val &= ~BKP_EFFECT_AVAL;
-        BKP_WriteBackupRegister(BKP_DR1, (uint16_t)bkp_val);
+        BKP_ModifyBackupRegister(BKP_DR1, (uint16_t)bkp_val);
 	}
 }
 
