@@ -45,8 +45,8 @@ void rtc_init(void)
         systime.Day=DEFAULT_DAY;
         systime.Year=DEFAULT_YEAR;
 
-        BKP_WriteBackupRegister(BKP_DR3, (systime.Month << 8) | systime.Day);
-        BKP_WriteBackupRegister(BKP_DR5, systime.Year);
+        BKP_ModifyBackupRegister(BKP_DR3, (systime.Month << 8) | systime.Day);
+        BKP_ModifyBackupRegister(BKP_DR5, systime.Year);
             
         /* Wait until last write operation on RTC registers has finished */
         RTC_WaitForLastTask();
@@ -167,7 +167,7 @@ static void SetDate(uint8_t Day, uint8_t Month, uint8_t Year)
     else
     {
         BKP_WriteBackupRegister(BKP_DR3,Day | (Month << 8));
-        BKP_WriteBackupRegister(BKP_DR5,Year);
+        BKP_ModifyBackupRegister(BKP_DR5,Year);
     }
 }
 
@@ -248,8 +248,8 @@ void DateUpdate(void)
         }
     }
 
-    BKP_WriteBackupRegister(BKP_DR3,systime.Day | (systime.Month << 8));
-    BKP_WriteBackupRegister(BKP_DR5,systime.Year);
+    BKP_ModifyBackupRegister(BKP_DR3,systime.Day | (systime.Month << 8));
+    BKP_ModifyBackupRegister(BKP_DR5,systime.Year);
 }
 
 /**
@@ -356,7 +356,7 @@ static void RTC_NVIC_Configuration(void)
 static void DisplayTime(void)
 {
 	CalculateTime();
-  printf("\nHour: %d\nMin: %d\nSec: %d", systime.Hour, systime.Min, systime.Sec);
+    //printf("\nHour: %d\nMin: %d\nSec: %d", systime.Hour, systime.Min, systime.Sec);
 }
 
 /**
@@ -370,8 +370,8 @@ static void DisplayDate(void)
     systime.Month = (uint8_t)(BKP_ReadBackupRegister(BKP_DR3) >> 8);
     systime.Day = (uint8_t)BKP_ReadBackupRegister(BKP_DR3);
 	
-    printf("\nDay: %c%c", (systime.Day/10) + 0x30, (systime.Day%10) + 0x30);
-	printf("\nMonth: %d", systime.Month);
-	printf("\nYear: %c%c", ((systime.Year/1000) + 0x30), ((systime.Year/100)%10) + 0x30);
-	printf("%c%c\n", ((systime.Year/10)%10) + 0x30, (systime.Year%10) + 0x30);
+    //printf("\nDay: %c%c", (systime.Day/10) + 0x30, (systime.Day%10) + 0x30);
+	//printf("\nMonth: %d", systime.Month);
+	//printf("\nYear: %c%c", ((systime.Year/1000) + 0x30), ((systime.Year/100)%10) + 0x30);
+	//printf("%c%c\n", ((systime.Year/10)%10) + 0x30, (systime.Year%10) + 0x30);
 }

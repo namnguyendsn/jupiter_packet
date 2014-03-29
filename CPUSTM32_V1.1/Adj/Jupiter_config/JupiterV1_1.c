@@ -126,7 +126,10 @@ void jupiter_cpu_init(void)
     
     LCD1_Init();
     LCD1_Clear();
-    LCD1_WriteLineStr(1, "Hello FRDM-KL25K");
+    LCD1_WriteLineStr(0, "Hello FRDM-KL25K");
+    LCD1_WriteLineStr(1, "Led controller");
+    LCD1_WriteLineStr(2, "Jupiter V1.2");
+    LCD1_WriteLineStr(3, "1234567890ABCDEF");
 }
 
 /**

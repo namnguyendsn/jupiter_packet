@@ -31,6 +31,7 @@
 #include "jupiter_spi.h"
 #include "jupiter_595.h"
 #include "jupiter_uart.h"
+#include "jupiter_flash.h"
 #include "jupiterHSICab.h"
 #include "jupiter_pwm.h"
 #include "jupiter_rtc.h"

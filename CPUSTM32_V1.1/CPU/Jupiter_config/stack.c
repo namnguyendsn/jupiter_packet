@@ -119,7 +119,7 @@ uint32_t PushStack(
     if((pBuffStack->total_size - pBuffStack->current_size) < buffer_size)
     {
         /* No Enough Memory in Stack */
-        return -1;
+        return 0xFFFFFFFF;
     }
     pBuffStack->top = (uint8_t *)pBuffStack->top - buffer_size;
     memcpy(pBuffStack->top, OutBuffSize, buffer_size);

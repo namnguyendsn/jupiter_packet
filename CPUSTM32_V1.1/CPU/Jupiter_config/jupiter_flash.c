@@ -49,7 +49,7 @@ int8_t jupiter_flash_write(uint8_t *buff, uint8_t size, uint8_t stt, uint32_t Be
     /* Clear All pending flags */
     FLASH_ClearFlag(FLASH_FLAG_EOP | FLASH_FLAG_PGERR | FLASH_FLAG_WRPRTERR);	
 
-    if((stt == PK_DONE) || (stt == PK_IDLE))
+    if((stt == FL_PK_DONE) || (stt == FL_PK_IDLE))
     {
         /* Erase the FLASH pages */
         numPages = (EndAdd + 1 - BeginAdd)/FLASH_PAGE_SIZE;

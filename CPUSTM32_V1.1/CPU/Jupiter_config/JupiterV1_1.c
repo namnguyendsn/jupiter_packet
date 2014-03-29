@@ -165,12 +165,14 @@ void write_alarm(uint8_t *pk_ptr, uint8_t f_length)
 {
     uint8_t * tempx;
     uint8_t bkp_val;
+    if(pk_ptr == NULL)
+        return;
     tempx = pk_ptr;
     alarms_num = *(tempx + 4);
     bkp_val = (uint8_t)BKP_ReadBackupRegister(BKP_DR5);
     if(alarms_num > MAX_ALARM)
         return;
-    BKP_WriteBackupRegister(BKP_DR5, (alarms_num << 8) | bkp_val);
+    BKP_ModifyBackupRegister(BKP_DR5, (alarms_num << 8) | bkp_val);
     fcallback(tempx + 5, f_length - 6, 7, ALARM_BEGIN_ADD, ALARM_END_ADD);
     
     alarm_load(alarm_buffer_ptr);    

@@ -95,6 +95,10 @@
 
 #define BusyFlag       0x80 /* BF Flag */
 
+const uint8_t LCD_Line[4] = { /* ü */
+  0x80, 0xC0, 0x90, 0xD0
+};
+
 /* support for custom soft characters in the display which can be used with LCD1_LoadSoftChar() */
 const uint8_t LCD1_SoftCharUE[8] = { /* ü */
   0x11, 0x00, 0x11, 0x11, 0x11, 0x13, 0x0d, 0
@@ -373,13 +377,13 @@ void LCD1_WriteLineStr(uint8_t line, char *str)
 **         Sets the current line.
 **     Parameters  :
 **         NAME            - DESCRIPTION
-**         line            - Line number, starting with 1
+**         line            - Line number, starting with 0
 **     Returns     : Nothing
 ** ===================================================================
 */
 void LCD1_Line(uint8_t line)
 {
-  WriteLCDCommand((uint8_t)(line==1?FirstLineCmd:SecondLineCmd));
+  WriteLCDCommand((uint8_t)LCD_Line[line]);
 }
 
 /*

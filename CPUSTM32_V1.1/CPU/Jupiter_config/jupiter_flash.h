@@ -1,8 +1,8 @@
 #include "stm32f10x_flash.h"
 #include "common_config.h"
 
-#define PK_DONE 7
-#define PK_IDLE 8
+#define FL_PK_DONE 7
+#define FL_PK_IDLE 8
 
 typedef enum  
 {  
