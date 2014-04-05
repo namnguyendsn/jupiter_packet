@@ -161,6 +161,18 @@ void BKP_SetRTCCalibrationValue(uint8_t CalibrationValue)
   BKP->RTCCR = tmpreg;
 }
 
+void BKP_ModifyBackupRegister(uint16_t BKP_DR, uint16_t Data)
+{
+    uint16_t temp;
+    temp = BKP_ReadBackupRegister(BKP_DR);
+    if(Data > 0x00FF)
+        temp &= 0x00FF;
+    else
+        temp &= 0xFF00;
+    temp |= Data;
+    BKP_WriteBackupRegister(BKP_DR, temp);
+}
+
 /**
   * @brief  Writes user data to the specified Data Backup Register.
   * @param  BKP_DR: specifies the Data Backup Register.

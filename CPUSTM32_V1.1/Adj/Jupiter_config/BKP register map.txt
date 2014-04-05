@@ -7,3 +7,4 @@ BKP_DR4[0-7]: gia tri thoi gian gio
 BKP_DR4[8-15]: gia tri thoi gian phut
 BKP_DR5[0-7]: gia tri thoi gian nam
 BKP_DR5[8-15]: gia tri so luong alarm
+BKP_DR6[0-7]: gia tri so luong led moi state

@@ -159,11 +159,10 @@ void SysTick_Handler(void)
 
 void USART1_IRQHandler(void)
 {
-//	printf("\nTest %d %x %f", RTC_GetCounter(), RTC_GetCounter(), 1.2);
     if(USART_GetITStatus(J_UART, USART_IT_RXNE))
 	{
         USART_ClearFlag(J_UART, USART_FLAG_RXNE);
-        uart_get_data();
+        uart_get_data(); 
 	}
 }
 

@@ -71,3 +71,5 @@ void GPIO_Configuration(void);
 void SysTickConfig(void);
 void CheckForDaysElapsed(void);
 void set_time(uint8_t *data);
+void DateUpdate(void);
+void BKP_ModifyBackupRegister(uint16_t BKP_DR, uint16_t Data);

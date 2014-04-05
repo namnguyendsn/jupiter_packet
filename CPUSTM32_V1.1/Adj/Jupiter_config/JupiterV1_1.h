@@ -31,6 +31,7 @@
 #include "jupiter_spi.h"
 #include "jupiter_595.h"
 #include "jupiter_uart.h"
+#include "jupiter_flash.h"
 #include "jupiterHSICab.h"
 #include "jupiter_pwm.h"
 #include "jupiter_rtc.h"
@@ -69,6 +70,16 @@ EOP: 1 bytes
 #define GET_INFO_4          0xDA
 #define GET_INFO_5          0xDB
 #define GET_INFO_6          0xDC
+
+/*
+version infomation:
+  + 0 to 255
+  + 0: ver 1.0
+  + 1: ver 1.1
+  + 2: ver 1.2
+  ....
+*/
+#define VERSION             0
 
 //#define 
 #define DATASIZE_PER_FRAME  100

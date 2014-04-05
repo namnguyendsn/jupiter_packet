@@ -45,7 +45,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\Debug\</OutputDirectory>
-          <OutputName>JupiterV.10</OutputName>
+          <OutputName>Jupiter___</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
@@ -140,7 +140,7 @@
             <RestoreToolbox>1</RestoreToolbox>
             <RestoreTracepoints>0</RestoreTracepoints>
           </Target>
-          <RunDebugAfterBuild>1</RunDebugAfterBuild>
+          <RunDebugAfterBuild>0</RunDebugAfterBuild>
           <TargetSelection>7</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>

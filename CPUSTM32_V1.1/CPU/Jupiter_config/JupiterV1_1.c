@@ -70,41 +70,41 @@ uint8_t * alarm_buffer_ptr = NULL;
 
 void jupiter_cpu_init(void)
 {
-	/* Initialise LEDs LD3&LD4, both off */
-	STM32vldiscovery_LEDInit(LED1);
-	// cablirate HSI
-	jupiterHSICab_init();
+    /* Initialise LEDs LD3&LD4, both off */
+    STM32vldiscovery_LEDInit(LED1);
+    // cablirate HSI
+    jupiterHSICab_init();
 
-	/* Initialise LEDs LD3&LD4, both off */
-	//STM32vldiscovery_LEDInit(LED1);
-	STM32vldiscovery_LEDOff(LED1);
+    /* Initialise LEDs LD3&LD4, both off */
+    //STM32vldiscovery_LEDInit(LED1);
+    STM32vldiscovery_LEDOff(LED1);
 
-	// test clock source
-	MCO_config();
+    // test clock source
+    MCO_config();
 
-	// Init UART
-	uart_init(uart_buffer_process);
+    // Init UART
+    uart_init(uart_buffer_process);
 
     // Init Flash
     flash_init();
-	/* Enable GPIOx Clock */
-	// RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
+    /* Enable GPIOx Clock */
+    // RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
 
-	// Init hardware SPI
-	spi_init(); // ok
-	// Init sofrware spi
-	//spi_595_init();
+    // Init hardware SPI
+    spi_init(); // ok
+    // Init sofrware spi
+    //spi_595_init();
 
-	/* Setup SysTick Timer for 1 msec interrupts */
+    /* Setup SysTick Timer for 1 msec interrupts */
 
-	if (SysTick_Config(SystemCoreClock / 10000))
-	{
+    if (SysTick_Config(SystemCoreClock / 10000))
+    {
         /* Capture error */
         while (1);
-	}
+    }
 
-	/* Enable access to the backup register => LSE can be enabled */
-	// PWR_BackupAccessCmd(ENABLE);
+    /* Enable access to the backup register => LSE can be enabled */
+    // PWR_BackupAccessCmd(ENABLE);
     
     SF_Stack = StackInit(50); // TODO
     // dat tam o day
@@ -121,7 +121,7 @@ void jupiter_cpu_init(void)
     alarm_load(alarm_buffer_ptr);
     
     // init rtc
-	rtc_init();
+    rtc_init();
 }
 
 /**
@@ -148,6 +148,8 @@ void uart_buffer_process(uint8_t *pk_ptr, uint8_t f_length)
             case SET_INFO_LEDS:
                 break;
             case GET_INFO_FIRM_VER:
+                out_char(0xD6);
+                out_char(VERSION);
                 break;
         }
     }
@@ -278,7 +280,7 @@ void alarm_check(uint8_t * alarm_ptr)
     uint16_t alarm_index;
 
     if(alarm_ptr == NULL)
-    	return;
+        return;
 
     alarm_index = (systime.Hour*60 + systime.Min) / 5;
     alarm_check_ptr = alarm_ptr + (alarm_index / 8);
@@ -311,10 +313,10 @@ void write_to_flash(uint8_t *pk_ptr, uint8_t f_length)
         BKP_ModifyBackupRegister(BKP_DR2, length);
         num_left = length;
         length += 5;
-	    if(length > DATASIZE_PER_FRAME)
-	    {
-	    	data_length = DATASIZE_PER_FRAME - 4;
-	    }
+        if(length > DATASIZE_PER_FRAME)
+        {
+            data_length = DATASIZE_PER_FRAME - 4;
+        }
         else
             data_length = length - 5;
             
@@ -335,28 +337,28 @@ void write_to_flash(uint8_t *pk_ptr, uint8_t f_length)
         memcpy(effect_data_ptr, pk_ptr, data_length);
     }
 
-	// call write to flash
-	fcallback(effect_data_ptr, data_length, (uint8_t)packet_stt, EFFECT_BEGIN_ADD, EFFECT_END_ADD);
-	// free mem
-	free(effect_data_ptr);
+    // call write to flash
+    fcallback(effect_data_ptr, data_length, (uint8_t)packet_stt, EFFECT_BEGIN_ADD, EFFECT_END_ADD);
+    // free mem
+    free(effect_data_ptr);
     
     num_left -= data_length;
     remain = num_left;
     
-	if((add_temp_ptr[f_length - 1] == EOP) && (remain == 0))
-	{
+    if((add_temp_ptr[f_length - 1] == EOP) && (remain == 0))
+    {
         packet_stt = PK_DONE;
         bkp_val = BKP_ReadBackupRegister(BKP_DR1);
         bkp_val |= BKP_EFFECT_AVAL;
         BKP_ModifyBackupRegister(BKP_DR1, (uint16_t)bkp_val);
-	}
-	else
-	{
-		packet_stt = PK_REMAIN;
+    }
+    else
+    {
+        packet_stt = PK_REMAIN;
         bkp_val = BKP_ReadBackupRegister(BKP_DR1);
         bkp_val &= ~BKP_EFFECT_AVAL;
         BKP_ModifyBackupRegister(BKP_DR1, (uint16_t)bkp_val);
-	}
+    }
 }
 
 /**
@@ -364,7 +366,7 @@ void write_to_flash(uint8_t *pk_ptr, uint8_t f_length)
 */
 uint8_t read_from_flash(uint32_t Address)
 {
-	if(Address < FLASH_START_ADDRESS)
+    if(Address < FLASH_START_ADDRESS)
         return 0;
     return (uint8_t)*(uint32_t*)Address;
 }
@@ -459,17 +461,17 @@ void effect_run(void)
 */
 void STM32vldiscovery_LEDInit(Led_TypeDef Led)
 {
-	GPIO_InitTypeDef GPIO_InitStructure;
+    GPIO_InitTypeDef GPIO_InitStructure;
 
-	/* Enable the GPIO_LED Clock */
-	RCC_APB2PeriphClockCmd(GPIO_CLK[Led], ENABLE);
+    /* Enable the GPIO_LED Clock */
+    RCC_APB2PeriphClockCmd(GPIO_CLK[Led], ENABLE);
 
-	/* Configure the GPIO_LED pin */
-	GPIO_InitStructure.GPIO_Pin = GPIO_PIN[Led];
+    /* Configure the GPIO_LED pin */
+    GPIO_InitStructure.GPIO_Pin = GPIO_PIN[Led];
 
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIO_PORT[Led], &GPIO_InitStructure);
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(GPIO_PORT[Led], &GPIO_InitStructure);
 }
 
 /**
@@ -482,7 +484,7 @@ void STM32vldiscovery_LEDInit(Led_TypeDef Led)
 */
 void STM32vldiscovery_LEDOn(Led_TypeDef Led)
 {
-	GPIO_PORT[Led]->BSRR = GPIO_PIN[Led];
+    GPIO_PORT[Led]->BSRR = GPIO_PIN[Led];
 }
 
 /**
@@ -495,7 +497,7 @@ void STM32vldiscovery_LEDOn(Led_TypeDef Led)
 */
 void STM32vldiscovery_LEDOff(Led_TypeDef Led)
 {
-	GPIO_PORT[Led]->BRR = GPIO_PIN[Led];
+    GPIO_PORT[Led]->BRR = GPIO_PIN[Led];
 }
 
 /**
@@ -508,33 +510,33 @@ void STM32vldiscovery_LEDOff(Led_TypeDef Led)
 */
 void STM32vldiscovery_LEDToggle(Led_TypeDef Led)
 {
-	GPIO_PORT[Led]->ODR ^= GPIO_PIN[Led];
+    GPIO_PORT[Led]->ODR ^= GPIO_PIN[Led];
 }
 
 void LEDstatus(void)
 {
-  STM32vldiscovery_LEDToggle(LED1);
+    STM32vldiscovery_LEDToggle(LED1);
 }
 
 // config MCO A8
 void MCO_config(void)
 {
-	GPIO_InitTypeDef GPIO_InitStructure;
-	AFIO->MAPR &= 0; // clear remap
-	/* Enable GPIOA clock */
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-	/* Configure MCO output pin */
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
-	//enable clock for alternate function
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
-	// select clock source
-	RCC_MCOConfig(RCC_MCO_SYSCLK);// SYSTEMCLK selected
-	// RCC_MCOConfig(RCC_MCO_HSI);// HSI selected
-	// RCC_MCOConfig(RCC_MCO_HSE);// HSE selected
-	// RCC_MCOConfig(RCC_MCO_PLLCLK_Div2);// SYSTEMCLK selected
+    GPIO_InitTypeDef GPIO_InitStructure;
+    AFIO->MAPR &= 0; // clear remap
+    /* Enable GPIOA clock */
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+    /* Configure MCO output pin */
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+    //enable clock for alternate function
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
+    // select clock source
+    RCC_MCOConfig(RCC_MCO_SYSCLK);// SYSTEMCLK selected
+    // RCC_MCOConfig(RCC_MCO_HSI);// HSI selected
+    // RCC_MCOConfig(RCC_MCO_HSE);// HSE selected
+    // RCC_MCOConfig(RCC_MCO_PLLCLK_Div2);// SYSTEMCLK selected
 }
 
 /******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/

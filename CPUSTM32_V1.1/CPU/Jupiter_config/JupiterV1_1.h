@@ -71,6 +71,16 @@ EOP: 1 bytes
 #define GET_INFO_5          0xDB
 #define GET_INFO_6          0xDC
 
+/*
+version infomation:
+  + 0 to 255
+  + 0: ver 1.0
+  + 1: ver 1.1
+  + 2: ver 1.2
+  ....
+*/
+#define VERSION             0
+
 //#define 
 #define DATASIZE_PER_FRAME  100
 

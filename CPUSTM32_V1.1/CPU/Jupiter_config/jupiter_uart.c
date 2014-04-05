@@ -10,45 +10,45 @@ static uint8_t error_counter = 0;
 
 void uart_init(fpncallback callback)
 {
-	GPIO_InitTypeDef GPIO_InitStructure;
-	NVIC_InitTypeDef NVIC_InitStructure;
-	g_uartInit = (USART_InitTypeDef*)malloc(sizeof(USART_InitTypeDef));
-	AFIO->MAPR &= ~(1 << 2); // clear USART1 remap
-	/* Enable GPIOA clock */
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-	/* Configure TX */
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
-	/* Configure RX */
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
-	//enable clock for uart
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
-	//enable clock for alternate function
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
-	// khoi tao tham so cho uart
-	USART_StructInit(g_uartInit);
-	// init uart
-	RCC->APB2ENR |= RCC_APB2ENR_AFIOEN; // enable clock for Alternate Function
+    GPIO_InitTypeDef GPIO_InitStructure;
+    NVIC_InitTypeDef NVIC_InitStructure;
+    g_uartInit = (USART_InitTypeDef*)malloc(sizeof(USART_InitTypeDef));
+    AFIO->MAPR &= ~(1 << 2); // clear USART1 remap
+    /* Enable GPIOA clock */
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+    /* Configure TX */
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+    /* Configure RX */
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+    //enable clock for uart
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
+    //enable clock for alternate function
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
+    // khoi tao tham so cho uart
+    USART_StructInit(g_uartInit);
+    // init uart
+    RCC->APB2ENR |= RCC_APB2ENR_AFIOEN; // enable clock for Alternate Function
 
-	/* Configure the NVIC Preemption Priority Bits */
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);
+    /* Configure the NVIC Preemption Priority Bits */
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);
 
-	/* Enable the USART3 Interrupt */
-	NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_Init(&NVIC_InitStructure);
+    /* Enable the USART3 Interrupt */
+    NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
 
-	USART_Init(J_UART, g_uartInit);
-	// init interrupt
-	USART_ITConfig(J_UART, USART_IT_RXNE, ENABLE);
-	free(g_uartInit);
+    USART_Init(J_UART, g_uartInit);
+    // init interrupt
+    USART_ITConfig(J_UART, USART_IT_RXNE, ENABLE);
+    free(g_uartInit);
     status_transfer = TRANSFER_IDLE;
     data_counter = 0;
     uart_callback = callback;
@@ -59,9 +59,9 @@ them phan xu ly gui nhieu data
 */
 uint8_t uart_send(uint8_t sdata)
 {
-	while(!USART_GetFlagStatus(USART1, USART_FLAG_TC)){}
-	USART_SendData(USART1, sdata);
-	return 0;
+    while(!USART_GetFlagStatus(USART1, USART_FLAG_TC)){}
+    USART_SendData(USART1, sdata);
+    return 0;
 }
 
 /**
@@ -81,13 +81,13 @@ return 8bits data to application buffer
 */
 void uart_get_data(void)
 {
-	switch((uint8_t)USART_ReceiveData(USART1))
-	{
-	case HDR_SOF:
-		status_transfer = START_OF_FRAME;
+    switch((uint8_t)USART_ReceiveData(USART1))
+    {
+    case HDR_SOF:
+        status_transfer = START_OF_FRAME;
         return;
-		break;
-	case HDR_EOF:
+        break;
+    case HDR_EOF:
         // transfer done, check crc
         if((data_counter == transfer_struct.length) && (calc_crc8(transfer_struct.data, transfer_struct.length) == transfer_struct.crc))
         //if(data_counter == transfer_struct.length)
@@ -101,10 +101,10 @@ void uart_get_data(void)
             status_transfer = TRANSFER_ERROR;
         }
         data_counter = 0;
-		break;
-	default:
-		break;
-	}
+        break;
+    default:
+        break;
+    }
     switch(status_transfer)
     {
         case START_OF_FRAME:
@@ -153,5 +153,5 @@ void uart_get_data(void)
 
 void out_char(char ch)
 {
-	uart_send(ch);
+    uart_send(ch);
 }
