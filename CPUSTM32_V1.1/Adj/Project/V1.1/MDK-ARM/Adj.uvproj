@@ -578,6 +578,16 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\lcd\LCD1.c</FilePath>
             </File>
+            <File>
+              <FileName>jupiter_gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Jupiter_config\jupiter_gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>key_check.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Jupiter_config\key_check.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

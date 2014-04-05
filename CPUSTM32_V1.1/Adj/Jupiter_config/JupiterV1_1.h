@@ -35,6 +35,7 @@
 #include "jupiterHSICab.h"
 #include "jupiter_pwm.h"
 #include "jupiter_rtc.h"
+#include "key_check.h"
 #include "stack.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -236,17 +237,9 @@ typedef enum
 }Led_TypeDef;
 
 
-
-/**
-  * @}
-  */ 
-
 /** @defgroup STM32vldiscovery_LOW_LEVEL__Exported_Functions
   * @{
   */ 
-void STM32vldiscovery_LEDInit(Led_TypeDef Led);
-void STM32vldiscovery_LEDOn(Led_TypeDef Led);
-void STM32vldiscovery_LEDOff(Led_TypeDef Led);
 void STM32vldiscovery_LEDToggle(Led_TypeDef Led);
 void uart_get_data(void);
 void uart_buffer_process(uint8_t *pk_ptr, uint8_t f_langth);
@@ -254,22 +247,10 @@ void write_to_flash(uint8_t *pk_ptr, uint8_t f_length);
 void jupiter_cpu_init(void);
 void effect_run(void);
 void alarm_check(uint8_t * temp);
-
-/**
-  * @}
-  */ 
     
 #ifdef __cplusplus
 }
 #endif
-
-/**
-  * @}
-  */ 
-
-/**
-  * @}
-  */  
 
 /**
   * @}

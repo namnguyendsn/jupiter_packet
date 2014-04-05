@@ -70,14 +70,8 @@ uint8_t * alarm_buffer_ptr = NULL;
 
 void jupiter_cpu_init(void)
 {
-    /* Initialise LEDs LD3&LD4, both off */
-    STM32vldiscovery_LEDInit(LED1);
     // cablirate HSI
     jupiterHSICab_init();
-
-    /* Initialise LEDs LD3&LD4, both off */
-    //STM32vldiscovery_LEDInit(LED1);
-    STM32vldiscovery_LEDOff(LED1);
 
     // test clock source
     MCO_config();
@@ -93,7 +87,9 @@ void jupiter_cpu_init(void)
     // Init hardware SPI
     spi_init(); // ok
     // Init sofrware spi
-    //spi_595_init();
+    softSPIPWM_init();
+    // Led status init
+    ledstt_init();
 
     /* Setup SysTick Timer for 1 msec interrupts */
 
@@ -460,92 +456,4 @@ void effect_run(void)
     }
   }
 }
-
-/**
-* @brief Configures LED GPIO.
-* @param Led: Specifies the Led to be configured.
-* This parameter can be one of following parameters:
-* @arg LED1
-* @retval None
-*/
-void STM32vldiscovery_LEDInit(Led_TypeDef Led)
-{
-    GPIO_InitTypeDef GPIO_InitStructure;
-
-    /* Enable the GPIO_LED Clock */
-    RCC_APB2PeriphClockCmd(GPIO_CLK[Led], ENABLE);
-
-    /* Configure the GPIO_LED pin */
-    GPIO_InitStructure.GPIO_Pin = GPIO_PIN[Led];
-
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIO_PORT[Led], &GPIO_InitStructure);
-}
-
-/**
-* @brief Turns selected LED On.
-* @param Led: Specifies the Led to be set on.
-* This parameter can be one of following parameters:
-* @arg LED3
-* @arg LED4
-* @retval None
-*/
-void STM32vldiscovery_LEDOn(Led_TypeDef Led)
-{
-    GPIO_PORT[Led]->BSRR = GPIO_PIN[Led];
-}
-
-/**
-* @brief Turns selected LED Off.
-* @param Led: Specifies the Led to be set off.
-* This parameter can be one of following parameters:
-* @arg LED3
-* @arg LED4
-* @retval None
-*/
-void STM32vldiscovery_LEDOff(Led_TypeDef Led)
-{
-    GPIO_PORT[Led]->BRR = GPIO_PIN[Led];
-}
-
-/**
-* @brief Toggles the selected LED.
-* @param Led: Specifies the Led to be toggled.
-* This parameter can be one of following parameters:
-* @arg LED3
-* @arg LED4
-* @retval None
-*/
-void STM32vldiscovery_LEDToggle(Led_TypeDef Led)
-{
-    GPIO_PORT[Led]->ODR ^= GPIO_PIN[Led];
-}
-
-void LEDstatus(void)
-{
-    STM32vldiscovery_LEDToggle(LED1);
-}
-
-// config MCO A8
-void MCO_config(void)
-{
-    GPIO_InitTypeDef GPIO_InitStructure;
-    AFIO->MAPR &= 0; // clear remap
-    /* Enable GPIOA clock */
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-    /* Configure MCO output pin */
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
-    GPIO_Init(GPIOA, &GPIO_InitStructure);
-    //enable clock for alternate function
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
-    // select clock source
-    RCC_MCOConfig(RCC_MCO_SYSCLK);// SYSTEMCLK selected
-    // RCC_MCOConfig(RCC_MCO_HSI);// HSI selected
-    // RCC_MCOConfig(RCC_MCO_HSE);// HSE selected
-    // RCC_MCOConfig(RCC_MCO_PLLCLK_Div2);// SYSTEMCLK selected
-}
-
 /******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/

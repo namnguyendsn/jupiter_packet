@@ -39,13 +39,12 @@ int main(void)
   /* main while */
   while(1)
   {
-#if 0
-    //crc_rl = calc_crc8((uint8_t*)&crc_test, 4);
-    nam_count = RTC_GetCounter();
+      scan_key();
+#if 1
     spi_595_send(0xFF00);
-    Delay_ms(2000);
+    Delay_ms(500);
     spi_595_send(0x00FF);
-    Delay_ms(2000);
+    Delay_ms(500);
 #else
     effect_run();
 #endif
