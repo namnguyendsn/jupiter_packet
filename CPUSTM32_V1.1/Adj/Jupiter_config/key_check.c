@@ -6,7 +6,7 @@ phim 3: UP
 phim 4: DOWN
 phim 5: EXIT
  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  = */
-key_state kb_stt;
+menu_state kb_stt;
 uint16_t byte_input = 0;
 uint16_t time_out = 0;
 
@@ -18,29 +18,67 @@ void menu(void)
    {
       case normal:
 
-         kb_stt = chinhgio_value;
+         kb_stt = SETTIME;
          break;
-      case chinhgio_value:
+      case SETTIME:
 
-         kb_stt = chinhphut_value;
+         kb_stt = SETALARM;
          break;
-      case chinhphut_value:
+      case SETTIME_H:
 
-         kb_stt = chinhngay_value;
+         kb_stt = SETTIME_MIN;
          break;
-      case chinhngay_value:
+      case SETTIME_MIN:
 
-         kb_stt = chinhthang_value;
+         kb_stt = SETTIME_D;
          break;
-      case chinhthang_value:
+      case SETTIME_D:
 
-         kb_stt = chinhnam_value;
+         kb_stt = SETTIME_MON;
          break;
-      case chinhnam_value:
+      case SETTIME_MON:
 
-         kb_stt = chinhthu_value;
+         kb_stt = SETTIME_Y;
          break;
-      case chinhthu_value:
+      case SETTIME_Y:
+
+         kb_stt = SETTIME_H;
+         break;
+      
+      case SETALARM:
+
+         kb_stt = SETEFFECTS;
+         break;
+      case SETALARM_HON:
+
+         kb_stt = SETALARM_MON;
+         break;
+      case SETALARM_MON:
+
+         kb_stt = SETALARM_HOFF;
+         break;
+      case SETALARM_HOFF:
+
+         kb_stt = SETALARM_MOFF;
+         break;
+      case SETALARM_MOFF:
+
+         kb_stt = SETALARM_HON;
+         break;
+
+      case SETEFFECTS:
+
+         kb_stt = CHECKTIME;
+         break;
+      case CHECKTIME:
+
+         kb_stt = CHECKALARM;
+         break;
+      case CHECKALARM:
+
+         kb_stt = INFO;
+         break;
+      case INFO:
          kb_stt = normal;
          break;
    }
@@ -53,102 +91,160 @@ void up_()
    switch (kb_stt)
    {
       case normal:
-         kb_stt = xemnhietdo;
+         kb_stt = INFO;
          break;
-      case chinhgio_value:
+      case SET_HVAL:
          if(byte_input>23)   byte_input = 0;
          break;
-      case chinhphut_value:
+      case SET_MINVAL:
          if(byte_input>59)   byte_input = 0;
          break;
-      case chinhngay_value:
+      case SET_DVAL:
 
          break;
-      case chinhthang_value:
+      case SET_MONVAL:
          if(byte_input>12) byte_input = 1;
          break;
-      case chinhnam_value:
+      case SET_YVAL:
          if(byte_input>100)  byte_input = 0;
-         break;
-      case chinhthu_value:
-         if(byte_input>8)  byte_input = 2;
          break;
    }
 }
 
+
 void down_()
 {
-   time_out = 0;  
-   --byte_input;
-   switch (kb_stt)
-   {
-      case normal:
-         kb_stt = xemngay;
-         break;
-      case chinhgio_value:
-         if(byte_input>23)   byte_input = 23;
-         break;
-      case chinhphut_value:
-         if(byte_input>59)   byte_input = 59;
-         break;
-      case chinhngay_value:
+    time_out = 0;  
+    --byte_input;
+    switch (kb_stt)
+    {
+        case normal:
+            kb_stt = INFO;
+            break;
+        case SET_HVAL:
+            if(byte_input>23)   byte_input = 0;
+            break;
+        case SET_MINVAL:
+            if(byte_input>59)   byte_input = 0;
+            break;
+        case SET_DVAL:
 
-         break;
-      case chinhthang_value:
-         if(byte_input <= 1) byte_input = 12;
-         break;
-      case chinhnam_value:
-         if(byte_input <= 000)  byte_input = 100;
-         break;
-      case chinhthu_value:
-         if(byte_input <= 2)  byte_input = 8;
-         break;
-  }
+            break;
+        case SET_MONVAL:
+            if(byte_input>12) byte_input = 1;
+            break;
+        case SET_YVAL:
+            if(byte_input>100)  byte_input = 0;
+            break;
+    }
 }
 
 void ok_()
 {
-   time_out = 0;
-   switch (kb_stt)
-   {
-      case chinhgio_value:
+    time_out = 0;
+    switch (kb_stt)
+    {
+        case SETTIME:
+            kb_stt = SETTIME_H;
+            break;
+        
+        case SETTIME_H:
 
-         break;
-      case chinhphut_value:
+            kb_stt = SET_HVAL;
+            break;
+        case SETTIME_MIN:
 
-         break;
-      case chinhngay_value:
+            kb_stt = SET_MINVAL;
+            break;
+        case SETTIME_D:
 
-         break;
-      case chinhthang_value:
+            kb_stt = SET_DVAL;
+            break;
+        case SETTIME_MON:
 
-         break;
-      case chinhnam_value:
+            kb_stt = SET_MONVAL;
+            break;
+        case SETTIME_Y:
 
-         break;
-      case chinhthu_value:
+            kb_stt = SET_YVAL;
+            break;
+        
+        case SETALARM:
 
-         break;
-   }
-   kb_stt = normal;
+            break;
+        case SETEFFECTS:
+
+            break;
+        case CHECKTIME:
+
+            break;
+        case CHECKALARM:
+
+            break;
+        case INFO:
+
+            break;
+    }
 }
+
+void cancel_()
+{
+    time_out = 0;
+    switch (kb_stt)
+    {
+        case SETTIME:
+            kb_stt = normal;
+            break;
+        case SETTIME_H:
+            kb_stt = SETTIME;
+            break;
+        case SETTIME_MIN:
+            kb_stt = SETTIME;
+            break;
+        case SETTIME_D:
+            kb_stt = SETTIME;
+            break;
+        case SETTIME_MON:
+            kb_stt = SETTIME;
+            break;
+        case SETTIME_Y:
+            kb_stt = SETTIME;
+            break;
+        case SETALARM:
+            kb_stt = normal;
+            break;
+        case SETEFFECTS:
+            kb_stt = normal;
+            break;
+        case CHECKTIME:
+            kb_stt = normal;
+            break;
+        case CHECKALARM:
+            kb_stt = normal;
+            break;
+        case INFO:
+            kb_stt = normal;
+            break;
+    }
+}
+
 //------------------------quet ban phim---------------------------------
 void scan_key(void) // phim bam binh thuong o muc cao, khi nhan phim thi chuyen muc thap
 {
-   if(!GPIO_ReadInputDataBit(KEY_PORT, KEY_SEL))
-   {
-       LCD1_Clear();
-       LCD1_WriteLineStr(0, "Key selected");
-       menu();
-       Delay_ms(200);
-   }
-   if(!GPIO_ReadInputDataBit(KEY_PORT, KEY_UP))
-   {
-       LCD1_Clear();
-       LCD1_WriteLineStr(0, "Key Up");
-       Delay_ms(200);
-       up_();
-   }
+    if(!GPIO_ReadInputDataBit(KEY_PORT, KEY_SEL))
+    {
+        LCD1_Clear();
+        LCD1_WriteLineStr(0, "Key selected");
+        menu();
+        Delay_ms(200);
+    }
+    if(!GPIO_ReadInputDataBit(KEY_PORT, KEY_UP))
+    {
+        LCD1_Clear();
+        LCD1_WriteLineStr(0, "Key Up");
+        Delay_ms(200);
+        up_();
+    }
 //   if(GPIO_ReadInputDataBit(KEY_PORT, KEY_DOW))
 //   {
 //       LCD1_Clear();
@@ -182,36 +278,84 @@ void state_dislay(void)
       {
          case normal:
                break;
-         case xemngay:
-               kb_stt = normal;
+         case SETTIME:
                Delay_ms(1000);
                break;
-         case xemnhietdo:
-               kb_stt = normal;
+         case SETTIME_H:
                Delay_ms(1000);
                break;
-         case chinhgio_value:
+         case SETTIME_MIN:
 
                chg = 1;
                break;
-         case chinhphut_value:
+         case SETTIME_D:
 
                chg = 1;
                break;
-         case chinhngay_value:
+         case SETTIME_MON:
 
                chg = 1;
                break;
-         case chinhthang_value:
+         case SETTIME_Y:
 
                chg = 1;
                break;
-         case chinhnam_value:
+         case SETALARM:
 
                chg = 1;
                break;
-         case chinhthu_value:
-
+         case SETALARM_HON:
+               chg = 1;
+               break;
+         case SETALARM_MON:
+               chg = 1;
+               break;
+         case SETALARM_HOFF:
+               chg = 1;
+               break;
+         case SETALARM_MOFF:
+               chg = 1;
+               break;
+         case SETALARM_HON_VAL:
+               chg = 1;
+               break;
+         case SETALARM_MON_VAL:
+               chg = 1;
+               break;
+         case SETALARM_HOFF_VAL:
+               chg = 1;
+               break;
+         case SETALARM_MOFF_VAL:
+               chg = 1;
+               break;
+         case SET_HVAL:
+               chg = 1;
+               break;
+         case SET_MINVAL:
+               chg = 1;
+               break;
+         case SET_DVAL:
+               chg = 1;
+               break;
+         case SET_MONVAL:
+               chg = 1;
+               break;
+         case SET_YVAL:
+               chg = 1;
+               break;
+         case SETEFFECTS:
+               chg = 1;
+               break;
+         case SETEFFECTS_SELECT:
+               chg = 1;
+               break;
+         case CHECKTIME:
+               chg = 1;
+               break;
+         case CHECKALARM:
+               chg = 1;
+               break;
+         case INFO:
                chg = 1;
                break;
       }
