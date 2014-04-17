@@ -1,6 +1,7 @@
 #include "jupiter_gpio.h"
 #include "timer_delay.h"
 #include "LCD1.h"
+#include "jupiter_rtc.h"
 /*=======================
 phim 1: MENU
 phim 2: OK

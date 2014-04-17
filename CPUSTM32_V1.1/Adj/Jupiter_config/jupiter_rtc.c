@@ -16,8 +16,8 @@ struct AlarmTime_s s_AlarmStructVar;
 struct AlarmDate_s s_AlarmDateStructVar;
 extern uint8_t AlarmDate;
 
-static void SetTime(uint8_t Hour,uint8_t Minute);
-static void SetDate(uint8_t Day, uint8_t Month, uint8_t Year);
+void SetTime(uint8_t Hour,uint8_t Minute);
+void SetDate(uint8_t Day, uint8_t Month, uint8_t Year);
 static uint8_t CheckLeap(uint16_t Year);
 static void RTC_NVIC_Configuration(void);
 
@@ -110,7 +110,7 @@ void set_time(uint8_t *data)
 * @param Hour, Minute and Seconds data
 * @retval : None
 */
-static void SetTime(uint8_t Hour,uint8_t Minute)
+void SetTime(uint8_t Hour,uint8_t Minute)
 {
     uint32_t CounterValue;
 
@@ -147,7 +147,7 @@ static void SetAlarm(uint8_t Hour,uint8_t Minute)
 * @param DD,MM,YYYY
 * @retval : None
 */
-static void SetDate(uint8_t Day, uint8_t Month, uint8_t Year)
+void SetDate(uint8_t Day, uint8_t Month, uint8_t Year)
 {
     uint32_t DateTimer;
 
@@ -293,6 +293,28 @@ void CalculateTime(void)
     systime.Hour = (uint8_t)(TimeVar/3600);
     systime.Min = (uint8_t)((TimeVar%3600)/60);
     systime.Sec = (uint8_t)((TimeVar%3600)%60);
+
+    if((systime.Month == 1) || 
+        (systime.Month == 3) || 
+        (systime.Month == 5) || 
+        (systime.Month == 7) || 
+        (systime.Month == 8) || 
+        (systime.Month == 10) || 
+        (systime.Month == 12))
+    {
+        systime.MonthType = 3;// thang 31 ngay
+    }
+    else if(systime.Month == 2)
+    {
+        if(((systime.Year % 4 == 0) && (systime.Year % 100 != 0)) || ((systime.Year % 400) == 0))
+            systime.MonthType = 1;// thang 29 ngay
+        else
+            systime.MonthType = 0;// thang 28 ngay
+    }
+    else
+    {
+        systime.MonthType = 2;// thang 30 ngay
+    }
 }
 
 /**
