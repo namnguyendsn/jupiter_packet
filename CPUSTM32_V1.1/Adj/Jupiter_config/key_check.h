@@ -2,6 +2,7 @@
 #include "timer_delay.h"
 #include "LCD1.h"
 #include "jupiter_rtc.h"
+#include "menuDefine.h"
 /*=======================
 phim 1: MENU
 phim 2: OK
@@ -9,17 +10,21 @@ phim 3: UP
 phim 4: DOWN
 phim 5: EXIT
 =========================*/
-
 typedef enum{
-    normal,
     SETTIME,
+    SETALARM,
+    SETEFFECTS,
+    CHECKTIME,
+    CHECKALARM,
+    INFO,
+    NORMAL,
+
     SETTIME_H,
     SETTIME_MIN,
     SETTIME_D,
     SETTIME_MON,
     SETTIME_Y,
-    
-    SETALARM,
+
     SETALARM_HON,
     SETALARM_MON,
     SETALARM_HOFF,
@@ -35,15 +40,14 @@ typedef enum{
     SET_MONVAL,
     SET_YVAL,
 
-    SETEFFECTS,
-    SETEFFECTS_SELECT,
-    
-    CHECKTIME,
-    
-    CHECKALARM,
-    
-    INFO
+    SETEFFECTS_SELECT
 }menu_state;
+
+typedef struct
+{
+    uint8_t const * string;
+    menu_state next_menu;
+} struct_menu;
 
 void menu(void);
 void scan_key(void);

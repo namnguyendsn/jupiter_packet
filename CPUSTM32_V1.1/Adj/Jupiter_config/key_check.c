@@ -10,8 +10,35 @@ menu_state kb_stt;
 int16_t byte_input = 0;
 uint16_t time_out = 0;
 Time_s TimeTemp;
-
 extern Time_s systime;
+struct_menu main_menu[MAX_MAIN_MENU] = 
+{
+    {// set time
+        (uint8_t const *)MAIN_SET_TIME,
+        SETTIME,
+    },
+    {// set alarm
+        (uint8_t const *)MAIN_SET_ALARM,
+        SETALARM,
+    },
+    {// set effect
+        (uint8_t const *)MAIN_SET_EFFECT,
+        SETEFFECTS,
+    },
+    {// check alarm
+        (uint8_t const *)MAIN_CHECK_ALARM,
+        CHECKALARM,
+    },
+    {// check time
+        (uint8_t const *)MAIN_CHECK_TIME,
+        CHECKTIME,
+    },
+    {// check info
+        (uint8_t const *)MAIN_CHECK_INFO,
+        INFO,
+    }
+};
+
 
 void menu(void)
 {
@@ -19,10 +46,11 @@ void menu(void)
     byte_input = 0;
    switch (kb_stt)
    {
-      case normal:
+      case NORMAL:
          kb_stt = SETTIME;
          break;
       case SETTIME:
+         
          kb_stt = SETALARM;
          break;
       case SETTIME_H:
