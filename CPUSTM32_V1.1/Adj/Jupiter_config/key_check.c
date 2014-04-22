@@ -1,4 +1,5 @@
 #include "key_check.h"
+#include "jupiter_rtc.h"
 /* =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  = 
 phim 1: MENU
 phim 2: OK
@@ -14,27 +15,27 @@ extern Time_s systime;
 struct_menu main_menu[MAX_MAIN_MENU] = 
 {
     {// set time
-        (uint8_t const *)MAIN_SET_TIME,
+        (uint8_t *)MAIN_SET_TIME,
         SETTIME,
     },
     {// set alarm
-        (uint8_t const *)MAIN_SET_ALARM,
+        (uint8_t *)MAIN_SET_ALARM,
         SETALARM,
     },
     {// set effect
-        (uint8_t const *)MAIN_SET_EFFECT,
+        (uint8_t *)MAIN_SET_EFFECT,
         SETEFFECTS,
     },
     {// check alarm
-        (uint8_t const *)MAIN_CHECK_ALARM,
+        (uint8_t *)MAIN_CHECK_ALARM,
         CHECKALARM,
     },
     {// check time
-        (uint8_t const *)MAIN_CHECK_TIME,
+        (uint8_t *)MAIN_CHECK_TIME,
         CHECKTIME,
     },
     {// check info
-        (uint8_t const *)MAIN_CHECK_INFO,
+        (uint8_t *)MAIN_CHECK_INFO,
         INFO,
     }
 };
@@ -47,12 +48,34 @@ void menu(void)
    switch (kb_stt)
    {
       case NORMAL:
-         kb_stt = SETTIME;
+         LCD1_WriteString(main_menu[NORMAL].string);
+         kb_stt = main_menu[SETTIME].next_menu;
          break;
       case SETTIME:
-         
-         kb_stt = SETALARM;
+         LCD1_WriteString(main_menu[SETTIME].string);
+         kb_stt = main_menu[SETTIME + 1].next_menu;
          break;
+      case SETALARM:
+         LCD1_WriteString(main_menu[SETALARM].string);
+         kb_stt = main_menu[SETALARM + 1].next_menu;
+         break;
+      case SETEFFECTS:
+         LCD1_WriteString(main_menu[SETEFFECTS].string);
+         kb_stt = main_menu[SETEFFECTS + 1].next_menu;
+         break;
+      case CHECKTIME:
+         LCD1_WriteString(main_menu[CHECKTIME].string);
+         kb_stt = main_menu[CHECKTIME + 1].next_menu;
+         break;
+      case CHECKALARM:
+         LCD1_WriteString(main_menu[CHECKALARM].string);
+         kb_stt = main_menu[CHECKALARM + 1].next_menu;
+         break;
+      case INFO:
+         LCD1_WriteString(main_menu[INFO].string);
+         kb_stt = main_menu[INFO + 1].next_menu;
+         break;
+
       case SETTIME_H:
          kb_stt = SETTIME_MIN;
          break;
@@ -69,9 +92,6 @@ void menu(void)
          kb_stt = SETTIME_H;
          break;
 
-      case SETALARM:
-         kb_stt = SETEFFECTS;
-         break;
       case SETALARM_HON:
          kb_stt = SETALARM_MON;
          break;
@@ -85,18 +105,7 @@ void menu(void)
          kb_stt = SETALARM_HON;
          break;
 
-      case SETEFFECTS:
-         kb_stt = CHECKTIME;
-         break;
-      case CHECKTIME:
-         kb_stt = CHECKALARM;
-         break;
-      case CHECKALARM:
-         kb_stt = INFO;
-         break;
-      case INFO:
-         kb_stt = normal;
-         break;
+
    }
 }
 
@@ -106,7 +115,7 @@ void up_()
    byte_input++;
    switch (kb_stt)
    {
-      case normal:
+      case NORMAL:
          kb_stt = INFO;
          break;
       case SET_HVAL:
@@ -147,7 +156,7 @@ void down_()
     --byte_input;
     switch (kb_stt)
     {
-        case normal:
+        case NORMAL:
             kb_stt = INFO;
             break;
         case SET_HVAL:
@@ -216,23 +225,23 @@ void ok_()
             kb_stt = SET_YVAL;
             break;
         case SET_HVAL:
-            SetTime(byte_input, systime.Hour);
+            //SetTime(byte_input, systime.Hour);
             kb_stt = SETTIME_H;
             break;
         case SET_MINVAL:
-            SetTime(systime.Hour, byte_input);
+            //SetTime(systime.Hour, byte_input);
             kb_stt = SETTIME_MIN;
             break;
         case SET_DVAL:
-            SetDate(byte_input, systime.Month, systime.Year);
+            //SetDate(byte_input, systime.Month, systime.Year);
             kb_stt = SETTIME_D;
             break;
         case SET_MONVAL:
-            SetDate(systime.Day, byte_input, systime.Year);
+            //SetDate(systime.Day, byte_input, systime.Year);
             kb_stt = SETTIME_MON;
             break;
         case SET_YVAL:
-            SetDate(systime.Day, systime.Month, byte_input);
+            //SetDate(systime.Day, systime.Month, byte_input);
             kb_stt = SETTIME_Y;
             break;
 
@@ -278,7 +287,7 @@ void cancel_()
         case CHECKTIME:
         case CHECKALARM:
         case INFO:
-            kb_stt = normal;
+            kb_stt = NORMAL;
             break;
         case SETTIME_H:
         case SETTIME_MIN:
@@ -329,38 +338,38 @@ void scan_key(void) // phim bam binh thuong o muc cao, khi nhan phim thi chuyen 
         Delay_ms(200);
         up_();
     }
-//   if(GPIO_ReadInputDataBit(KEY_PORT, KEY_DOW))
-//   {
-//       LCD1_Clear();
-//       LCD1_WriteLineStr(0, "Key Down");
-//       Delay_ms(200);
-//       down_();
-//   }            
-//   if(GPIO_ReadInputDataBit(KEY_PORT, KEY_OK))
-//   {
-//       LCD1_Clear();
-//       LCD1_WriteLineStr(0, "Key ok");
-//       Delay_ms(200);
-//       ok_();
-//   }
-//   if(GPIO_ReadInputDataBit(KEY_PORT, KEY_CAN))
-//   {
-//       LCD1_Clear();
-//       LCD1_WriteLineStr(0, "Key cancel");
-//       Delay_ms(200);
-//       ok_();
-//   }
+   if(!GPIO_ReadInputDataBit(KEY_PORT, KEY_DOW))
+   {
+       LCD1_Clear();
+       LCD1_WriteLineStr(0, "Key Down");
+       Delay_ms(200);
+       down_();
+   }            
+   if(!GPIO_ReadInputDataBit(KEY_PORT, KEY_OK))
+   {
+       LCD1_Clear();
+       LCD1_WriteLineStr(0, "Key ok");
+       Delay_ms(200);
+       ok_();
+   }
+   if(!GPIO_ReadInputDataBit(KEY_PORT, KEY_CAN))
+   {
+       LCD1_Clear();
+       LCD1_WriteLineStr(0, "Key cancel");
+       Delay_ms(200);
+       ok_();
+   }
 }
 //----------------------hien thi trang thai--------------------------------
 //-------- doan code khi bam menu
 void state_dislay(void)
 {
    uint8_t temp, chg = 0;
-   if(kb_stt !=  normal)
+   if(kb_stt !=  NORMAL)
       time_out++;
    switch (kb_stt)
       {
-         case normal:
+         case NORMAL:
                break;
          case SETTIME:
                Delay_ms(1000);
@@ -450,7 +459,7 @@ void state_dislay(void)
     if(time_out > 10000)//reset time_out;
     {
         time_out = 0;
-        kb_stt = normal;
+        kb_stt = NORMAL;
     }
 }
 

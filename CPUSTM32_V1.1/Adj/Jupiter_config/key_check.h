@@ -1,7 +1,6 @@
 #include "jupiter_gpio.h"
 #include "timer_delay.h"
 #include "LCD1.h"
-#include "jupiter_rtc.h"
 #include "menuDefine.h"
 /*=======================
 phim 1: MENU
@@ -45,7 +44,7 @@ typedef enum{
 
 typedef struct
 {
-    uint8_t const * string;
+    uint8_t * string;
     menu_state next_menu;
 } struct_menu;
 
