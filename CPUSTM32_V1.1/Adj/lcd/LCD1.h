@@ -184,7 +184,7 @@ void LCD1_WriteLn(void);
 ** ===================================================================
 */
 
-void LCD1_WriteString(char *str);
+void LCD1_WriteString(uint8_t *str);
 /*
 ** ===================================================================
 **     Method      :  LCD1_WriteString (component LCDHTA)

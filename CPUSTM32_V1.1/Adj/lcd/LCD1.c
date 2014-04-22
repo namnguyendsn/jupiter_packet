@@ -332,7 +332,7 @@ void LCD1_WriteLn(void)
 **     Returns     : Nothing
 ** ===================================================================
 */
-void LCD1_WriteString(char *str)
+void LCD1_WriteString(uint8_t *str)
 {
   while (*str != '\0'){
     LCD1_Write(*str);

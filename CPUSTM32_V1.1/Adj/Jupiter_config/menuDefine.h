@@ -1,4 +1,4 @@
-#define MAX_MAIN_MENU   6
+#define MAX_MENU   12
 
 // main menu
 #define MAIN_SET_TIME         "CAI DAT GIO"
@@ -7,6 +7,7 @@
 #define MAIN_CHECK_TIME       "KIEM TRA GIO"
 #define MAIN_CHECK_ALARM      "KIEM TRA HEN GIO"
 #define MAIN_CHECK_INFO       "THONG TIN"
+#define MAIN_NORMAL           "----------------"
 
 // settime sub menu
 #define SUB_SET_TIME_TIME    "CAI DAT GIO"

@@ -7,12 +7,12 @@ phim 3: UP
 phim 4: DOWN
 phim 5: EXIT
  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  = */
-menu_state kb_stt;
+menu_state kb_stt = NORMAL;
 int16_t byte_input = 0;
 uint16_t time_out = 0;
 Time_s TimeTemp;
 extern Time_s systime;
-struct_menu main_menu[MAX_MAIN_MENU] = 
+struct_menu main_menu[MAX_MENU] = 
 {
     {// set time
         (uint8_t *)MAIN_SET_TIME,
@@ -37,7 +37,31 @@ struct_menu main_menu[MAX_MAIN_MENU] =
     {// check info
         (uint8_t *)MAIN_CHECK_INFO,
         INFO,
-    }
+    },
+    {// normal
+        (uint8_t *)MAIN_NORMAL,
+        NORMAL,
+    },
+    {// cai dat gio
+        (uint8_t *)SUB_SET_TIME_TIME,
+        SETTIME_H,
+    },
+    {// cai dat phut
+        (uint8_t *)SUB_SET_TIME_TIME,
+        SETTIME_MIN,
+    },
+    {// cai dat ngay
+        (uint8_t *)SUB_SET_TIME_DATE,
+        SETTIME_D,
+    },
+    {// cai dat thang
+        (uint8_t *)SUB_SET_TIME_DATE,
+        SETTIME_MON,
+    },
+    {// cai dat nam
+        (uint8_t *)SUB_SET_TIME_DATE,
+        SETTIME_Y,
+    },
 };
 
 
@@ -104,8 +128,6 @@ void menu(void)
       case SETALARM_MOFF:
          kb_stt = SETALARM_HON;
          break;
-
-
    }
 }
 
@@ -338,13 +360,13 @@ void scan_key(void) // phim bam binh thuong o muc cao, khi nhan phim thi chuyen 
         Delay_ms(200);
         up_();
     }
-   if(!GPIO_ReadInputDataBit(KEY_PORT, KEY_DOW))
-   {
-       LCD1_Clear();
-       LCD1_WriteLineStr(0, "Key Down");
-       Delay_ms(200);
-       down_();
-   }            
+//   if(!GPIO_ReadInputDataBit(KEY_PORT, KEY_DOW))
+//   {
+//       LCD1_Clear();
+//       LCD1_WriteLineStr(0, "Key Down");
+//       Delay_ms(200);
+//       down_();
+//   }            
    if(!GPIO_ReadInputDataBit(KEY_PORT, KEY_OK))
    {
        LCD1_Clear();
@@ -352,13 +374,13 @@ void scan_key(void) // phim bam binh thuong o muc cao, khi nhan phim thi chuyen 
        Delay_ms(200);
        ok_();
    }
-   if(!GPIO_ReadInputDataBit(KEY_PORT, KEY_CAN))
-   {
-       LCD1_Clear();
-       LCD1_WriteLineStr(0, "Key cancel");
-       Delay_ms(200);
-       ok_();
-   }
+//   if(!GPIO_ReadInputDataBit(KEY_PORT, KEY_CAN))
+//   {
+//       LCD1_Clear();
+//       LCD1_WriteLineStr(0, "Key cancel");
+//       Delay_ms(200);
+//       ok_();
+//   }
 }
 //----------------------hien thi trang thai--------------------------------
 //-------- doan code khi bam menu
