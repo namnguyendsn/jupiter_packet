@@ -12,6 +12,7 @@ int16_t byte_input = 0;
 uint16_t time_out = 0;
 Time_s TimeTemp;
 extern Time_s systime;
+void display_menu(uint8_t currpoint, uint8_t menu, uint8_t refresh);
 struct_menu main_menu[MAX_MENU] = 
 {
     {// set time
@@ -27,12 +28,12 @@ struct_menu main_menu[MAX_MENU] =
         SETEFFECTS,
     },
     {// check alarm
-        (uint8_t *)MAIN_CHECK_ALARM,
-        CHECKALARM,
-    },
-    {// check time
         (uint8_t *)MAIN_CHECK_TIME,
         CHECKTIME,
+    },
+    {// check time
+        (uint8_t *)MAIN_CHECK_ALARM,
+        CHECKALARM,
     },
     {// check info
         (uint8_t *)MAIN_CHECK_INFO,
@@ -72,32 +73,25 @@ void menu(void)
    switch (kb_stt)
    {
       case NORMAL:
-         LCD1_WriteString(main_menu[NORMAL].string);
-         kb_stt = main_menu[SETTIME].next_menu;
+
          break;
       case SETTIME:
-         LCD1_WriteString(main_menu[SETTIME].string);
-         kb_stt = main_menu[SETTIME + 1].next_menu;
+
          break;
       case SETALARM:
-         LCD1_WriteString(main_menu[SETALARM].string);
-         kb_stt = main_menu[SETALARM + 1].next_menu;
+
          break;
       case SETEFFECTS:
-         LCD1_WriteString(main_menu[SETEFFECTS].string);
-         kb_stt = main_menu[SETEFFECTS + 1].next_menu;
+
          break;
       case CHECKTIME:
-         LCD1_WriteString(main_menu[CHECKTIME].string);
-         kb_stt = main_menu[CHECKTIME + 1].next_menu;
+
          break;
       case CHECKALARM:
-         LCD1_WriteString(main_menu[CHECKALARM].string);
-         kb_stt = main_menu[CHECKALARM + 1].next_menu;
+
          break;
       case INFO:
-         LCD1_WriteString(main_menu[INFO].string);
-         kb_stt = main_menu[INFO + 1].next_menu;
+
          break;
 
       case SETTIME_H:
@@ -137,9 +131,6 @@ void up_()
    byte_input++;
    switch (kb_stt)
    {
-      case NORMAL:
-         kb_stt = INFO;
-         break;
       case SET_HVAL:
          if(byte_input>23)   byte_input = 0;
          break;
@@ -169,6 +160,42 @@ void up_()
       case SET_YVAL:
          if(byte_input>100)  byte_input = 0;
          break;
+      
+      case NORMAL:
+         display_menu(SETTIME, 0, 1);
+         //LCD1_WriteString(main_menu[NORMAL].string);
+         kb_stt = main_menu[SETTIME].next_menu;
+         break;
+      case SETTIME:
+          display_menu(SETALARM, 0, 1);
+         //LCD1_WriteString(main_menu[SETTIME].string);
+         kb_stt = main_menu[SETALARM].next_menu;
+         break;
+      case SETALARM:
+          display_menu(SETEFFECTS, 0, 1);
+         //LCD1_WriteString(main_menu[SETALARM].string);
+         kb_stt = main_menu[SETEFFECTS].next_menu;
+         break;
+      case SETEFFECTS:
+          display_menu(CHECKTIME, 0, 1);
+         //LCD1_WriteString(main_menu[SETEFFECTS].string);
+         kb_stt = main_menu[CHECKTIME].next_menu;
+         break;
+      case CHECKTIME:
+          display_menu(CHECKALARM, 0, 1);
+         //LCD1_WriteString(main_menu[CHECKTIME].string);
+         kb_stt = main_menu[CHECKALARM].next_menu;
+         break;
+      case CHECKALARM:
+          display_menu(INFO, 0, 1);
+         //LCD1_WriteString(main_menu[CHECKALARM].string);
+         kb_stt = main_menu[INFO].next_menu;
+         break;
+      case INFO:
+          display_menu(NORMAL, 0, 1);
+         //LCD1_WriteString(main_menu[INFO].string);
+         kb_stt = main_menu[NORMAL].next_menu;
+         break;
    }
 }
 
@@ -178,9 +205,6 @@ void down_()
     --byte_input;
     switch (kb_stt)
     {
-        case NORMAL:
-            kb_stt = INFO;
-            break;
         case SET_HVAL:
             if(byte_input<0)   byte_input = 23;
             break;
@@ -210,6 +234,42 @@ void down_()
         case SET_YVAL:
             if(byte_input<0)  byte_input = 100;
             break;
+        
+      case NORMAL:
+         display_menu(SETTIME, 0, 1);
+         //LCD1_WriteString(main_menu[NORMAL].string);
+         kb_stt = main_menu[INFO].next_menu;
+         break;
+      case SETTIME:
+          display_menu(SETALARM, 0, 1);
+         //LCD1_WriteString(main_menu[SETTIME].string);
+         kb_stt = main_menu[NORMAL].next_menu;
+         break;
+      case SETALARM:
+          display_menu(SETEFFECTS, 0, 1);
+         //LCD1_WriteString(main_menu[SETALARM].string);
+         kb_stt = main_menu[SETTIME].next_menu;
+         break;
+      case SETEFFECTS:
+          display_menu(CHECKTIME, 0, 1);
+         //LCD1_WriteString(main_menu[SETEFFECTS].string);
+         kb_stt = main_menu[SETALARM].next_menu;
+         break;
+      case CHECKTIME:
+          display_menu(CHECKALARM, 0, 1);
+         //LCD1_WriteString(main_menu[CHECKTIME].string);
+         kb_stt = main_menu[SETEFFECTS].next_menu;
+         break;
+      case CHECKALARM:
+          display_menu(INFO, 0, 1);
+         //LCD1_WriteString(main_menu[CHECKALARM].string);
+         kb_stt = main_menu[CHECKTIME].next_menu;
+         break;
+      case INFO:
+          display_menu(NORMAL, 0, 1);
+         //LCD1_WriteString(main_menu[INFO].string);
+         kb_stt = main_menu[CHECKALARM].next_menu;
+         break;
     }
 }
 
@@ -349,37 +409,37 @@ void scan_key(void) // phim bam binh thuong o muc cao, khi nhan phim thi chuyen 
     if(!GPIO_ReadInputDataBit(KEY_PORT, KEY_SEL))
     {
         LCD1_Clear();
-        LCD1_WriteLineStr(0, "Key selected");
-        menu();
+        //LCD1_WriteLineStr(0, "Key selected");
+        down_();
         Delay_ms(200);
     }
     if(!GPIO_ReadInputDataBit(KEY_PORT, KEY_UP))
     {
         LCD1_Clear();
-        LCD1_WriteLineStr(0, "Key Up");
-        Delay_ms(200);
+        //LCD1_WriteLineStr(0, "Key Up");
         up_();
+        Delay_ms(200);
     }
 //   if(!GPIO_ReadInputDataBit(KEY_PORT, KEY_DOW))
 //   {
 //       LCD1_Clear();
-//       LCD1_WriteLineStr(0, "Key Down");
-//       Delay_ms(200);
+//       //LCD1_WriteLineStr(0, "Key Down");
 //       down_();
+//       Delay_ms(200);
 //   }            
-   if(!GPIO_ReadInputDataBit(KEY_PORT, KEY_OK))
-   {
-       LCD1_Clear();
-       LCD1_WriteLineStr(0, "Key ok");
-       Delay_ms(200);
-       ok_();
-   }
+//   if(!GPIO_ReadInputDataBit(KEY_PORT, KEY_OK))
+//   {
+//       LCD1_Clear();
+//       //LCD1_WriteLineStr(0, "Key ok");
+//       //ok_();
+//       Delay_ms(200);
+//   }
 //   if(!GPIO_ReadInputDataBit(KEY_PORT, KEY_CAN))
 //   {
 //       LCD1_Clear();
 //       LCD1_WriteLineStr(0, "Key cancel");
-//       Delay_ms(200);
 //       ok_();
+//       Delay_ms(200);
 //   }
 }
 //----------------------hien thi trang thai--------------------------------
@@ -485,4 +545,19 @@ void state_dislay(void)
     }
 }
 
-
+void display_menu(uint8_t currpoint, uint8_t menu, uint8_t refresh)
+{
+    uint8_t i;
+    if(!refresh)
+        return;
+    
+    for(i = 0;i < 4;i++)
+    {
+        LCD1_Line(i);
+        if(i == 1)
+            LCD1_WriteString(">");
+        else
+            LCD1_WriteString(" ");
+        LCD1_WriteString(main_menu[i + currpoint].string);
+    }
+}

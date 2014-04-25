@@ -1,17 +1,17 @@
 #define MAX_MENU   12
 
 // main menu
-#define MAIN_SET_TIME         "CAI DAT GIO"
-#define MAIN_SET_ALARM        "CAI DAT HEN GIO"
-#define MAIN_SET_EFFECT       "CAI DAT HIEU UNG"
-#define MAIN_CHECK_TIME       "KIEM TRA GIO"
-#define MAIN_CHECK_ALARM      "KIEM TRA HEN GIO"
+#define MAIN_SET_TIME         "DAT GIO"
+#define MAIN_SET_ALARM        "DAT HEN GIO"
+#define MAIN_SET_EFFECT       "DAT HIEU UNG"
+#define MAIN_CHECK_TIME       "KTRA GIO"
+#define MAIN_CHECK_ALARM      "KTRA HEN GIO"
 #define MAIN_CHECK_INFO       "THONG TIN"
 #define MAIN_NORMAL           "----------------"
 
 // settime sub menu
-#define SUB_SET_TIME_TIME    "CAI DAT GIO"
-#define SUB_SET_TIME_DATE    "CAI NGAY THANG"
+#define SUB_SET_TIME_TIME    "DAT GIO"
+#define SUB_SET_TIME_DATE    "NGAY THANG"
 
 // set alarm sub menu
 

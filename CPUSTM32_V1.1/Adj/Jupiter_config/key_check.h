@@ -10,7 +10,7 @@ phim 4: DOWN
 phim 5: EXIT
 =========================*/
 typedef enum{
-    SETTIME,
+    SETTIME = 0,
     SETALARM,
     SETEFFECTS,
     CHECKTIME,
