@@ -142,7 +142,7 @@
             <RestoreTracepoints>1</RestoreTracepoints>
             <RestoreTracepoints>1</RestoreTracepoints>
           </Target>
-          <RunDebugAfterBuild>1</RunDebugAfterBuild>
+          <RunDebugAfterBuild>0</RunDebugAfterBuild>
           <TargetSelection>7</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>

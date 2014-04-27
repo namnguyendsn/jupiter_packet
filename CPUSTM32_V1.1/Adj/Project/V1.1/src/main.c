@@ -40,11 +40,12 @@ int main(void)
   while(1)
   {
       scan_key();
+      state_dislay();
 #if 1
     spi_595_send(0xFF00);
-    Delay_ms(500);
+    //Delay_ms(200);
     spi_595_send(0x00FF);
-    Delay_ms(500);
+    //Delay_ms(200);
 #else
     effect_run();
 #endif

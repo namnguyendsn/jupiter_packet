@@ -376,7 +376,7 @@ static void RTC_NVIC_Configuration(void)
   * @param None
   * @retval :None
   */
-static void DisplayTime(void)
+void DisplayTime(void)
 {
 	CalculateTime();
     //printf("\nHour: %d\nMin: %d\nSec: %d", systime.Hour, systime.Min, systime.Sec);
@@ -387,7 +387,7 @@ static void DisplayTime(void)
   * @param None
   * @retval :None
   */
-static void DisplayDate(void)
+void DisplayDate(void)
 {
     systime.Year = (BKP_ReadBackupRegister(BKP_DR5));
     systime.Month = (uint8_t)(BKP_ReadBackupRegister(BKP_DR3) >> 8);

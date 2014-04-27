@@ -13,6 +13,7 @@ uint16_t time_out = 0;
 Time_s TimeTemp;
 extern Time_s systime;
 void display_menu(uint8_t currpoint, uint8_t menu, uint8_t refresh);
+void display_subtime_menu(uint8_t currpoint, uint8_t val);
 struct_menu main_menu[MAX_MENU] = 
 {
     {// set time
@@ -42,27 +43,31 @@ struct_menu main_menu[MAX_MENU] =
     {// normal
         (uint8_t *)MAIN_NORMAL,
         NORMAL,
-    },
+    }
+};
+
+struct_menu sub_time[MAX_SUBTIME] = 
+{
     {// cai dat gio
-        (uint8_t *)SUB_SET_TIME_TIME,
+        (uint8_t *)SUB_SET_TIME_HOUR,
         SETTIME_H,
     },
     {// cai dat phut
-        (uint8_t *)SUB_SET_TIME_TIME,
+        (uint8_t *)SUB_SET_TIME_MIN,
         SETTIME_MIN,
     },
     {// cai dat ngay
-        (uint8_t *)SUB_SET_TIME_DATE,
+        (uint8_t *)SUB_SET_TIME_DAY,
         SETTIME_D,
     },
     {// cai dat thang
-        (uint8_t *)SUB_SET_TIME_DATE,
+        (uint8_t *)SUB_SET_TIME_MONTH,
         SETTIME_MON,
     },
     {// cai dat nam
-        (uint8_t *)SUB_SET_TIME_DATE,
+        (uint8_t *)SUB_SET_TIME_YEAR,
         SETTIME_Y,
-    },
+    }
 };
 
 
@@ -73,42 +78,29 @@ void menu(void)
    switch (kb_stt)
    {
       case NORMAL:
-
-         break;
+        kb_stt = SETTIME;
+        LCD1_Clear();
+        display_menu(SETTIME, 0, 1);
+        break;
       case SETTIME:
-
-         break;
+        LCD1_Clear();
+        kb_stt = SETTIME_H;
+        break;
       case SETALARM:
 
-         break;
+        break;
       case SETEFFECTS:
 
-         break;
+        break;
       case CHECKTIME:
 
-         break;
+        break;
       case CHECKALARM:
 
-         break;
+        break;
       case INFO:
 
-         break;
-
-      case SETTIME_H:
-         kb_stt = SETTIME_MIN;
-         break;
-      case SETTIME_MIN:
-         kb_stt = SETTIME_D;
-         break;
-      case SETTIME_D:
-         kb_stt = SETTIME_MON;
-         break;
-      case SETTIME_MON:
-         kb_stt = SETTIME_Y;
-         break;
-      case SETTIME_Y:
-         kb_stt = SETTIME_H;
-         break;
+        break;
 
       case SETALARM_HON:
          kb_stt = SETALARM_MON;
@@ -121,6 +113,22 @@ void menu(void)
          break;
       case SETALARM_MOFF:
          kb_stt = SETALARM_HON;
+         break;
+
+      case SETTIME_H:
+         kb_stt = SET_HVAL;
+         break;
+      case SETTIME_MIN:
+         kb_stt = SET_MINVAL;
+         break;
+      case SETTIME_D:
+         kb_stt = SET_DVAL;
+         break;
+      case SETTIME_MON:
+         kb_stt = SET_MONVAL;
+         break;
+      case SETTIME_Y:
+         kb_stt = SET_YVAL;
          break;
    }
 }
@@ -160,12 +168,23 @@ void up_()
       case SET_YVAL:
          if(byte_input>100)  byte_input = 0;
          break;
-      
-      case NORMAL:
-         display_menu(SETTIME, 0, 1);
-         //LCD1_WriteString(main_menu[NORMAL].string);
-         kb_stt = main_menu[SETTIME].next_menu;
+      // chuyen menu cai dat cac gia tri thoi gian
+      case SETTIME_H:
+         kb_stt = SETTIME_MIN;
          break;
+      case SETTIME_MIN:
+         kb_stt = SETTIME_D;
+         break;
+      case SETTIME_D:
+         kb_stt = SETTIME_MON;
+         break;
+      case SETTIME_MON:
+         kb_stt = SETTIME_Y;
+         break;
+      case SETTIME_Y:
+         kb_stt = SETTIME_H;
+         break;
+      // chuyen menu chinh
       case SETTIME:
           display_menu(SETALARM, 0, 1);
          //LCD1_WriteString(main_menu[SETTIME].string);
@@ -192,9 +211,9 @@ void up_()
          kb_stt = main_menu[INFO].next_menu;
          break;
       case INFO:
-          display_menu(NORMAL, 0, 1);
+          display_menu(SETTIME, 0, 1);
          //LCD1_WriteString(main_menu[INFO].string);
-         kb_stt = main_menu[NORMAL].next_menu;
+         kb_stt = main_menu[SETTIME].next_menu;
          break;
    }
 }
@@ -234,41 +253,52 @@ void down_()
         case SET_YVAL:
             if(byte_input<0)  byte_input = 100;
             break;
-        
-      case NORMAL:
-         display_menu(SETTIME, 0, 1);
-         //LCD1_WriteString(main_menu[NORMAL].string);
+      // chuyen menu cai dat cac gia tri thoi gian
+      case SETTIME_H:
+         kb_stt = SETTIME_Y;
+         break;
+      case SETTIME_MIN:
+         kb_stt = SETTIME_H;
+         break;
+      case SETTIME_D:
+         kb_stt = SETTIME_MIN;
+         break;
+      case SETTIME_MON:
+         kb_stt = SETTIME_D;
+         break;
+      case SETTIME_Y:
+         kb_stt = SETTIME_MON;
+         break;
+      // chuyen menu chinh
+      case SETTIME:
+          display_menu(INFO, 0, 1);
+         //LCD1_WriteString(main_menu[SETTIME].string);
          kb_stt = main_menu[INFO].next_menu;
          break;
-      case SETTIME:
-          display_menu(SETALARM, 0, 1);
-         //LCD1_WriteString(main_menu[SETTIME].string);
-         kb_stt = main_menu[NORMAL].next_menu;
-         break;
-      case SETALARM:
-          display_menu(SETEFFECTS, 0, 1);
-         //LCD1_WriteString(main_menu[SETALARM].string);
-         kb_stt = main_menu[SETTIME].next_menu;
-         break;
-      case SETEFFECTS:
-          display_menu(CHECKTIME, 0, 1);
-         //LCD1_WriteString(main_menu[SETEFFECTS].string);
-         kb_stt = main_menu[SETALARM].next_menu;
-         break;
-      case CHECKTIME:
+      case INFO:
           display_menu(CHECKALARM, 0, 1);
-         //LCD1_WriteString(main_menu[CHECKTIME].string);
-         kb_stt = main_menu[SETEFFECTS].next_menu;
+         //LCD1_WriteString(main_menu[INFO].string);
+         kb_stt = main_menu[CHECKALARM].next_menu;
          break;
       case CHECKALARM:
-          display_menu(INFO, 0, 1);
+          display_menu(CHECKTIME, 0, 1);
          //LCD1_WriteString(main_menu[CHECKALARM].string);
          kb_stt = main_menu[CHECKTIME].next_menu;
          break;
-      case INFO:
-          display_menu(NORMAL, 0, 1);
-         //LCD1_WriteString(main_menu[INFO].string);
-         kb_stt = main_menu[CHECKALARM].next_menu;
+      case CHECKTIME:
+          display_menu(SETEFFECTS, 0, 1);
+         //LCD1_WriteString(main_menu[CHECKTIME].string);
+         kb_stt = main_menu[SETEFFECTS].next_menu;
+         break;
+      case SETEFFECTS:
+          display_menu(SETALARM, 0, 1);
+         //LCD1_WriteString(main_menu[SETEFFECTS].string);
+         kb_stt = main_menu[SETALARM].next_menu;
+         break;
+      case SETALARM:
+          display_menu(SETTIME, 0, 1);
+         //LCD1_WriteString(main_menu[SETALARM].string);
+         kb_stt = main_menu[SETTIME].next_menu;
          break;
     }
 }
@@ -408,39 +438,33 @@ void scan_key(void) // phim bam binh thuong o muc cao, khi nhan phim thi chuyen 
 {
     if(!GPIO_ReadInputDataBit(KEY_PORT, KEY_SEL))
     {
-        LCD1_Clear();
+        //LCD1_Clear();
         //LCD1_WriteLineStr(0, "Key selected");
-        down_();
-        Delay_ms(200);
+        up_();
+        Delay_ms(100);
     }
     if(!GPIO_ReadInputDataBit(KEY_PORT, KEY_UP))
     {
-        LCD1_Clear();
+        //LCD1_Clear();
         //LCD1_WriteLineStr(0, "Key Up");
-        up_();
-        Delay_ms(200);
+        menu();
+        Delay_ms(100);
     }
-//   if(!GPIO_ReadInputDataBit(KEY_PORT, KEY_DOW))
-//   {
-//       LCD1_Clear();
-//       //LCD1_WriteLineStr(0, "Key Down");
-//       down_();
-//       Delay_ms(200);
-//   }            
-//   if(!GPIO_ReadInputDataBit(KEY_PORT, KEY_OK))
-//   {
-//       LCD1_Clear();
-//       //LCD1_WriteLineStr(0, "Key ok");
-//       //ok_();
-//       Delay_ms(200);
-//   }
-//   if(!GPIO_ReadInputDataBit(KEY_PORT, KEY_CAN))
-//   {
-//       LCD1_Clear();
-//       LCD1_WriteLineStr(0, "Key cancel");
-//       ok_();
-//       Delay_ms(200);
-//   }
+   if(!GPIO_ReadInputDataBit(KEY_PORT, KEY_DOW))
+   {
+       down_();
+       Delay_ms(100);
+   }            
+   if(!GPIO_ReadInputDataBit(KEY_PORT, KEY_OK))
+   {
+       cancel_();
+       Delay_ms(100);
+   }
+   if(!GPIO_ReadInputDataBit(KEY_PORT, KEY_CAN))
+   {
+       ok_();
+       Delay_ms(100);
+   }
 }
 //----------------------hien thi trang thai--------------------------------
 //-------- doan code khi bam menu
@@ -452,29 +476,30 @@ void state_dislay(void)
    switch (kb_stt)
       {
          case NORMAL:
+             LCD1_Line(0);
+             LCD1_WriteString("___NORMAL___");
                break;
          case SETTIME:
-               Delay_ms(1000);
                break;
          case SETTIME_H:
-               Delay_ms(1000);
-               break;
+                display_subtime_menu(SETHVAL, systime.Hour);
+                break;
          case SETTIME_MIN:
-
-               chg = 1;
-               break;
+                display_subtime_menu(SETMINVAL, systime.Min);
+                chg = 1;
+                break;
          case SETTIME_D:
-
-               chg = 1;
-               break;
+                display_subtime_menu(SETDVAL, systime.Day);
+                chg = 1;
+                break;
          case SETTIME_MON:
-
-               chg = 1;
-               break;
+                display_subtime_menu(SETMONVAL, systime.Month);
+                chg = 1;
+                break;
          case SETTIME_Y:
-
-               chg = 1;
-               break;
+                display_subtime_menu(SETYVAL, systime.Year);
+                chg = 1;
+                break;
          case SETALARM:
 
                chg = 1;
@@ -504,18 +529,23 @@ void state_dislay(void)
                chg = 1;
                break;
          case SET_HVAL:
+               display_subtime_menu(SETHVAL, byte_input);
                chg = 1;
                break;
          case SET_MINVAL:
+             display_subtime_menu(SETMINVAL, byte_input);
                chg = 1;
                break;
          case SET_DVAL:
+             display_subtime_menu(SETDVAL, byte_input);
                chg = 1;
                break;
          case SET_MONVAL:
+             display_subtime_menu(SETMONVAL, byte_input);
                chg = 1;
                break;
          case SET_YVAL:
+             display_subtime_menu(SETYVAL, byte_input);
                chg = 1;
                break;
          case SETEFFECTS:
@@ -554,10 +584,58 @@ void display_menu(uint8_t currpoint, uint8_t menu, uint8_t refresh)
     for(i = 0;i < 4;i++)
     {
         LCD1_Line(i);
-        if(i == 1)
+        if(i == 0)
             LCD1_WriteString(">");
         else
             LCD1_WriteString(" ");
-        LCD1_WriteString(main_menu[i + currpoint].string);
+        LCD1_WriteString(main_menu[(i + currpoint)%7].string);
     }
+}
+
+void display_subtime_menu(uint8_t currpoint, uint8_t val)
+{
+    uint8_t i;
+    uint8_t DataTemp[5];
+    uint8_t * cursor[5] = 
+    {
+        " ^              ",
+        "    ^           ",
+        "       ^        ",
+        "          ^     ",
+        "             ^  "
+    };
+    uint8_t * cursor_info[5] = 
+    {
+        "1, DAT GIO      ",
+        "2, DAT PHUT     ",
+        "3, DAT NGAY     ",
+        "4, DAT THANG    ",
+        "5, DAT NAM      "
+    };
+    uint8_t * time_ptr;
+    time_ptr = &systime.Hour;
+    for(i = 0;i < 5;i++)
+    {
+        if(i == currpoint)
+        {
+            LCD1_Line(0);
+            LCD1_WriteString(cursor_info[i]);
+            LCD1_Line(2);
+            LCD1_WriteString(cursor[i]);
+            DataTemp[i] = val;
+        }
+        else
+            DataTemp[i] = *(time_ptr++);
+    }
+    LCD1_Line(1);
+    LCD1_DisplayInt(DataTemp[0]);
+    LCD1_WriteString(":");
+    LCD1_DisplayInt(DataTemp[1]);
+    LCD1_WriteString(" ");
+    LCD1_DisplayInt(DataTemp[2]);
+    LCD1_WriteString("/");
+    LCD1_DisplayInt(DataTemp[3]);
+    LCD1_WriteString("/");
+    LCD1_DisplayInt(DataTemp[4]);
+    LCD1_WriteString("  ");
 }

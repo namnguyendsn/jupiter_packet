@@ -6,9 +6,12 @@
 
 #define KEY_UP		GPIO_Pin_12
 #define KEY_SEL		GPIO_Pin_11
-#define KEY_DOW		GPIO_Pin_13
-#define KEY_OK		GPIO_Pin_14
-#define KEY_CAN		GPIO_Pin_14
+//#define KEY_DOW		GPIO_Pin_13
+#define KEY_DOW		GPIO_Pin_5
+//#define KEY_OK		GPIO_Pin_14
+#define KEY_OK		GPIO_Pin_6
+//#define KEY_CAN		GPIO_Pin_14
+#define KEY_CAN		GPIO_Pin_7
 
 // infomation of softpwm
 #define PWM_PORT	GPIOB

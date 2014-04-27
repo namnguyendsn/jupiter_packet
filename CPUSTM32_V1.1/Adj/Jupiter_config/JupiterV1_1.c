@@ -85,7 +85,7 @@ void jupiter_cpu_init(void)
     // RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
 
     // Init hardware SPI
-    spi_init(); // ok
+    //spi_init(); // ok
     // Init sofrware spi
     softSPIPWM_init();
     // Led status init

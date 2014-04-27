@@ -506,6 +506,23 @@ void LCD1_SetEntryMode(bool increment, bool shiftLeft)
   WriteLCDCommand((uint8_t)(EntryModeSetCmd|flags)); /* Entry mode set: Increment mode, display shift mode */
 }
 
+void LCD1_DisplayInt(uint8_t number)
+{
+	uint8_t n1,n2,n3,n4,n22,n11;
+	n1=number/1000;         //chia lay phan nguyen
+	n11=number%1000;    //chhia lay phan du
+
+	n2=n11/100;
+	n22=n11%100;	
+
+	n3=n22/10;
+
+	n4=n22%10;
+
+    LCD1_Write(n3+48);    //n3+48 la chuyen tu so n2 thanh ky tu so n2
+    LCD1_Write(n4+48);
+}
+
 /* END LCD1. */
 
 /*

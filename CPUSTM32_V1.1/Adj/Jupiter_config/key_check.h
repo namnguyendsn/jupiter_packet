@@ -34,10 +34,15 @@ typedef enum{
     SETALARM_MOFF_VAL,
     
     SET_HVAL,
+    #define SETHVAL     0
     SET_MINVAL,
+    #define SETMINVAL   1
     SET_DVAL,
+    #define SETDVAL     2
     SET_MONVAL,
+    #define SETMONVAL   3
     SET_YVAL,
+    #define SETYVAL     4
 
     SETEFFECTS_SELECT
 }menu_state;
