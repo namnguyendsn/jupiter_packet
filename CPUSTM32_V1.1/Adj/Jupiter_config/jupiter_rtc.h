@@ -17,8 +17,8 @@ typedef struct _config_time
 
 typedef struct 
 {
-  uint8_t Min;
   uint8_t Hour;
+  uint8_t Min;
   uint8_t Day;
   uint8_t Month;
   uint8_t Year;

@@ -267,7 +267,7 @@ void LCD1_SetEntryMode(bool increment, bool shiftLeft);
 **     Returns     : Nothing
 ** ===================================================================
 */
-void LCD1_DisplayInt(uint8_t number);
+void LCD1_DisplayInt(uint16_t number, uint8_t num_count);
 #endif
 /* ifndef __LCD1_H */
 /*

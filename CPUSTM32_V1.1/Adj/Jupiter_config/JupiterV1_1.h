@@ -224,23 +224,11 @@ ten truong con:
 thu tu bytes:
 thu tu word(4bytes):
 	*/
-    
-typedef enum 
-{
-  LED1 = 0,
-	FREQ_TEST,
-	LED2,
-	SDI,
-	CLK,
-	STR,
-	OE
-}Led_TypeDef;
 
 
 /** @defgroup STM32vldiscovery_LOW_LEVEL__Exported_Functions
   * @{
   */ 
-void STM32vldiscovery_LEDToggle(Led_TypeDef Led);
 void uart_get_data(void);
 void uart_buffer_process(uint8_t *pk_ptr, uint8_t f_langth);
 void write_to_flash(uint8_t *pk_ptr, uint8_t f_length);

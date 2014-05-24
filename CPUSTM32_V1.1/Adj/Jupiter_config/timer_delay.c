@@ -8,7 +8,7 @@ static volatile uint32_t TimingDelay;
   * @retval None
   */
 void Delay_ms(uint32_t nTime)
-{ 
+{
   TimingDelay = nTime * 10;
   while(TimingDelay != 0);
 }

@@ -43,19 +43,16 @@ static SET_ALARM_STT alarm_stt;
 static uint8_t alarm_n = 0;
 static uint8_t * alarm_check_ptr;
 
+void write_alarm_menu(uint8_t * array_ptr, uint8_t size);
 void uart_buffer_process(uint8_t *pk_ptr, uint8_t f_length);
 void write_to_flash(uint8_t *pk_ptr, uint8_t f_length);
-void write_alarm(uint8_t *pk_ptr, uint8_t f_length);
+void write_alarm_uart(uint8_t *pk_ptr, uint8_t f_length);
 void MCO_config(void);
 void rtc_init(void);
 uint8_t read_from_flash(uint32_t Address);
 void alarm_load(uint8_t * temp);
 bool get_alarm(ALARM_STRUCT * alarm_data_buff, uint8_t alarm_index);
 void alarm_check(uint8_t * temp);
-
-GPIO_TypeDef* GPIO_PORT[LEDn] = {LED1_GPIO_PORT, FREQ_TEST_GPIO_PORT, LED2_GPIO_PORT, SDI_GPIO_PORT, CLK_GPIO_PORT, STR_GPIO_PORT, OE_GPIO_PORT};
-const uint16_t GPIO_PIN[LEDn] = {LED1_PIN, FREQ_TEST_PIN, LED2_PIN, SDI_PIN, CLK_PIN, STR_PIN, OE_PIN};
-const uint32_t GPIO_CLK[LEDn] = {LED1_GPIO_CLK, FREQ_TEST_GPIO_CLK, LED2_GPIO_CLK, SDI_GPIO_CLK, CLK_GPIO_CLK, STR_GPIO_CLK, OE_GPIO_CLK};
 
 extern flashcallback fcallback;
 extern void jupiter_write_stt(uint32_t buff, uint32_t address);
@@ -66,7 +63,10 @@ UART_CALLBACK uart_process_callback;
 uint16_t on_min_counter = 0;
 bool ALARM_START = FALSE;
 ALARM_STRUCT alarm_data;
+ALARM_STRUCT alarm_data_array[MAX_ALARM_NUM];
+uint8_t * alarm_data_ptr;
 uint8_t * alarm_buffer_ptr = NULL;
+uint32_t * alarm_data_array_ptr = NULL;
 
 void jupiter_cpu_init(void)
 {
@@ -115,18 +115,15 @@ void jupiter_cpu_init(void)
     alarm_buffer_ptr = (uint8_t *)malloc(ALARM_ARRAY_SIZE);
     alarm_check_ptr = alarm_buffer_ptr;
     alarm_load(alarm_buffer_ptr);
-    
+    alarm_data_ptr = (uint8_t*)&alarm_data;
+    alarm_data_array_ptr = (uint32_t *)alarm_data_array;
     // init rtc
-	rtc_init();
+    rtc_init();
     
     // khoi tao LCD
     
     LCD1_Init();
     LCD1_Clear();
-    LCD1_WriteLineStr(0, "Hello FRDM-KL25K");
-    LCD1_WriteLineStr(1, "Led controller");
-    LCD1_WriteLineStr(2, "Jupiter V1.2");
-    LCD1_WriteLineStr(3, "1234567890ABCDEF");
 }
 
 /**
@@ -148,7 +145,7 @@ void uart_buffer_process(uint8_t *pk_ptr, uint8_t f_length)
                 set_time(&packet_effect_ptr->data_type + 1);
                 break;
             case SET_INFO_ALARM:
-                write_alarm(pk_ptr, f_length);
+                write_alarm_uart(pk_ptr, f_length);
                 break;
             case SET_INFO_LEDS:
                 break;
@@ -158,7 +155,7 @@ void uart_buffer_process(uint8_t *pk_ptr, uint8_t f_length)
                 break;
         }
     }
-    
+
     if(packet_stt == PK_REMAIN)
     {
         if(packet_type == LDATA)
@@ -168,7 +165,48 @@ void uart_buffer_process(uint8_t *pk_ptr, uint8_t f_length)
     }
 }
 
-void write_alarm(uint8_t *pk_ptr, uint8_t f_length)
+/*
+	parameter:
+			- pk_ptr: array of output of menu alarm setting
+			- f_length: alarm numeric
+	output: store alarm data into flash
+*/
+void write_alarm_menu(uint8_t * array_ptr, uint8_t size)
+{
+    uint8_t index;
+    uint8_t * temp;
+    uint8_t bkp_val;
+
+    if(alarms_num > MAX_ALARM)
+        return;
+    temp = (uint8_t *)malloc(100);
+    if(temp == NULL)
+        return;
+    *temp = size;
+    for(index = 0; index < size * 5; index++)
+    {
+        if(index % 5 == 0)
+        {
+            temp++;
+            *temp = 0xFF;
+            temp++;
+        }
+        else
+            temp++;
+        *temp = array_ptr[index];
+    }
+    // write into flash
+    bkp_val = (uint8_t)BKP_ReadBackupRegister(BKP_DR5); // doc ra so luong alarm hien tai
+
+    BKP_ModifyBackupRegister(BKP_DR5, (alarms_num << 8) | bkp_val);
+    fcallback(temp, size, 7, ALARM_BEGIN_ADD, ALARM_END_ADD);
+    
+    alarm_load(alarm_buffer_ptr);    
+    
+    alarm_stt = ALARM_LOAD;
+}
+
+void write_alarm_uart(uint8_t *pk_ptr, uint8_t f_length)
 {
     uint8_t * tempx;
     uint8_t bkp_val;
@@ -176,7 +214,7 @@ void write_alarm(uint8_t *pk_ptr, uint8_t f_length)
         return;
     tempx = pk_ptr;
     alarms_num = *(tempx + 4);
-    bkp_val = (uint8_t)BKP_ReadBackupRegister(BKP_DR5);
+    bkp_val = (uint8_t)BKP_ReadBackupRegister(BKP_DR5); // doc ra so luong alarm hien tai
     if(alarms_num > MAX_ALARM)
         return;
     BKP_ModifyBackupRegister(BKP_DR5, (alarms_num << 8) | bkp_val);

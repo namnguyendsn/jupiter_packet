@@ -2,6 +2,9 @@
 #include "timer_delay.h"
 #include "LCD1.h"
 #include "menuDefine.h"
+
+#define MAX_ALARM_NUM 22
+
 /*=======================
 phim 1: MENU
 phim 2: OK
@@ -24,14 +27,9 @@ typedef enum{
     SETTIME_MON,
     SETTIME_Y,
 
-    SETALARM_HON,
-    SETALARM_MON,
-    SETALARM_HOFF,
-    SETALARM_MOFF,
-    SETALARM_HON_VAL,
-    SETALARM_MON_VAL,
-    SETALARM_HOFF_VAL,
-    SETALARM_MOFF_VAL,
+    SETALARMx_HON_VAL,
+    SETALARMx_MON_VAL,
+    SETALARMx_ONTIME_VAL,
     
     SET_HVAL,
     #define SETHVAL     0
@@ -44,7 +42,11 @@ typedef enum{
     SET_YVAL,
     #define SETYVAL     4
 
-    SETEFFECTS_SELECT
+    SETEFFECTS_SELECT,
+	
+	VIEW_INFO,
+	SETALARMx,
+	SETALARMx_VAL,
 }menu_state;
 
 typedef struct
@@ -52,6 +54,13 @@ typedef struct
     uint8_t * string;
     menu_state next_menu;
 } struct_menu;
+
+typedef struct 
+{
+  uint8_t on_hour;
+  uint8_t on_min;
+  uint16_t on_time;
+}ALARM_STRUCT_CLONE;
 
 void menu(void);
 void scan_key(void);

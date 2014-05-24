@@ -153,7 +153,7 @@ void SysTick_Handler(void)
 		LEDstatus();
 	}
 	//SoftPWM();
-	HardLEDPWM();
+	//HardLEDPWM();
 	TimingDelay_Decrement();
 }
 
