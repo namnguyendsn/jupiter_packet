@@ -35,21 +35,21 @@
 uint32_t nam_count;
 int main(void)
 {
-  jupiter_cpu_init();
-  /* main while */
-  while(1)
-  {
-      scan_key();
-      state_dislay();
-#if 1
-    spi_595_send(0xFF00);
-    //Delay_ms(200);
-    spi_595_send(0x00FF);
-    //Delay_ms(200);
-#else
-    effect_run();
-#endif
-  }
+    jupiter_cpu_init();
+    /* main while */
+    while(1)
+    {
+        scan_key();
+        state_dislay();
+        #if 1
+        spi_595_send(0xFF00);
+        //Delay_ms(200);
+        spi_595_send(0x00FF);
+        //Delay_ms(200);
+        #else
+        effect_run();
+        #endif
+    }
 }
 
 /**

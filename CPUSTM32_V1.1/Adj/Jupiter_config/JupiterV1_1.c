@@ -175,19 +175,20 @@ void write_alarm_menu(uint8_t * array_ptr, uint8_t size)
 {
     uint8_t index;
     uint8_t * temp;
+    uint8_t * temp_bkp;
     uint8_t bkp_val;
 
-    if(alarms_num > MAX_ALARM)
+    alarms_num = size;
+    if(size > MAX_ALARM)
         return;
     temp = (uint8_t *)malloc(100);
     if(temp == NULL)
         return;
-    *temp = size;
+    temp_bkp = temp;
     for(index = 0; index < size * 5; index++)
     {
         if(index % 5 == 0)
         {
-            temp++;
             *temp = 0xFF;
             temp++;
         }
@@ -198,12 +199,13 @@ void write_alarm_menu(uint8_t * array_ptr, uint8_t size)
     // write into flash
     bkp_val = (uint8_t)BKP_ReadBackupRegister(BKP_DR5); // doc ra so luong alarm hien tai
 
-    BKP_ModifyBackupRegister(BKP_DR5, (alarms_num << 8) | bkp_val);
-    fcallback(temp, size, 7, ALARM_BEGIN_ADD, ALARM_END_ADD);
+    BKP_ModifyBackupRegister(BKP_DR5, (size << 8) | bkp_val);
+    fcallback(temp_bkp, size * 5, 7, ALARM_BEGIN_ADD, ALARM_END_ADD);
     
     alarm_load(alarm_buffer_ptr);    
     
     alarm_stt = ALARM_LOAD;
+    free(temp_bkp);
 }
 
 void write_alarm_uart(uint8_t *pk_ptr, uint8_t f_length)

@@ -13,7 +13,9 @@ uint16_t time_out = 0;
 Time_s TimeTemp;
 uint8_t main_menu_curpoint;
 int8_t alarm_curpoint = 0;
+int8_t alarm_max_cur_num = 0;
 int8_t alarm_type_val = 0;
+bool alarmx_stt[MAX_ALARM_NUM] = {FALSE};
 
 extern Time_s systime;
 extern uint8_t * alarm_data_ptr;
@@ -24,14 +26,14 @@ void display_subtime_menu(uint8_t currpoint, uint8_t val, bool only);
 void display_alarm_set(uint8_t currpoint, uint8_t alarm, uint8_t refresh);
 void display_alarm_menu(uint8_t currpoint, uint8_t val, bool only);
 #define INFO_DISPLAY \
-				LCD1_Line(0); \
-				LCD1_WriteString("LED DRIVER V1.2"); \
-				LCD1_Line(1); \
-				LCD1_WriteString("LED SIGN ADJ"); \
-				LCD1_Line(2); \
-				LCD1_WriteString("SDT 0974062446"); \
-				LCD1_Line(3); \
-				LCD1_WriteString("LET'S TRY MORE")
+                LCD1_Line(0); \
+                LCD1_WriteString("LED DRIVER V1.2"); \
+                LCD1_Line(1); \
+                LCD1_WriteString("LED SIGN ADJ"); \
+                LCD1_Line(2); \
+                LCD1_WriteString("SDT 0974062446"); \
+                LCD1_Line(3); \
+                LCD1_WriteString("LET'S TRY MORE")
 
 struct_menu main_menu[MAX_MENU] = 
 {
@@ -91,154 +93,153 @@ struct_menu sub_time[MAX_SUBTIME] =
 
 void menu(void)
 {
-   time_out = 0;
+    time_out = 0;
     byte_input = 0;
-   switch (kb_stt)
-   {
-      case NORMAL:
-        kb_stt = SETTIME;
-        LCD1_Clear();
-        display_menu(SETTIME, 0, 1);
+    switch (kb_stt)
+    {
+        case NORMAL:
+            kb_stt = SETTIME;
+            LCD1_Clear();
+            display_menu(SETTIME, 0, 1);
         break;
-      case SETTIME:
-        LCD1_Clear();
-        kb_stt = SETTIME_H;
+        case SETTIME:
+            LCD1_Clear();
+            kb_stt = SETTIME_H;
         break;
-      case SETALARM:
-				kb_stt = SETALARMx;
-				LCD1_Clear();
+        case SETALARM:
+            kb_stt = SETALARM_NUM;
+            LCD1_Clear();
         break;
-			case SETALARMx:
-				LCD1_Clear();
-				kb_stt = SETALARMx_VAL;
-				break;
-			case SETALARMx_VAL:
-				display_alarm_menu(alarm_type_val, 0, 1);
-				switch(alarm_type_val)
-				{
-					case 0:
-						kb_stt = SETALARMx_HON_VAL;
-						alarm_type_val = 0;
-						break;
-					case 1:
-						kb_stt = SETALARMx_MON_VAL;
-						alarm_type_val = 1;
-						break;
-					case 2:
-						kb_stt = SETALARMx_ONTIME_VAL;
-						alarm_type_val = 2;
-						break;
-				}
-				break;
-			
-      case SETEFFECTS:
+        case SETALARMx:
+            LCD1_Clear();
+            kb_stt = SETALARMx_VAL;
+            break;
+        case SETALARMx_VAL:
+            display_alarm_menu(alarm_type_val, 0, 1);
+            switch(alarm_type_val)
+            {
+                case 0:
+                    kb_stt = SETALARMx_HON_VAL;
+                    alarm_type_val = 0;
+                    break;
+                case 1:
+                    kb_stt = SETALARMx_MON_VAL;
+                    alarm_type_val = 1;
+                    break;
+                case 2:
+                    kb_stt = SETALARMx_ONTIME_VAL;
+                    alarm_type_val = 2;
+                    break;
+            }
+            break;
+        case SETEFFECTS:
 
         break;
-      case CHECKTIME:
+        case CHECKTIME:
 
         break;
-      case CHECKALARM:
+        case CHECKALARM:
 
         break;
-      case INFO:
-        kb_stt = VIEW_INFO;
+        case INFO:
+            kb_stt = VIEW_INFO;
         break;
 
-      case SETTIME_H:
-				kb_stt = SET_HVAL;
-				byte_input = systime.Hour;
-				break;
-      case SETTIME_MIN:
-				kb_stt = SET_MINVAL;
-				byte_input = systime.Min;
-				break;
-      case SETTIME_D:
-				kb_stt = SET_DVAL;
-				byte_input = systime.Day;
-				break;
-      case SETTIME_MON:
-				kb_stt = SET_MONVAL;
-				byte_input = systime.Month;
-				break;
-      case SETTIME_Y:
-				kb_stt = SET_YVAL;
-				byte_input = systime.Year;
-				break;
+        case SETTIME_H:
+            kb_stt = SET_HVAL;
+            byte_input = systime.Hour;
+        break;
+        case SETTIME_MIN:
+            kb_stt = SET_MINVAL;
+            byte_input = systime.Min;
+        break;
+        case SETTIME_D:
+            kb_stt = SET_DVAL;
+            byte_input = systime.Day;
+        break;
+        case SETTIME_MON:
+            kb_stt = SET_MONVAL;
+            byte_input = systime.Month;
+        break;
+        case SETTIME_Y:
+            kb_stt = SET_YVAL;
+            byte_input = systime.Year;
+        break;
    }
 }
 
 void up_(void)
 {
-  time_out = 0;
-	if(kb_stt == SETALARMx_ONTIME_VAL)
-		byte_input = byte_input + 10;
-	else
-		byte_input++;
-  switch (kb_stt)
-  {
+    time_out = 0;
+    if(kb_stt == SETALARMx_ONTIME_VAL)
+        byte_input = byte_input + 10;
+    else
+        byte_input++;
+    switch (kb_stt)
+    {
 		case SETALARMx_HON_VAL:
-    case SET_HVAL:
-       if(byte_input>23)   byte_input = 0;
-       break;
-		case SETALARMx_MON_VAL:
-    case SET_MINVAL:
-       if(byte_input>59)   byte_input = 0;
-       break;
-    case SET_DVAL:
-       if(systime.MonthType == 3)
-       {
-          if(byte_input>31) byte_input=1;
-       }
-       else if(systime.MonthType == 2)
-       {
-          if(byte_input>30) byte_input=1;
-       }
-       else
-       {
-          if(systime.MonthType == 1)
-             if(byte_input>29) byte_input=1;
-          else
-             if(byte_input>28) byte_input=1;
-       }
-       break;
-    case SET_MONVAL:
-       if(byte_input>12) byte_input = 1;
-       break;
-    case SET_YVAL:
-       if(byte_input>100)  byte_input = 0;
-       break;
-     // chuyen menu cai dat cac gia tri thoi gian
-    case SETTIME_H:
-       kb_stt = SETTIME_MIN;
-       break;
-    case SETTIME_MIN:
-       kb_stt = SETTIME_D;
-       break;
-    case SETTIME_D:
-       kb_stt = SETTIME_MON;
-       break;
-    case SETTIME_MON:
-       kb_stt = SETTIME_Y;
-       break;
-    case SETTIME_Y:
-       kb_stt = SETTIME_H;
-       break;
-     // chuyen menu chinh
-    case SETTIME:
-       display_menu(SETALARM, 0, 1);
-			 //LCD1_WriteString(main_menu[SETTIME].string);
-			 kb_stt = main_menu[SETALARM].next_menu;
-			 main_menu_curpoint = SETALARM;
-       break;
-    case SETALARM:
-       display_menu(SETEFFECTS, 0, 1);
-			 //LCD1_WriteString(main_menu[SETALARM].string);
-			 kb_stt = main_menu[SETEFFECTS].next_menu;
-			 main_menu_curpoint = SETEFFECTS;
-       break;
+        case SET_HVAL:
+            if(byte_input>23)   byte_input = 0;
+        break;
+        case SETALARMx_MON_VAL:
+        case SET_MINVAL:
+            if(byte_input>59)   byte_input = 0;
+        break;
+        case SET_DVAL:
+            if(systime.MonthType == 3)
+            {
+                if(byte_input>31) byte_input=1;
+            }
+            else if(systime.MonthType == 2)
+            {
+                if(byte_input>30) byte_input=1;
+            }
+            else
+            {
+                if(systime.MonthType == 1)
+                    if(byte_input>29) byte_input=1;
+                else
+                    if(byte_input>28) byte_input=1;
+            }
+            break;
+        case SET_MONVAL:
+            if(byte_input>12) byte_input = 1;
+            break;
+        case SET_YVAL:
+            if(byte_input>100)  byte_input = 0;
+            break;
+        // chuyen menu cai dat cac gia tri thoi gian
+        case SETTIME_H:
+            kb_stt = SETTIME_MIN;
+            break;
+        case SETTIME_MIN:
+            kb_stt = SETTIME_D;
+            break;
+        case SETTIME_D:
+            kb_stt = SETTIME_MON;
+            break;
+        case SETTIME_MON:
+            kb_stt = SETTIME_Y;
+            break;
+        case SETTIME_Y:
+            kb_stt = SETTIME_H;
+            break;
+        // chuyen menu chinh
+        case SETTIME:
+            display_menu(SETALARM, 0, 1);
+            //LCD1_WriteString(main_menu[SETTIME].string);
+            kb_stt = main_menu[SETALARM].next_menu;
+            main_menu_curpoint = SETALARM;
+        break;
+        case SETALARM:
+            display_menu(SETEFFECTS, 0, 1);
+            //LCD1_WriteString(main_menu[SETALARM].string);
+            kb_stt = main_menu[SETEFFECTS].next_menu;
+            main_menu_curpoint = SETEFFECTS;
+        break;
 		case SETALARMx:
 			alarm_curpoint++;
-			if(alarm_curpoint >= MAX_ALARM_NUM)   alarm_curpoint = 0;
+			if(alarm_curpoint >= alarm_max_cur_num)   alarm_curpoint = 0;
 			break;
 		case SETALARMx_VAL:
 			alarm_type_val++;
@@ -247,30 +248,33 @@ void up_(void)
 		case SETALARMx_ONTIME_VAL:
 			if(byte_input > 1440)   byte_input = 0;
 			break;
-      case SETEFFECTS:
-      display_menu(CHECKTIME, 0, 1);
-			//LCD1_WriteString(main_menu[SETEFFECTS].string);
-			kb_stt = main_menu[CHECKTIME].next_menu;
-			main_menu_curpoint = CHECKTIME;
-       break;
-    case CHECKTIME:
-      display_menu(CHECKALARM, 0, 1);
-			//LCD1_WriteString(main_menu[CHECKTIME].string);
-			kb_stt = main_menu[CHECKALARM].next_menu;
-			main_menu_curpoint = CHECKALARM;
-       break;
-    case CHECKALARM:
-      display_menu(INFO, 0, 1);
-			//LCD1_WriteString(main_menu[CHECKALARM].string);
-			kb_stt = main_menu[INFO].next_menu;
-			main_menu_curpoint = INFO;
-      break;
-    case INFO:
-			 display_menu(SETTIME, 0, 1);
-		 //LCD1_WriteString(main_menu[INFO].string);
-			kb_stt = main_menu[SETTIME].next_menu;
-			main_menu_curpoint = SETTIME;
-      break;
+        case SETALARM_NUM:
+			if(byte_input > MAX_ALARM_NUM)   byte_input = 0;
+            break;
+        case SETEFFECTS:
+        display_menu(CHECKTIME, 0, 1);
+            //LCD1_WriteString(main_menu[SETEFFECTS].string);
+            kb_stt = main_menu[CHECKTIME].next_menu;
+            main_menu_curpoint = CHECKTIME;
+        break;
+        case CHECKTIME:
+            display_menu(CHECKALARM, 0, 1);
+            //LCD1_WriteString(main_menu[CHECKTIME].string);
+            kb_stt = main_menu[CHECKALARM].next_menu;
+            main_menu_curpoint = CHECKALARM;
+           break;
+        case CHECKALARM:
+            display_menu(INFO, 0, 1);
+            //LCD1_WriteString(main_menu[CHECKALARM].string);
+            kb_stt = main_menu[INFO].next_menu;
+            main_menu_curpoint = INFO;
+        break;
+        case INFO:
+            display_menu(SETTIME, 0, 1);
+            //LCD1_WriteString(main_menu[INFO].string);
+            kb_stt = main_menu[SETTIME].next_menu;
+            main_menu_curpoint = SETTIME;
+        break;
    }
 }
 
@@ -294,18 +298,18 @@ void down_(void)
 		case SET_DVAL:
 			if(systime.MonthType == 3)
 			{
-					if(byte_input<=1) byte_input = 31;
+                if(byte_input<=1) byte_input = 31;
 			}
 			else if(systime.MonthType == 2)
 			{
-					if(byte_input<=1) byte_input = 30;
+                if(byte_input<=1) byte_input = 30;
 			}
 			else
 			{
-					if(systime.MonthType == 1)
-							if(byte_input<=1) byte_input = 29;
-					else
-							if(byte_input<=1) byte_input = 28;
+                if(systime.MonthType == 1)
+                    if(byte_input<=1) byte_input = 29;
+                else
+                    if(byte_input<=1) byte_input = 28;
 			}
 			break;
 		case SET_MONVAL:
@@ -369,105 +373,123 @@ void down_(void)
 			break;
 		case SETALARMx:
 			alarm_curpoint--;
-			if(alarm_curpoint < 0)   alarm_curpoint = MAX_ALARM_NUM - 1;
+			if(alarm_curpoint < 0)   alarm_curpoint = alarm_max_cur_num - 1;
 			break;
 		case SETALARMx_VAL:
 			alarm_type_val--;
 			if(alarm_type_val < 0)   alarm_type_val = 3 - 1;
 			break;
-
 		case SETALARMx_ONTIME_VAL:
 			if(byte_input < 0)   byte_input = 1440;
 			break;
+        case SETALARM_NUM:
+            if(byte_input < 0)   byte_input = MAX_ALARM_NUM;
+            break;
 	}
 }
 
 void ok_(void)
 {
+    uint8_t index;
 	time_out = 0;
 	switch (kb_stt)
 	{
-		case SETTIME:
-			kb_stt = NORMAL;
-			break;
-		case SETTIME_H:
-			kb_stt = SETTIME;
-			break;
-		case SETTIME_MIN:
-			kb_stt = SETTIME;
-			break;
-		case SETTIME_D:
-			kb_stt = SETTIME;
-			break;
-		case SETTIME_MON:
-			kb_stt = SETTIME;
-			break;
-		case SETTIME_Y:
-			kb_stt = SETTIME;
-			break;
-		case SET_HVAL:
-			SetTime(byte_input, systime.Hour);
-			kb_stt = SETTIME_H;
-			break;
-		case SET_MINVAL:
-			SetTime(systime.Hour, byte_input);
-			kb_stt = SETTIME_MIN;
-			break;
-		case SET_DVAL:
-			SetDate(byte_input, systime.Month, systime.Year);
-			systime.Day = byte_input;
-			kb_stt = SETTIME_D;
-			break;
-		case SET_MONVAL:
-			SetDate(systime.Day, byte_input, systime.Year);
-			kb_stt = SETTIME_MON;
-			systime.Month = byte_input;
-			break;
-		case SET_YVAL:
-			SetDate(systime.Day, systime.Month, byte_input);
-			kb_stt = SETTIME_Y;
-			systime.Year = byte_input;
-			break;
+        case SETTIME:
+            kb_stt = NORMAL;
+            break;
+        case SETTIME_H:
+            kb_stt = SETTIME;
+            break;
+        case SETTIME_MIN:
+            kb_stt = SETTIME;
+            break;
+        case SETTIME_D:
+            kb_stt = SETTIME;
+            break;
+        case SETTIME_MON:
+            kb_stt = SETTIME;
+            break;
+        case SETTIME_Y:
+            kb_stt = SETTIME;
+            break;
+        case SET_HVAL:
+            SetTime(byte_input, systime.Hour);
+            kb_stt = SETTIME_H;
+            break;
+        case SET_MINVAL:
+            SetTime(systime.Hour, byte_input);
+            kb_stt = SETTIME_MIN;
+            break;
+        case SET_DVAL:
+            SetDate(byte_input, systime.Month, systime.Year);
+            systime.Day = byte_input;
+            kb_stt = SETTIME_D;
+            break;
+        case SET_MONVAL:
+            SetDate(systime.Day, byte_input, systime.Year);
+            kb_stt = SETTIME_MON;
+            systime.Month = byte_input;
+            break;
+        case SET_YVAL:
+            SetDate(systime.Day, systime.Month, byte_input);
+            kb_stt = SETTIME_Y;
+            systime.Year = byte_input;
+            break;
 
-		case SETALARM:
-			kb_stt = NORMAL;
-			break;
+        case SETALARM:
+            kb_stt = NORMAL;
+            break;
 
-		case SETALARMx:
-			kb_stt = SETALARM;
-			main_menu_curpoint = SETTIME;
-			// write alarm data vao flash
-			break;
-		case SETALARMx_VAL:
-			kb_stt = SETALARMx;
-			break;
-		case SETALARMx_HON_VAL:
-			((ALARM_STRUCT_CLONE*)alarm_data_array_ptr)[alarm_curpoint].on_hour =  (uint8_t)byte_input;
+        case SETALARMx:
+            kb_stt = SETALARM;
+            main_menu_curpoint = SETALARM;
+            // write alarm data vao flash
+            for(index = 0; index < alarm_max_cur_num; index++)
+            {
+                if(alarmx_stt[index] == FALSE)
+                    return;
+            }
             write_alarm_menu((uint8_t *)alarm_data_array_ptr, alarm_curpoint + 1);
-			kb_stt = SETALARMx_VAL;
-			break;
-		case SETALARMx_MON_VAL:
-			((ALARM_STRUCT_CLONE*)alarm_data_array_ptr)[alarm_curpoint].on_min =  (uint8_t)byte_input;
-			kb_stt = SETALARMx_VAL;
-			break;
-		case SETALARMx_ONTIME_VAL:
-			((ALARM_STRUCT_CLONE*)alarm_data_array_ptr)[alarm_curpoint].on_time =  byte_input;
-			kb_stt = SETALARMx_VAL;
-			break;
+            break;
+        case SETALARMx_VAL:
+            LCD1_Clear();            
+            kb_stt = SETALARMx;
+            break;
+        case SETALARMx_HON_VAL:
+            ((ALARM_STRUCT_CLONE*)alarm_data_array_ptr)[alarm_curpoint].on_hour =  (uint8_t)byte_input;
+            kb_stt = SETALARMx_VAL;
+            alarmx_stt[alarm_curpoint] = TRUE;
+            break;
+        case SETALARMx_MON_VAL:
+            ((ALARM_STRUCT_CLONE*)alarm_data_array_ptr)[alarm_curpoint].on_min =  (uint8_t)byte_input;
+            kb_stt = SETALARMx_VAL;
+            alarmx_stt[alarm_curpoint] = TRUE;
+            break;
+        case SETALARMx_ONTIME_VAL:
+            ((ALARM_STRUCT_CLONE*)alarm_data_array_ptr)[alarm_curpoint].on_time =  SWAP2BYTE(byte_input/5);
+            kb_stt = SETALARMx_VAL;
+            alarmx_stt[alarm_curpoint] = TRUE;
+            break;
+        case SETALARM_NUM:
+            LCD1_Clear();
+            if(byte_input == 0)
+                return;
+            alarm_max_cur_num = byte_input;
+            kb_stt = SETALARMx;
+            break;
+        case SETEFFECTS:
+            break;
+        case CHECKTIME:
 
-		case SETEFFECTS:
-			break;
-		case CHECKTIME:
+            break;
+        case CHECKALARM:
+            break;
 
-			break;
-		case CHECKALARM:
-			break;
-
-		case VIEW_INFO:
-			kb_stt = INFO;
-			main_menu_curpoint = INFO;
-			break;
-	}
+        case VIEW_INFO:
+            kb_stt = INFO;
+            main_menu_curpoint = INFO;
+            break;
+    }
 }
 
 void cancel_(void)
@@ -517,12 +539,15 @@ void cancel_(void)
 		
 		case SETALARMx:
 			kb_stt = SETALARM;
-			main_menu_curpoint = SETTIME;
+			main_menu_curpoint = SETALARM;
 			break;
-		
 		case SETALARMx_VAL:
+            LCD1_Clear();
 			kb_stt = SETALARMx;
 			break;
+        case SETALARM_NUM:
+			kb_stt = SETALARM;
+            break;
 	}
 }
 
@@ -539,114 +564,120 @@ void scan_key(void) // phim bam binh thuong o muc cao, khi nhan phim thi chuyen 
         menu();
         Delay_ms(100);
     }
-   if(!GPIO_ReadInputDataBit(KEY_PORT, KEY_DOW))
-   {
+    if(!GPIO_ReadInputDataBit(KEY_PORT, KEY_DOW))
+    {
        down_();
        Delay_ms(100);
-   }            
-   if(!GPIO_ReadInputDataBit(KEY_PORT, KEY_OK))
-   {
+    }            
+    if(!GPIO_ReadInputDataBit(KEY_PORT, KEY_OK))
+    {
        cancel_();
        Delay_ms(100);
-   }
-   if(!GPIO_ReadInputDataBit(KEY_PORT, KEY_CAN))
-   {
+    }
+    if(!GPIO_ReadInputDataBit(KEY_PORT, KEY_CAN))
+    {
        ok_();
        Delay_ms(100);
-   }
+    }
 }
 //----------------------hien thi trang thai--------------------------------
 //-------- doan code khi bam menu
 void state_dislay(void)
 {
-   uint8_t temp, chg = 0;
-   if(kb_stt !=  NORMAL)
-      time_out++;
-   switch (kb_stt)
-      {
-         case NORMAL:
-						LCD1_Clear();
+    uint8_t temp, chg = 0;
+    if(kb_stt !=  NORMAL)
+        time_out++;
+    switch (kb_stt)
+    {
+        case NORMAL:
+            LCD1_Clear();
             //LCD1_Line(0);
             //LCD1_WriteString("___NORMAL___");
             break;
-				 case SETALARM:
-         case SETTIME:
-				 case INFO:
+        case SETALARM:
+        case SETTIME:
+        case INFO:
 						display_menu(main_menu_curpoint, 0, 1);
             break;
-         case SETTIME_H:
+        case SETTIME_H:
             display_subtime_menu(SETHVAL, systime.Hour, 0);
             break;
-         case SETTIME_MIN:
+        case SETTIME_MIN:
             display_subtime_menu(SETMINVAL, systime.Min, 0);
             chg = 1;
             break;
-         case SETTIME_D:
+        case SETTIME_D:
             display_subtime_menu(SETDVAL, systime.Day, 0);
             chg = 1;
             break;
-         case SETTIME_MON:
+        case SETTIME_MON:
             display_subtime_menu(SETMONVAL, systime.Month, 0);
             chg = 1;
             break;
-         case SETTIME_Y:
+        case SETTIME_Y:
             display_subtime_menu(SETYVAL, systime.Year, 0);
             chg = 1;
             break;
         case SETALARMx_HON_VAL:
-						display_alarm_menu(alarm_type_val,byte_input , 1);
+            display_alarm_menu(alarm_type_val,byte_input , 1);
             chg = 1;
             break;
         case SETALARMx_MON_VAL:
-						display_alarm_menu(alarm_type_val,byte_input , 1);
-						chg = 1;
-            break;
-        case SETALARMx_ONTIME_VAL:
-						display_alarm_menu(alarm_type_val,byte_input , 1);
+            display_alarm_menu(alarm_type_val,byte_input , 1);
             chg = 1;
             break;
-         case SET_HVAL:
-               display_subtime_menu(SETHVAL, byte_input, 1);
-               chg = 1;
+        case SETALARMx_ONTIME_VAL:
+            display_alarm_menu(alarm_type_val,byte_input , 1);
+            chg = 1;
             break;
-         case SET_MINVAL:
-             display_subtime_menu(SETMINVAL, byte_input, 1);
-               chg = 1;
+        case SET_HVAL:
+            display_subtime_menu(SETHVAL, byte_input, 1);
+            chg = 1;
             break;
-         case SET_DVAL:
-             display_subtime_menu(SETDVAL, byte_input, 1);
-               chg = 1;
+        case SET_MINVAL:
+            display_subtime_menu(SETMINVAL, byte_input, 1);
+            chg = 1;
             break;
-         case SET_MONVAL:
-             display_subtime_menu(SETMONVAL, byte_input, 1);
-               chg = 1;
+        case SET_DVAL:
+            display_subtime_menu(SETDVAL, byte_input, 1);
+            chg = 1;
             break;
-         case SET_YVAL:
-             display_subtime_menu(SETYVAL, byte_input, 1);
-               chg = 1;
+        case SET_MONVAL:
+            display_subtime_menu(SETMONVAL, byte_input, 1);
+            chg = 1;
             break;
-         case SETEFFECTS:
-               chg = 1;
+        case SET_YVAL:
+            display_subtime_menu(SETYVAL, byte_input, 1);
+            chg = 1;
             break;
-         case SETEFFECTS_SELECT:
-               chg = 1;
+        case SETEFFECTS:
+            chg = 1;
             break;
-         case CHECKTIME:
-               chg = 1;
+        case SETEFFECTS_SELECT:
+            chg = 1;
             break;
-         case CHECKALARM:
-               chg = 1;
+        case CHECKTIME:
+            chg = 1;
             break;
-				 case VIEW_INFO:
-							INFO_DISPLAY;
-						break;
-				case SETALARMx:
-						display_alarm_set(alarm_curpoint,0 , 1);
-						break;
-				case SETALARMx_VAL:
-						display_alarm_menu(alarm_type_val, 0, 0);
-						break;
-      }
+        case CHECKALARM:
+            chg = 1;
+            break;
+        case VIEW_INFO:
+            INFO_DISPLAY;
+            break;
+        case SETALARM_NUM:
+            LCD1_Line(0);
+            LCD1_WriteString("SO LAN BAT/TAT  ");
+            LCD1_Line(1);
+            LCD1_DisplayInt(byte_input, 2);
+            break;
+        case SETALARMx:
+            display_alarm_set(alarm_curpoint, alarm_max_cur_num, 1);
+            break;
+        case SETALARMx_VAL:
+            display_alarm_menu(alarm_type_val, 0, 0);
+            break;
+    }
     if(chg  ==  1)
     {
         chg = 0;
@@ -742,13 +773,18 @@ void display_subtime_menu(uint8_t currpoint, uint8_t val, bool only)
 			}
 		}
 }
-
+/*
+currpoint: vi tri hien tai cua con tro
+alarm: so luong alarm
+*/
 void display_alarm_set(uint8_t currpoint, uint8_t alarm, uint8_t refresh)
 {
     uint8_t i;
     if(!refresh)
         return;
-    for(i = 0;i < 4;i++)
+    for(i = 0; \
+        alarm >= 4 ? i < 4: i < alarm; \
+        i++)
     {
         LCD1_Line(i);
         if(i == 0)
@@ -756,7 +792,7 @@ void display_alarm_set(uint8_t currpoint, uint8_t alarm, uint8_t refresh)
         else
             LCD1_WriteString(" ");
         LCD1_WriteString("ALARM ");
-				LCD1_DisplayInt((i + currpoint) % MAX_ALARM_NUM, 2);
+        LCD1_DisplayInt((i + currpoint) % alarm, 2);
     }
 }
 

@@ -4,7 +4,7 @@
 #include "menuDefine.h"
 
 #define MAX_ALARM_NUM 22
-
+#define SWAP2BYTE(n)    ((n >> 8) | (n << 8))
 /*=======================
 phim 1: MENU
 phim 2: OK
@@ -47,6 +47,7 @@ typedef enum{
 	VIEW_INFO,
 	SETALARMx,
 	SETALARMx_VAL,
+    SETALARM_NUM,
 }menu_state;
 
 typedef struct
