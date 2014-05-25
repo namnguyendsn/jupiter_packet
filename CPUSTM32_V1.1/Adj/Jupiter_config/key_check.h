@@ -5,6 +5,15 @@
 
 #define MAX_ALARM_NUM 22
 #define SWAP2BYTE(n)    ((n >> 8) | (n << 8))
+#define INFO_DISPLAY \
+                LCD1_Line(0); \
+                LCD1_WriteString("LED DRIVER V1.2"); \
+                LCD1_Line(1); \
+                LCD1_WriteString("LED SIGN ADJ"); \
+                LCD1_Line(2); \
+                LCD1_WriteString("SDT 0974062446"); \
+                LCD1_Line(3); \
+                LCD1_WriteString("LET'S TRY MORE")
 /*=======================
 phim 1: MENU
 phim 2: OK
@@ -48,6 +57,8 @@ typedef enum{
 	SETALARMx,
 	SETALARMx_VAL,
     SETALARM_NUM,
+    ALARM_CREATNEW,// tao moi alarm neu ko co san
+    ALARM_FROMFLASH// load tu flash
 }menu_state;
 
 typedef struct

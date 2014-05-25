@@ -594,6 +594,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\Jupiter_config\key_check.c</FilePath>
             </File>
+            <File>
+              <FileName>display.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Jupiter_config\display.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
