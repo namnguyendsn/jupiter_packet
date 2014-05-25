@@ -15,6 +15,7 @@ uint8_t main_menu_curpoint;
 int8_t alarm_curpoint = 0;
 int8_t alarm_max_cur_num = 0;
 int8_t alarm_type_val = 0;
+bool alarm_set_load = FALSE; // mac dinh la LOAD
 bool alarmx_stt[MAX_ALARM_NUM] = {FALSE};
 
 extern Time_s systime;
@@ -25,6 +26,7 @@ extern void display_menu(uint8_t currpoint, uint8_t menu, uint8_t refresh);
 extern void display_subtime_menu(uint8_t currpoint, uint8_t val, bool only);
 extern void display_alarm_set(uint8_t currpoint, uint8_t alarm, uint8_t refresh);
 extern void display_alarm_menu(uint8_t currpoint, uint8_t val, bool only);
+extern void display_alarm_set_load(uint8_t currpoint, uint8_t alarm);
 
 struct_menu main_menu[MAX_MENU] = 
 {
@@ -85,7 +87,6 @@ struct_menu sub_time[MAX_SUBTIME] =
 void menu(void)
 {
     time_out = 0;
-    byte_input = 0;
     switch (kb_stt)
     {
         case NORMAL:
@@ -98,7 +99,8 @@ void menu(void)
             kb_stt = SETTIME_H;
         break;
         case SETALARM:
-            kb_stt = SETALARM_NUM;
+            kb_stt = ALARM_SETLOAD;
+            //kb_stt = SETALARM_NUM;
             LCD1_Clear();
         break;
         case SETALARMx:
@@ -156,6 +158,20 @@ void menu(void)
             kb_stt = SET_YVAL;
             byte_input = systime.Year;
         break;
+        case ALARM_SETLOAD:
+            alarm_set_load = (bool)byte_input;
+            if(alarm_set_load == TRUE)
+                kb_stt = SETALARM_NUM;
+            else
+                kb_stt = ALARM_FROMFLASH;
+        break;
+        case SETALARM_NUM:
+            LCD1_Clear();
+            if(byte_input == 0)
+                return;
+            alarm_max_cur_num = byte_input;
+            kb_stt = SETALARMx;
+            break;
    }
 }
 
@@ -218,13 +234,11 @@ void up_(void)
         // chuyen menu chinh
         case SETTIME:
             display_menu(SETALARM, 0, 1);
-            //LCD1_WriteString(main_menu[SETTIME].string);
             kb_stt = main_menu[SETALARM].next_menu;
             main_menu_curpoint = SETALARM;
         break;
         case SETALARM:
             display_menu(SETEFFECTS, 0, 1);
-            //LCD1_WriteString(main_menu[SETALARM].string);
             kb_stt = main_menu[SETEFFECTS].next_menu;
             main_menu_curpoint = SETEFFECTS;
         break;
@@ -265,6 +279,9 @@ void up_(void)
             //LCD1_WriteString(main_menu[INFO].string);
             kb_stt = main_menu[SETTIME].next_menu;
             main_menu_curpoint = SETTIME;
+        break;
+        case ALARM_SETLOAD:
+            byte_input = byte_input % 2;
         break;
    }
 }
@@ -376,6 +393,9 @@ void down_(void)
         case SETALARM_NUM:
             if(byte_input < 0)   byte_input = MAX_ALARM_NUM;
             break;
+        case ALARM_SETLOAD:
+            byte_input = byte_input % 2;
+            break;
     }
 }
 
@@ -461,12 +481,8 @@ void ok_(void)
             kb_stt = SETALARMx_VAL;
             alarmx_stt[alarm_curpoint] = TRUE;
             break;
-        case SETALARM_NUM:
-            LCD1_Clear();
-            if(byte_input == 0)
-                return;
-            alarm_max_cur_num = byte_input;
-            kb_stt = SETALARMx;
+        case ALARM_SETLOAD:
+            kb_stt = SETALARM;
             break;
         case SETEFFECTS:
             break;
@@ -538,6 +554,9 @@ void cancel_(void)
 			break;
         case SETALARM_NUM:
 			kb_stt = SETALARM;
+            break;
+        case ALARM_SETLOAD:
+            kb_stt = SETALARM;
             break;
 	}
 }
@@ -665,6 +684,12 @@ void state_dislay(void)
             break;
         case SETALARMx_VAL:
             display_alarm_menu(alarm_type_val, 0, 0);
+            break;
+        case ALARM_SETLOAD:
+            display_alarm_set_load(byte_input , 2);
+            break;
+        case ALARM_FROMFLASH:
+            
             break;
     }
     if(chg  ==  1)

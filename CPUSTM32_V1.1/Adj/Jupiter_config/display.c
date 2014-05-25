@@ -9,6 +9,19 @@ void display_menu(uint8_t currpoint, uint8_t menu, uint8_t refresh);
 void display_subtime_menu(uint8_t currpoint, uint8_t val, bool only);
 void display_alarm_set(uint8_t currpoint, uint8_t alarm, uint8_t refresh);
 void display_alarm_menu(uint8_t currpoint, uint8_t val, bool only);
+void display_alarm_set_load(uint8_t currpoint, uint8_t alarm);
+
+struct_menu alarm_set_load_array[2] = 
+{
+    {// load alarm
+        (uint8_t *)ALARM_LOADFLASH,
+        0,
+    },
+    {// set alarm
+        (uint8_t *)ALARM_CREATNEW,
+        0,
+    }
+};
 
 void display_menu(uint8_t currpoint, uint8_t menu, uint8_t refresh)
 {
@@ -157,31 +170,49 @@ void display_alarm_menu(uint8_t currpoint, uint8_t val, bool only)
             DataTemp[i] = time_ptr[i];
     }
     LCD1_Line(1);
-		for(i = 0; i < 3; i++)
-		{
-			if(only == TRUE)
-			{
-				if(currpoint == i)
-				{
-					if(i == 2)
-						LCD1_DisplayInt(DataTemp[i], 4);
-					else
-						LCD1_DisplayInt(DataTemp[i], 2);
-					LCD1_WriteString(separate_info[i]);
-				}
-				else
-				{
-					LCD1_WriteString("  ");
-					LCD1_WriteString(separate_info[i]);
-				}
-			}
-			else
-			{
-				if(i == 2)
-					LCD1_DisplayInt(DataTemp[i], 4);
-				else
-					LCD1_DisplayInt(DataTemp[i], 2);
-				LCD1_WriteString(separate_info[i]);
-			}
-		}
+    for(i = 0; i < 3; i++)
+    {
+        if(only == TRUE)
+        {
+            if(currpoint == i)
+            {
+                if(i == 2)
+                    LCD1_DisplayInt(DataTemp[i], 4);
+                else
+                    LCD1_DisplayInt(DataTemp[i], 2);
+                LCD1_WriteString(separate_info[i]);
+            }
+            else
+            {
+                LCD1_WriteString("  ");
+                LCD1_WriteString(separate_info[i]);
+            }
+        }
+        else
+        {
+            if(i == 2)
+                LCD1_DisplayInt(DataTemp[i], 4);
+            else
+                LCD1_DisplayInt(DataTemp[i], 2);
+            LCD1_WriteString(separate_info[i]);
+        }
+    }
+}
+
+void display_alarm_set_load(uint8_t currpoint, uint8_t alarm)
+{
+    uint8_t i;
+    if((currpoint >= 2)||(alarm > 2))
+        return;
+    for(i = 0; \
+        alarm >= 4 ? i < 4: i < alarm; \
+        i++)
+    {
+        LCD1_Line(i);
+        if(i == 0)
+            LCD1_WriteString(">");
+        else
+            LCD1_WriteString(" ");
+        LCD1_WriteString(alarm_set_load_array[(i + currpoint)%2].string);
+    }
 }

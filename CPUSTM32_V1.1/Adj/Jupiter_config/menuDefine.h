@@ -18,4 +18,5 @@
 #define SUB_SET_TIME_YEAR    "DAT NAM"
 
 // set alarm sub menu
-
+#define ALARM_LOADFLASH      "1. CO SAN       "
+#define ALARM_CREATNEW       "2. TAO MOI      "

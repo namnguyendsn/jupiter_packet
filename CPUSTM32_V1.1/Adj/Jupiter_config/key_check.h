@@ -57,7 +57,7 @@ typedef enum{
 	SETALARMx,
 	SETALARMx_VAL,
     SETALARM_NUM,
-    ALARM_CREATNEW,// tao moi alarm neu ko co san
+    ALARM_SETLOAD,
     ALARM_FROMFLASH// load tu flash
 }menu_state;
 
